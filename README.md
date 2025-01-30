@@ -16,7 +16,7 @@
 
 ### Versioning and Dependencies
 
-- Java 23.0.2
+- Java 21.0.6
 
 ### Repository Guidelines
 
@@ -56,6 +56,9 @@ Naming Conventions:
 Repo Conventions:
 
 - Utilize unique branches for each unique feature; do not re-use a branch that was previously merged
+- All branches should be derived from `dev`, and all branches should merge back into `dev`.
+    - `dev` will be merged into `main` by Levi or Avalon on a weekly basis, by 11:30 AM on the Tuesday of each sprint.
+        - At this point, `dev` and `main` will be identical.
 
 Coding Conventions:
 
