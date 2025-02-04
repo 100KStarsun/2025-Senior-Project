@@ -7,7 +7,7 @@
 - Adriana
 - Avalon
 - Jaiden
-- Jenny
+- Jennifer
 - Levi
 - Sarah
 - Stephen
