@@ -1,8 +1,8 @@
-import java.util.UUID;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.TreeMap;
-import java.util.ArrayList;
+import java.util.UUID;
 
 public class User {
     private UUID userUUID;
