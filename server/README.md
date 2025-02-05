@@ -31,6 +31,8 @@ This table's key is the user's UUID. This field is unique to each user and no us
 - `goods_services(Map)`: List of goods and services the user has on their profile
     - `{key_n}product_UUID: {value_n}(String)`: the key is the UUID of the product, and the value is the name of the product
 - `liked_items(List)`: List of all UUIDs of products that the user has "liked"/"favorited"
+- `blocked_users(List)`: List of all UUIDs of users that have been blocked by this user
+- `muted_users(List)`: List of all UUIDs of users that have been muted by this user
 
 ### agora_passwords
 
