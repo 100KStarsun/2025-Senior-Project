@@ -1,7 +1,3 @@
 import java.time.Instant;
 
-public class Message {
-    private String text;
-    private Instant timestamp;
-    private boolean isFromFirst;
-}
+public record Message (String text, Instant timestamp, boolean isFromFirst) {}
