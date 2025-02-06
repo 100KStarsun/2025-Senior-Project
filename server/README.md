@@ -68,5 +68,7 @@ This table's key is the UUID field of an item or service. The sort key is the na
 - `type(String)`: the type of product (good/service) (left as a string so we could add more later)
 - `quantity(Number)`: the number of this product/service available (only used if `infinite_available` is set to false)
 - `infinite_available(Boolean)`: whether or not there are unlimited times this service can be redeemed (option is only available for services, not for goods, default: false)
-- `published(Boolean)`: whether or not this product has been published to the Agora
+- `is_published(Boolean)`: whether or not this product has been published to the Agora
+- `is_accepting_cash(Boolean)`: whether or not the user will accept cash for this product
+- `is_tradable(Boolean)`: whether or not the user is willing to trade for another item
 - `past_buyers(List)`: A list of UUIDs of previous buyers
