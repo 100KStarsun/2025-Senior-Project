@@ -28,9 +28,9 @@ This table's key is the user's UUID. This field is unique to each user and no us
     - `{key_x}payment_method_name: {value_x}(Boolean)`: the key is the name of the payment method and the value is true or false depending on if the user has set it up
 - `chats(Map)`: List of usernames and chat_ids associated with the username
     - `{key_n}username: {value_n}(List)`: the key for each Map entry is the username that's part of the chat and the value is a list containing all of the `chat_UUID`s that make up the chat history of the two users
-- `goods_services(Map)`: List of goods and services the user has on their profile
-    - `{key_n}product_UUID: {value_n}(String)`: the key is the UUID of the product, and the value is the name of the product
-- `liked_items(List)`: List of all UUIDs of products that the user has "liked"/"favorited"
+- `published_products(List)`: List of all UUIDs of products that the user has published on their page
+- `drafted_products(List)`: Llist of all UUIDs of products that the user has drafts for
+- `liked_products(List)`: List of all UUIDs of products that the user has "liked"/"favorited"
 - `blocked_users(List)`: List of all UUIDs of users that have been blocked by this user
 - `muted_users(List)`: List of all UUIDs of users that have been muted by this user
 
