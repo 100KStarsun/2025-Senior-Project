@@ -8,12 +8,22 @@ public class Chat {
     private int order;
     private ArrayList<Message> messages;
 
+    // this constructor should be used when creating a new chat object with no data from the db
     public Chat (String username1, String username2, int order) {
         this.chatUUID = UUID.randomUUID();
         this.username1 = username1;
         this.username2 = username2;
         this.order = Chat.getOrder(username1, username2);
         this.messages = new ArrayList<Message>();
+    }
+
+    // this constructor should only be used when we have data from the db already
+    public Chat (UUID uuid, String username1, String username2, int order, ArrayList<Message> messages) {
+        this.chatUUID = uuid;
+        this.username1 = username1;
+        this.username2 = username2;
+        this.order = order;
+        this.messages = messages;
     }
 
     private Chat addMessage (Message msg) {
