@@ -1,8 +1,9 @@
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class Product {
+public class Product implements Serializable {
     private UUID productUUID;
     private String title;
     private Instant listingTime;
