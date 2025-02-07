@@ -29,7 +29,7 @@ This table's key is the user's UUID. This field is unique to each user and no us
 - `chats(Map)`: List of usernames and chat_ids associated with the username
     - `{key_n}username: {value_n}(List)`: the key for each Map entry is the username that's part of the chat and the value is a list containing all of the `chat_UUID`s that make up the chat history of the two users
 - `published_products(List)`: List of all UUIDs of products that the user has published on their page
-- `drafted_products(List)`: Llist of all UUIDs of products that the user has drafts for
+- `drafted_products(List)`: List of all UUIDs of products that the user has drafts for
 - `liked_products(List)`: List of all UUIDs of products that the user has "liked"/"favorited"
 - `blocked_users(List)`: List of all UUIDs of users that have been blocked by this user
 - `muted_users(List)`: List of all UUIDs of users that have been muted by this user
@@ -48,10 +48,11 @@ This table's key is the chat_id. Chat_ids are generated sequentially. I don't th
 - `chat_UUID(String){Partition_key}`: the UUID of this chat block
 - `usernames_pair(String){Sort_key}`: the pair of usernames associated with this chat, of the form `(username_1, username_2)`, where `username_1` is the person who sent the first message
 - `order(Number)`: the number representing how many chat elements have had to be created for these two users; required to put chats in correct order on user side; start at 0
-- `message_id(Map)`: the nth message sent between the two users in this chat block (there will be many entries of these maps)
-    - `{key_n}text: {value_n}(String)`: the text of the message (encrypted)
-    - `{key_n}timestamp: {value_n}(Number)`: the unix timestamp of the message
-    - `{key_n}from_first: {value_n}(Boolean)`: whether or not the message is from the person who sent the first message in this chat
+- `messages(List)`: a list of maps, where each map represents a message
+    - `message_id(Map)`: the nth message sent between the two users in this chat block (there will be many entries of these maps)
+        - `{key_n}text: {value_n}(String)`: the text of the message (encrypted)
+        - `{key_n}timestamp: {value_n}(Number)`: the unix timestamp of the message
+        - `{key_n}from_first: {value_n}(Boolean)`: whether or not the message is from the person who sent the first message in this chat
 
 ### agora_products
 
