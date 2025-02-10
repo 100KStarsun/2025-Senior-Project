@@ -12,18 +12,15 @@
 
 ### agora_users
 
-This table's key is the user's UUID. This field is unique to each user and no user is allowed to have the same UUID as someone else. The sort key is their username so that we can still find a user based on their username. A user's username is their university_id. (For CWRU, it's their network_id.) Each user's display name is their preferred first name and legal last name, followed by a # with the user's username, so people can confirm who they are talking to. This table will have the following fields:
+This table's key is the user's username. This field is unique to each user and no user is allowed to have the same username as someone else (because it's their case id). No sort key because username is easy, no email field because we can use `username`@case.edu. Each user's display name is their preferred first name and legal last name, followed by a # with the user's username, so people can confirm who they are talking to. This table will have the following fields:
 
-- `user_UUID(String){Partition_key}`: UUID for the user
-- `username(String){Sort_key}`: the user's username
+- `username(String){Partition_key}`: the user's username
 - `preferred_first(String)`: User's preferred first name
 - `legal_first(String)`: User's legal first name
 - `last(String)`: User's last name
-- `email(String)`: user's school email address
 - `time_created(Number)`: unix timestamp for when profile was created
 - `num_swaps(Number)`: the number of "Swapps" includes the number of services provided and goods sold. (Things coming from you)
 - `swapp_rating(Number)`: The "rating" that people have given you
-- `university(String)`: The name of the university you are associated with
 - `payment_methods(Map)`: List of payment methods the user has setup
     - `{key_x}payment_method_name: {value_x}(Boolean)`: the key is the name of the payment method and the value is true or false depending on if the user has set it up
 - `chats(Map)`: List of usernames and chat_ids associated with the username
