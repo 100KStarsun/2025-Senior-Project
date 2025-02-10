@@ -8,18 +8,19 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.EnumMap;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import dynamoDB.DynamoDBHandler;
+import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 public class User implements Serializable {
 
     public static String usersTableName = "agora_users";
     public static String passwordsTableName = "agora_passwords";
-    public static String usersTableKey = "user_UUID";
+    public static String usersTableKey = "username";
 
-    private UUID userUUID;
     private String username;
     private String password;
     private String preferredFirstName;
@@ -39,10 +40,8 @@ public class User implements Serializable {
     private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
 
     // this constructor is for when a new user registers
-    public User (String username, String password, String preferredFirstName, String legalFirstName, String lastName, String email, String university, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup) {
-        this.userUUID = UUID.randomUUID();
+    public User (String username, String preferredFirstName, String legalFirstName, String lastName, String email, String university, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup) {
         this.username = username;
-        this.password = password;
         this.preferredFirstName = preferredFirstName;
         this.legalFirstName = legalFirstName;
         this.lastName = lastName;
@@ -62,8 +61,7 @@ public class User implements Serializable {
 
     // this constructor is for when we're re-creating a user from the db
     // maybe actually, its possible that User.createFromBase64String() does this already and this constructor isnt actually needed
-    public User (UUID userUUID, String username, String preferredFirstName, String legalFirstName, String lastName, String email, String university, Instant timeCreated, int numSwaps, short rating, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup, TreeMap<String, ArrayList<UUID>> chats, ArrayList<UUID> draftedProducts, ArrayList<UUID> publishedProducts, ArrayList<UUID> likedProducts, ArrayList<UUID> mutedUsers, ArrayList<UUID> blockedUsers) {
-        this.userUUID = userUUID;
+    public User (String username, String preferredFirstName, String legalFirstName, String lastName, String email, String university, Instant timeCreated, int numSwaps, short rating, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup, TreeMap<String, ArrayList<UUID>> chats, ArrayList<UUID> draftedProducts, ArrayList<UUID> publishedProducts, ArrayList<UUID> likedProducts, ArrayList<UUID> mutedUsers, ArrayList<UUID> blockedUsers) {
         this.username = username;
         this.preferredFirstName = preferredFirstName;
         this.legalFirstName = legalFirstName;
@@ -91,10 +89,10 @@ public class User implements Serializable {
             objectOut.writeObject(this);
             return encoder.encodeToString(bytesOut.toByteArray());
         } catch (IOException e) {
-            System.out.println(e);
+            System.err.println(e);
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     public static User createFromBase64String (String encodedUser) {
@@ -106,16 +104,17 @@ public class User implements Serializable {
         ) {
             return (User) objectIn.readObject();
         } catch (IOException e) {
-            System.out.println(e);
+            System.err.println(e);
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
-            System.out.println(e);
+            System.err.println(e);
             e.printStackTrace();
         }
         return null;
     }
 
     public static User getUserFromUsername (String username) {
-        DynamoDBHandler.getItem(User.usersTableName, )
+        Map<String, AttributeValue> userItem = DynamoDBHandler.getItem(User.usersTableName, User.usersTableKey, username);
+
     }
 }

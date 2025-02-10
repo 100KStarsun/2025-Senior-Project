@@ -10,6 +10,11 @@
 
 ## Tables
 
+- Everything will be encoded as a base64 string before being encrypted (if necessary) and then sent to the database
+    - This means that the only human-readable information in the database will be the partition and sort keys of a table
+    - The key for this base64 string will be `data`, the value will be of type String
+    - Due to how Java handles object encoding, the partition and sort keys will be included in the base64 string of data
+
 ### agora_users
 
 This table's key is the user's username. This field is unique to each user and no user is allowed to have the same username as someone else (because it's their case id). No sort key because username is easy, no email field because we can use `username`@case.edu. Each user's display name is their preferred first name and legal last name, followed by a # with the user's username, so people can confirm who they are talking to. This table will have the following fields:
