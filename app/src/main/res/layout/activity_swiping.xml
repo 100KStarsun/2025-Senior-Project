@@ -7,15 +7,15 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Marketplace"
+        android:text="Swiping Page"
         android:textSize="40sp"
         android:layout_marginBottom="20dp"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonUserInfo"
-        android:text="User Information"
+        android:id="@+id/buttonMarketplace"
+        android:text="Marketplace"
         android:layout_marginTop="20dp"/>
 
     <Button
@@ -28,8 +28,8 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonSwiping"
-        android:text="Swipe"
+        android:id="@+id/buttonUserInfo"
+        android:text="User Information"
         android:layout_marginTop="20dp"/>
 
 </LinearLayout>

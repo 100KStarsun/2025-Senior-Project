@@ -10,7 +10,7 @@ public class SwipingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info);
+        setContentView(R.layout.activity_swiping);
         Button buttonLanding = findViewById(R.id.buttonLanding);
         Button buttonUserInfo = findViewById(R.id.buttonUserInfo);
         Button buttonMarketplace = findViewById(R.id.buttonMarketplace);
