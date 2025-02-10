@@ -3,6 +3,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Chat implements Serializable {
+
+    public static String chatsTableName = "agora_chats";
+
     private UUID chatUUID;
     private String username1;
     private String username2;

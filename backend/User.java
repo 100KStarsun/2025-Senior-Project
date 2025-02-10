@@ -11,7 +11,14 @@ import java.util.EnumMap;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import dynamoDB.DynamoDBHandler;
+
 public class User implements Serializable {
+
+    public static String usersTableName = "agora_users";
+    public static String passwordsTableName = "agora_passwords";
+    public static String usersTableKey = "user_UUID";
+
     private UUID userUUID;
     private String username;
     private String password;
@@ -54,6 +61,7 @@ public class User implements Serializable {
     }
 
     // this constructor is for when we're re-creating a user from the db
+    // maybe actually, its possible that User.createFromBase64String() does this already and this constructor isnt actually needed
     public User (UUID userUUID, String username, String preferredFirstName, String legalFirstName, String lastName, String email, String university, Instant timeCreated, int numSwaps, short rating, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup, TreeMap<String, ArrayList<UUID>> chats, ArrayList<UUID> draftedProducts, ArrayList<UUID> publishedProducts, ArrayList<UUID> likedProducts, ArrayList<UUID> mutedUsers, ArrayList<UUID> blockedUsers) {
         this.userUUID = userUUID;
         this.username = username;
@@ -74,7 +82,7 @@ public class User implements Serializable {
         this.blockedUsers = blockedUsers;
     }
 
-    private String toBase64String () {
+    public String toBase64String () {
         Base64.Encoder encoder = Base64.getEncoder();
         try (
             ByteArrayOutputStream bytesOut = new ByteArrayOutputStream();
@@ -89,7 +97,7 @@ public class User implements Serializable {
         return "";
     }
 
-    public static User fromBase64String (String encodedUser) {
+    public static User createFromBase64String (String encodedUser) {
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] decodedBytes = decoder.decode(encodedUser);
         try (
@@ -105,5 +113,9 @@ public class User implements Serializable {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static User getUserFromUsername (String username) {
+        DynamoDBHandler.getItem(User.usersTableName, )
     }
 }

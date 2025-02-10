@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class Product implements Serializable {
+
+    public static String productsTableName = "agora_products";
+
     private UUID productUUID;
     private String title;
     private Instant listingTime;
