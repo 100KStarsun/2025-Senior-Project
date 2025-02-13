@@ -1,4 +1,4 @@
-# [insertProductNameHere]
+# Agora
 
 ## CSDS 395 - Senior Project Spring 2025
 
