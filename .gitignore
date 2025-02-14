@@ -22,3 +22,12 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# local.properties should be unique to each system, we need to keep it out of the repo
+local.properties
+
+# the gradle wrapper jar should be included to ensure we are all using the same version
+!./gradle/wrapper/gradle-wrapper.jar
+
+# ignore the build folder (i believe this will get bloated quickly)
+./app/build
