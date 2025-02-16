@@ -1,48 +1,41 @@
-
 name: Agora CI
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: ["main", "dev", "ui_pages"]
-  
+    branches:
+      - ui_pages
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - ui_pages
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
+    name: Build Android App
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - uses: actions/checkout@v3
-
-      - name: Set up JDK
-
-        uses: actions/setup-java@v3
-
+      - name: Set Up JDK
+        uses: actions/setup-java@v8
         with:
-
+          distribution: 'temurin'
           java-version: '17'
 
-      - name: Build and Test
+      - name: Set Up Android SDK
+        uses: android-actions/setup-android@v3
 
-        run: |
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
 
-          gradle assembleRelease
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
 
-          gradle connectedAndroidTest
-
-      - name: Sign APK
-
-        run: |
-
-          gradle assembleRelease
-
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
