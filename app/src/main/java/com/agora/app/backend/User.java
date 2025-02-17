@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import dynamoDB.DynamoDBHandler;
+import com.agora.app.backend.dynamodb.DynamoDBHandler;
 import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
 
 public class User implements Serializable {
@@ -119,4 +119,12 @@ public class User implements Serializable {
         Map<String, AttributeValue> userItem = DynamoDBHandler.getItem(User.usersTableName, User.usersTableKey, username);
 
     }
+
+    public void addChat (String otherUsername, int chatOrder) {
+    }
+
+    public TreeMap<String, ArrayList<UUID>> getChats () {
+        return chats;
+    }
+
 }

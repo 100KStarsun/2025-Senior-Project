@@ -40,6 +40,6 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1')
     
     platform(implementation('software.amazon.awssdk:bom:2.30.21'))
-    
     implementation('software.amazon.awssdk:dynamodb-enhanced')
+    implementation('software.amazon.awssdk:dynamodb')
 }
