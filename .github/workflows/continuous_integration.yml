@@ -3,10 +3,10 @@ name: Agora CI
 on:
   push:
     branches:
-      - ui_pages
+      - dev
   pull_request:
     branches:
-      - ui_pages
+      - dev
 
 jobs:
   build:
