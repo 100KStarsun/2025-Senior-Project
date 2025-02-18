@@ -1,4 +1,4 @@
-# [insertProductNameHere]
+# Agora
 
 ## CSDS 395 - Senior Project Spring 2025
 
@@ -64,3 +64,8 @@ Coding Conventions:
 
 - Try to use constants that are well defined where possible
     - This makes it *much* easier to figure out what code does, and it helps whoever is looking at your code debug and understand why you made the choices you did
+ 
+### Documentation
+
+Documentation for this project is generated using Doxygen. Our project site can be viewed at:
+https://codedocs.xyz/100KStarsun/2025-Senior-Project/index.html

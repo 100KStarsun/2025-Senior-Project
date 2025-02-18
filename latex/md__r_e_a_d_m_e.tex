@@ -1,0 +1,95 @@
+\chapter{\mbox{[}insert\+Product\+Name\+Here\mbox{]}}
+\hypertarget{md__r_e_a_d_m_e}{}\label{md__r_e_a_d_m_e}\index{\mbox{[}insertProductNameHere\mbox{]}@{[insertProductNameHere]}}
+\label{md__r_e_a_d_m_e_autotoc_md0}%
+\Hypertarget{md__r_e_a_d_m_e_autotoc_md0}%
+\hypertarget{md__r_e_a_d_m_e_autotoc_md1}{}\doxysection{\texorpdfstring{CSDS 395 -\/ Senior Project Spring 2025}{CSDS 395 -\/ Senior Project Spring 2025}}\label{md__r_e_a_d_m_e_autotoc_md1}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md2}{}\doxysubsection{\texorpdfstring{Team Members}{Team Members}}\label{md__r_e_a_d_m_e_autotoc_md2}
+
+\begin{DoxyItemize}
+\item Adriana
+\item Avalon
+\item Jaiden
+\item Jennifer
+\item Levi
+\item Sarah
+\item Stephen
+\end{DoxyItemize}
+
+\DoxyHorRuler{0}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md4}{}\doxysubsection{\texorpdfstring{Versioning and Dependencies}{Versioning and Dependencies}}\label{md__r_e_a_d_m_e_autotoc_md4}
+
+\begin{DoxyItemize}
+\item Java 21.\+0.\+6
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md5}{}\doxysubsection{\texorpdfstring{Repository Guidelines}{Repository Guidelines}}\label{md__r_e_a_d_m_e_autotoc_md5}
+Naming Conventions\+:
+
+
+\begin{DoxyItemize}
+\item Classes and Interfaces\+: Pascal\+Case
+\begin{DoxyItemize}
+\item Use capital letters at the start of each word, {\bfseries{including}} the first word of the Class or Interface.
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{public}\ Interface\ Cat\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Add\ cat-\/related\ methods\ here}}
+\DoxyCodeLine{\}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{public}\ Class\ MaineCoone\ implements\ Cat\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ Act\ like\ a\ cat}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+\item Methods and Variables\+: camel\+Case
+\begin{DoxyItemize}
+\item Use capital letters at the start of each word, {\bfseries{exlcuding}} the first word of the Method or Variable.
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{private}\ String\ catName;}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keyword}{private}\ shedEverywhere(\textcolor{keywordtype}{boolean}\ shouldAlsoMakeHairball)\ \{}
+\DoxyCodeLine{\ \ \ \ \textcolor{comment}{//\ make\ a\ mess}}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+
+\item Constants\+: SCREAMING\+\_\+\+SNAKE\+\_\+\+CASE
+\begin{DoxyItemize}
+\item Use all caps, with words seperated by underscores.
+\end{DoxyItemize}
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{keyword}{public}\ \textcolor{keyword}{static}\ \textcolor{keyword}{final}\ \textcolor{keywordtype}{int}\ MAXIMUM\_CATS\_IN\_HOUSEHOLD\ =\ 7}
+
+\end{DoxyCode}
+
+\end{DoxyItemize}
+
+Repo Conventions\+:
+
+
+\begin{DoxyItemize}
+\item Utilize unique branches for each unique feature; do not re-\/use a branch that was previously merged
+\item All branches should be derived from {\ttfamily dev}, and all branches should merge back into {\ttfamily dev}.
+\begin{DoxyItemize}
+\item {\ttfamily dev} will be merged into {\ttfamily main} by Levi or Avalon on a weekly basis, by 11\+:30 AM on the Tuesday of each sprint.
+\begin{DoxyItemize}
+\item At this point, {\ttfamily dev} and {\ttfamily main} will be identical.
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Coding Conventions\+:
+
+
+\begin{DoxyItemize}
+\item Try to use constants that are well defined where possible
+\begin{DoxyItemize}
+\item This makes it {\itshape much} easier to figure out what code does, and it helps whoever is looking at your code debug and understand why you made the choices you did 
+\end{DoxyItemize}
+\end{DoxyItemize}
