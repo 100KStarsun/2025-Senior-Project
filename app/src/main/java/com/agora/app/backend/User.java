@@ -14,17 +14,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import com.agora.app.backend.dynamodb.DynamoDBHandler;
-import software.amazon.awssdk.services.dynamodb.model.AttributeValue;
+import com.agora.app.dynamodb.DynamoDBHandler;
 
 public class User implements Serializable {
 
-    public static String usersTableName = "agora_users";
-    public static String passwordsTableName = "agora_passwords";
-    public static String usersTableKey = "username";
-
     private String username;
-    private String password;
+    private Password password;
     private String preferredFirstName;
     private String legalFirstName;
     private String lastName;
@@ -116,8 +111,7 @@ public class User implements Serializable {
     }
 
     public static User getUserFromUsername (String username) {
-        Map<String, AttributeValue> userItem = DynamoDBHandler.getItem(User.usersTableName, User.usersTableKey, username);
-
+        return DynamoDBHandler.getUserItem(username);
     }
 
     public void addChat (String otherUsername, int chatOrder) {
