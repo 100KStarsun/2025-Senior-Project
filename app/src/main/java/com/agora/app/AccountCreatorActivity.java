@@ -30,6 +30,17 @@ public class AccountCreatorActivity extends AppCompatActivity {
                 String username = user.getText().toString();
                 String password = pass.getText().toString();
 
+                // Check if username or password fields are empty
+                if (username.isEmpty()) {
+                    Toast.makeText(AccountCreatorActivity.this, "Username cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;  
+                }
+
+                if (password.isEmpty()) {
+                    Toast.makeText(AccountCreatorActivity.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;  
+                }
+
                 if (password.equals(confirm_pass.getText().toString())) {
                     // Code to handle valid input, e.g., add user to database
 
