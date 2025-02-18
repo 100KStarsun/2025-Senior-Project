@@ -18,10 +18,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set Up JDK
-        uses: actions/setup-java@v8
+        uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
 
       - name: Set Up Android SDK
         uses: android-actions/setup-android@v3
