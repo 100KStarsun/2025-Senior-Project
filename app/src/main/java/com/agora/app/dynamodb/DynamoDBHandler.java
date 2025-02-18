@@ -33,7 +33,7 @@ public class DynamoDBHandler {
         try {
             DynamoDbEnhancedClient ddbec = DynamoDbEnhancedClient.create();
             DynamoDbTable<User> userTable = ddbec.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(User.class));
-            return ddbec.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username));
+            return userTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -44,8 +44,8 @@ public class DynamoDBHandler {
     public static Password getPasswordItem (String hash) {
         try {
             DynamoDbEnhancedClient ddbec = DynamoDbEnhancedClient.create();
-            DynamoDbTable<Password> passwordTable = ddbec.table(DynamoDBHandler.passwordsTableNameTableName, TableSchema.fromBean(Password.class));
-            return ddbec.getItem(DynamoDBHandler.makeRequestFromPartitionKey(hash));
+            DynamoDbTable<Password> passwordTable = ddbec.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(Password.class));
+            return passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(hash));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -53,11 +53,11 @@ public class DynamoDBHandler {
         }
     }
 
-    public static User getChatItem (String otherUsername) {
+    public static Chat getChatItem (String otherUsername) {
         try {
             DynamoDbEnhancedClient ddbec = DynamoDbEnhancedClient.create();
-            DynamoDbTable<Chat> chatTable = ddbec.table(DynamoDBHandler.chatsTableNamesTableName, TableSchema.fromBean(Chat.class));
-            return ddbec.getItem(DynamoDBHandler.makeRequestFromPartitionKey(otherUsername));
+            DynamoDbTable<Chat> chatTable = ddbec.table(DynamoDBHandler.chatsTableName, TableSchema.fromBean(Chat.class));
+            return chatTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(otherUsername));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -65,11 +65,11 @@ public class DynamoDBHandler {
         }
     }
 
-    public static User getProductItem (String productUUID) {
+    public static Product getProductItem (String productUUID) {
         try {
             DynamoDbEnhancedClient ddbec = DynamoDbEnhancedClient.create();
-            DynamoDbTable<User> productTable = ddbec.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(Product.class));
-            return ddbec.getItem(DynamoDBHandler.makeRequestFromPartitionKey(productUUID));
+            DynamoDbTable<Product> productTable = ddbec.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(Product.class));
+            return productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(productUUID));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
