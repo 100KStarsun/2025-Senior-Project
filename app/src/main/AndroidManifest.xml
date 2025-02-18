@@ -26,6 +26,7 @@
         <activity android:name=".MarketplaceActivity"/>
         <activity android:name=".SwipingActivity"/>
         <activity android:name=".UserInfoActivity"/>
+        <activity android:name=".MainActivity"/>
     </application>
 
 </manifest>

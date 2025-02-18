@@ -1,5 +1,6 @@
+package com.agora.app;
 import androidx.appcompat.app.AppCompatActivity;
-//import com.agroa.app.MainActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -30,7 +31,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (caseMailAuth(EMAIL_TEXT)) {
                     // Valid case email
                     Toast.makeText(RegisterActivity.this, "Email verified!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class); 
                     intent.putExtra("email", EMAIL_TEXT);
                     startActivity(intent);
                 } else {
