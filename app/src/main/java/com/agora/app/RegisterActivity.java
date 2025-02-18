@@ -20,6 +20,15 @@ public class RegisterActivity extends AppCompatActivity {
         EditText email = findViewById(R.id.email_text_id);
         Button button = findViewById(R.id.button_id);
 
+        Button buttonLogin = findViewById(R.id.buttonLoginActivity);
+
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class); 
+                startActivity(intent);
+            }
+        });
+    
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
