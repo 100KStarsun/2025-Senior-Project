@@ -3,9 +3,11 @@ name: Agora CI
 on:
   push:
     branches:
+      - main
       - dev
   pull_request:
     branches:
+      - main
       - dev
 
 jobs:
@@ -29,7 +31,9 @@ jobs:
       - name: Cache Gradle Dependencies
         uses: actions/cache@v4
         with:
-          path: ~/.gradle/caches
+          path: |   
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
