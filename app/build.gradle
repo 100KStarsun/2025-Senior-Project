@@ -6,6 +6,12 @@ android {
     namespace = "com.agora.app"
     compileSdk = 35
 
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java']
+        }
+    }
+
     defaultConfig {
         applicationId = "com.agora.app"
         minSdk = 26
