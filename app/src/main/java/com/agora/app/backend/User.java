@@ -37,13 +37,12 @@ public class User implements Serializable {
     private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
 
     // this constructor is for when a new user registers
-    public User (String username, String preferredFirstName, String legalFirstName, String lastName, String email, String university, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup) {
+    public User (String username, String preferredFirstName, String legalFirstName, String lastName, String email, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup) {
         this.username = username;
         this.preferredFirstName = preferredFirstName;
         this.legalFirstName = legalFirstName;
         this.lastName = lastName;
         this.email = email;
-        this.university = university;
         this.timeCreated = Instant.now();
         numSwaps = 0;
         rating = 0;
