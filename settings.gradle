@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = 'Agora'
+rootProject.name = "2025-Senior-Project"
 include(':app')
  
