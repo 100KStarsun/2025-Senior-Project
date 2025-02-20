@@ -3,6 +3,7 @@ package com.agora.app.dynamodb;
 import com.agora.app.backend.*;
 
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
@@ -23,10 +24,16 @@ public class DynamoDBHandler {
         return GetItemEnhancedRequest.builder().key(Key.builder().partitionValue(partitionKey).build()).build();
     }
 
+    public static DynamoDbEnhancedClient makeDynamoClient () {
+        DynamoDbClient basicClient = DynamoDbClient.builder().region(awsRegion).build();
+        return DynamoDbEnhancedClient.builder().dynamoDbClient(basicClient).build();
+    }
+
     public static User getUserItem (String username) {
         try {
-            DynamoDbEnhancedClient dynamoEnhancedClient = DynamoDbEnhancedClient.create();
-            DynamoDbTable<User> userTable = dynamoEnhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(User.class));
+
+            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
+            DynamoDbTable<User> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(User.class));
             return userTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
@@ -35,10 +42,21 @@ public class DynamoDBHandler {
         }
     }
 
+    public static void putUserItem (User user) {
+        try {
+            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
+            DynamoDbTable<User> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(User.class));
+            userTable.putItem(user);
+        } catch (DynamoDbException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static Password getPasswordItem (String hash) {
         try {
-            DynamoDbEnhancedClient dynamoEnhancedClient = DynamoDbEnhancedClient.create();
-            DynamoDbTable<Password> passwordTable = dynamoEnhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(Password.class));
+            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
+            DynamoDbTable<Password> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(Password.class));
             return passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(hash));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
@@ -47,10 +65,21 @@ public class DynamoDBHandler {
         }
     }
 
+    public static void putPasswordItem (Password password) {
+        try {
+            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
+            DynamoDbTable<Password> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(Password.class));
+            passwordTable.putItem(password);
+        } catch (DynamoDbException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public static Chat getChatItem (String otherUsername) {
         try {
-            DynamoDbEnhancedClient dynamoEnhancedClient = DynamoDbEnhancedClient.create();
-            DynamoDbTable<Chat> chatTable = dynamoEnhancedClient.table(DynamoDBHandler.chatsTableName, TableSchema.fromBean(Chat.class));
+            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
+            DynamoDbTable<Chat> chatTable = enhancedClient.table(DynamoDBHandler.chatsTableName, TableSchema.fromBean(Chat.class));
             return chatTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(otherUsername));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
@@ -61,8 +90,8 @@ public class DynamoDBHandler {
 
     public static Product getProductItem (String productUUID) {
         try {
-            DynamoDbEnhancedClient dynamoEnhancedClient = DynamoDbEnhancedClient.create();
-            DynamoDbTable<Product> productTable = dynamoEnhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(Product.class));
+            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
+            DynamoDbTable<Product> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(Product.class));
             return productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(productUUID));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
