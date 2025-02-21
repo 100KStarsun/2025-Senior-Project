@@ -1,10 +1,5 @@
 package com.agora.app.backend;
 
-/**
- * https://stackoverflow.com/questions/13291076/java-enum-why-use-tostring-instead-of-name
- * this is why there's more than just capital letters here lol
- * -- Levi
- */
 public enum PaymentMethods {
     PAYPAL("PayPal"),
     ZELLE("Zelle"),

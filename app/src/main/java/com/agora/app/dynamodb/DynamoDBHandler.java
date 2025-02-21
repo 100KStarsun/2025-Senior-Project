@@ -31,10 +31,9 @@ public class DynamoDBHandler {
 
     public static User getUserItem (String username) {
         try {
-
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<User> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(User.class));
-            return userTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username));
+            DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
+            return User.createFromBase64String(userTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username)).getUserBase64());
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -45,8 +44,8 @@ public class DynamoDBHandler {
     public static void putUserItem (User user) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<User> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(User.class));
-            userTable.putItem(user);
+            DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
+            userTable.putItem(new UserWrapper(user));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -56,8 +55,8 @@ public class DynamoDBHandler {
     public static Password getPasswordItem (String hash) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<Password> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(Password.class));
-            return passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(hash));
+            DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
+            return Password.createFromBase64String(passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(hash)).getPasswordBase64());
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();
@@ -68,8 +67,8 @@ public class DynamoDBHandler {
     public static void putPasswordItem (Password password) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<Password> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(Password.class));
-            passwordTable.putItem(password);
+            DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
+            passwordTable.putItem(new PasswordWrapper(password));
         } catch (DynamoDbException e) {
             System.err.println(e.getMessage());
             e.printStackTrace();

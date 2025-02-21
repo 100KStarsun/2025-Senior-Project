@@ -32,6 +32,7 @@ public class Chat implements Serializable {
         this.messages = messages;
     }
 
+    // TODO: Actually make the chats work
     private Chat addMessage (Message msg) {
         if (this.isMessageGoingToFitInCurrentChat(msg)) {
             this.messages.add(msg);
@@ -39,8 +40,8 @@ public class Chat implements Serializable {
         }
         Chat newChat = new Chat(this.username1, this.username2, Chat.getOrder(this.username1, this.username2));
         newChat.messages.add(msg); //safe to force this because we know this message will fit - though this means we need to enforce reasonable message limits
-        User.getUserFromUsername(this.username1).addChat(this.username2, newChat.order);
-        User.getUserFromUsername(this.username2).addChat(this.username1, newChat.order);
+        //User.getUserFromUsername(this.username1).addChat(this.username2, newChat.order);
+        //User.getUserFromUsername(this.username2).addChat(this.username1, newChat.order);
         return newChat;
     }
 
