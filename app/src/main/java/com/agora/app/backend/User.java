@@ -36,26 +36,6 @@ public class User implements Serializable {
     private ArrayList<UUID> mutedUsers; // a list of UUIDs of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
     private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
 
-
-    public User () {
-        this.username = "";
-        this.preferredFirstName = "";
-        this.legalFirstName = "";
-        this.lastName = "";
-        this.email = "";
-        this.timeCreated = Instant.now();
-        this.numSwaps = 0;
-        this.rating = 0;
-        this.paymentMethodsSetup = createDefaultPaymentMethods();
-        this.chats = new TreeMap<>();
-        this.draftedProducts = new ArrayList<>();
-        this.publishedProducts = new ArrayList<>();
-        this.likedProducts = new ArrayList<>();
-        this.mutedUsers = new ArrayList<>();
-        this.blockedUsers = new ArrayList<>();
-
-    }
-
     // this constructor is for when a new user registers
     public User (String username, String preferredFirstName, String legalFirstName, String lastName, String email, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup) {
         this.username = username;
@@ -73,27 +53,6 @@ public class User implements Serializable {
         this.likedProducts = new ArrayList<>();
         this.mutedUsers = new ArrayList<>();
         this.blockedUsers = new ArrayList<>();
-    }
-
-    // this constructor is for when we're re-creating a user from the db
-    // maybe actually, it's possible that User.createFromBase64String() does this already and this constructor isn't actually needed
-    public User (String username, String preferredFirstName, String legalFirstName, String lastName, String email, String university, Instant timeCreated, int numSwaps, short rating, EnumMap<PaymentMethods, Boolean> paymentMethodsSetup, TreeMap<String, ArrayList<UUID>> chats, ArrayList<UUID> draftedProducts, ArrayList<UUID> publishedProducts, ArrayList<UUID> likedProducts, ArrayList<UUID> mutedUsers, ArrayList<UUID> blockedUsers) {
-        this.username = username;
-        this.preferredFirstName = preferredFirstName;
-        this.legalFirstName = legalFirstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.university = university;
-        this.timeCreated = timeCreated;
-        this.numSwaps = numSwaps;
-        this.rating = rating;
-        this.paymentMethodsSetup = paymentMethodsSetup;
-        this.chats = chats;
-        this.draftedProducts = draftedProducts;
-        this.publishedProducts = publishedProducts;
-        this.likedProducts = likedProducts;
-        this.mutedUsers = mutedUsers;
-        this.blockedUsers = blockedUsers;
     }
 
     private static EnumMap<PaymentMethods, Boolean> createDefaultPaymentMethods () {

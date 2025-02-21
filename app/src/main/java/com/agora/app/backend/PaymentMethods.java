@@ -7,7 +7,9 @@ public enum PaymentMethods {
     VENMO("Venmo"),
     APPLEPAY("Apple Pay"),
     SAMSUNGPAY("Samsung Pay"),
-    GOOGLEPAY("Google Pay");
+    GOOGLEPAY("Google Pay"),
+    CASH("Cash"),
+    CHECK("Check");
 
     private final String paymentMethodDescription;
 
