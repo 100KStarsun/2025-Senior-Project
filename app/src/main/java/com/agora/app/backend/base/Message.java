@@ -1,7 +1,4 @@
-package com.agora.app.backend;
-
-import software.amazon.awssdk.profiles.ProfileFile;
-import software.amazon.awssdk.utils.Either;
+package com.agora.app.backend.base;
 
 import java.io.Serializable;
 import java.time.Instant;

@@ -1,7 +1,8 @@
 package com.agora.app;
-import com.agora.app.backend.Password;
-import com.agora.app.backend.PaymentMethods;
-import com.agora.app.backend.User;
+import com.agora.app.backend.LoginHandler;
+import com.agora.app.backend.base.Password;
+import com.agora.app.backend.base.PaymentMethods;
+import com.agora.app.backend.base.User;
 import com.agora.app.dynamodb.DynamoDBHandler;
 import org.junit.Test;
 
@@ -29,24 +30,19 @@ public class TestClass {
         }
         User demoUser = new User(caseID, preferredFirst, legalFirst, last, caseID + caseEmailDomain, paymentMethodsSetup);
 
-        final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
-        final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-        String sha3Hex = bytesToHex(hashbytes);
-        Password passShaHex = new Password(sha3Hex, caseID);
+        Password passShaHex = new Password(password, caseID);
 
         DynamoDBHandler.putUserItem(demoUser);
+        DynamoDBHandler.putPasswordItem(passShaHex);
         User user = DynamoDBHandler.getUserItem(caseID);
-        assert user != null;
+        assert !user.toString().isEmpty();
     }
-    private static String bytesToHex(byte[] hash) {
-        StringBuilder hexString = new StringBuilder(2 * hash.length);
-        for (int i = 0; i < hash.length; i++) {
-            String hex = Integer.toHexString(0xff & hash[i]);
-            if(hex.length() == 1) {
-                hexString.append('0');
-            }
-            hexString.append(hex);
-        }
-        return hexString.toString();
+
+    @Test
+    public void testLoginHandler () throws NoSuchAlgorithmException {
+        String trueUsername = "lrl47";
+        String attemptedUsername = "lrl47";
+        String attemptedPassword = "abc123";
+        assert LoginHandler.login(attemptedUsername, attemptedPassword);
     }
 }

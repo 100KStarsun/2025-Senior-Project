@@ -1,7 +1,9 @@
 package com.agora.app.dynamodb;
 
-import com.agora.app.backend.*;
-
+import com.agora.app.backend.base.Chat;
+import com.agora.app.backend.base.Password;
+import com.agora.app.backend.base.Product;
+import com.agora.app.backend.base.User;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;

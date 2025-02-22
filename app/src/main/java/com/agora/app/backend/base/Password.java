@@ -1,18 +1,25 @@
-package com.agora.app.backend;
+package com.agora.app.backend.base;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class Password {
     private String hash;
     private String username;
 
-    public Password (String hash, String username) {
-        this.hash = hash;
+    public Password (String password, String username) {
+        try {
+            final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
+            final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            this.hash = Password.bytesToHex(hashbytes);
+        } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
         this.username = username;
     }
 
@@ -29,11 +36,7 @@ public class Password {
         byte[] decodedBytes = decoder.decode(encodedPassword);
         try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
             return (Password) objectIn.readObject();
-        } catch (IOException e) {
-            System.err.println(e);
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            System.err.println(e);
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
         return null;
@@ -45,9 +48,20 @@ public class Password {
             objectOut.writeObject(this);
             return encoder.encodeToString(bytesOut.toByteArray());
         } catch (IOException e) {
-            System.err.println(e);
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static String bytesToHex(byte[] hash) {
+        StringBuilder hexString = new StringBuilder(2 * hash.length);
+        for (int i = 0; i < hash.length; i++) {
+            String hex = Integer.toHexString(0xff & hash[i]);
+            if(hex.length() == 1) {
+                hexString.append('0');
+            }
+            hexString.append(hex);
+        }
+        return hexString.toString();
     }
 }

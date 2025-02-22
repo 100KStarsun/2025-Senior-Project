@@ -1,6 +1,6 @@
 package com.agora.app.dynamodb;
 
-import com.agora.app.backend.Password;
+import com.agora.app.backend.base.Password;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
@@ -21,10 +21,11 @@ public class PasswordWrapper {
     }
 
     @DynamoDbPartitionKey
-    @DynamoDbAttribute("hash")
+    @DynamoDbAttribute("hashcode")
     public String getHash () {
         return hash;
     }
+
     @DynamoDbAttribute("base64")
     public String getPasswordBase64 () {
         return passwordBase64;

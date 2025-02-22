@@ -1,4 +1,4 @@
-package com.agora.app.backend;
+package com.agora.app.backend.base;
 
 import java.io.Serializable;
 import java.util.ArrayList;

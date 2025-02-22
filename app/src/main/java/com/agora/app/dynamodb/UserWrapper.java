@@ -1,6 +1,6 @@
 package com.agora.app.dynamodb;
 
-import com.agora.app.backend.User;
+import com.agora.app.backend.base.User;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
