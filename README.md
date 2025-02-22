@@ -142,3 +142,8 @@ This table's key is the UUID field of an item or service. The sort key is the na
 - `is_accepting_cash(Boolean)`: whether or not the user will accept cash for this product
 - `is_tradable(Boolean)`: whether or not the user is willing to trade for another item
 - `past_buyers(List)`: A list of UUIDs of previous buyers
+
+### Documentation
+
+Documentation for this project is generated using Doxygen. Our project site can be viewed at:
+https://codedocs.xyz/100KStarsun/2025-Senior-Project/index.html
