@@ -75,8 +75,8 @@ public class User implements Serializable {
         byte[] decodedBytes = decoder.decode(encodedUser);
         try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
             return (User) objectIn.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -86,9 +86,8 @@ public class User implements Serializable {
         try (ByteArrayOutputStream bytesOut = new ByteArrayOutputStream(); ObjectOutputStream objectOut = new ObjectOutputStream(bytesOut)) {
             objectOut.writeObject(this);
             return encoder.encodeToString(bytesOut.toByteArray());
-        } catch (IOException e) {
-            System.err.println(e);
-            e.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
         return null;
     }
@@ -97,7 +96,7 @@ public class User implements Serializable {
     public boolean equals (Object obj) {
         try {
             return this.toString().equals(((User) obj).toString());
-        } catch (ClassCastException e) {
+        } catch (ClassCastException ex) {
             return false;
         }
     }
@@ -107,10 +106,10 @@ public class User implements Serializable {
         return "Username: " + this.username + ", Name: " + this.preferredFirstName + " " + this.lastName + " (Legal First Name: " + this.legalFirstName + "), Rating: " + this.rating + ", Swaps: " + this.numSwaps + ", Member since: " + this.timeCreatedToString();
     }
 
-    // will output string in the form DD MMMM YYYY
     public String timeCreatedToString () {
         Calendar cal = new Calendar.Builder().setInstant(this.timeCreated).build();
-        return cal.getDisplayName(Calendar.DAY_OF_MONTH, Calendar.LONG_FORMAT, User.locale) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG_FORMAT, User.locale) + " " + cal.getDisplayName(Calendar.YEAR, Calendar.LONG_FORMAT, User.locale);
+        // will output string in the form DD MMMM YYYY
+        return cal.get(Calendar.DAY_OF_MONTH) + " " + cal.getDisplayName(Calendar.MONTH, Calendar.LONG_FORMAT, User.locale) + " " + cal.get(Calendar.YEAR);
     }
 
     public String getUsername () { return username; }

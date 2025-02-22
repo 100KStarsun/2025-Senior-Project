@@ -5,12 +5,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
-public class Password {
+public class Password implements Serializable {
     private String hash;
     private String username;
 
@@ -63,5 +64,10 @@ public class Password {
             hexString.append(hex);
         }
         return hexString.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "Hash: " + this.hash + "\nUsername: " + this.username;
     }
 }

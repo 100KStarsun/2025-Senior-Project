@@ -39,5 +39,4 @@ public class UserWrapper {
     public void setUserBase64 (String userBase64) {
         this.userBase64 = userBase64;
     }
-
 }

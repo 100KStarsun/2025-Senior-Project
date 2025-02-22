@@ -7,6 +7,7 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbParti
 
 @DynamoDbBean
 public class PasswordWrapper {
+
     private String hash;
     private String passwordBase64;
 
@@ -21,7 +22,7 @@ public class PasswordWrapper {
     }
 
     @DynamoDbPartitionKey
-    @DynamoDbAttribute("hashcode")
+    @DynamoDbAttribute("hash")
     public String getHash () {
         return hash;
     }

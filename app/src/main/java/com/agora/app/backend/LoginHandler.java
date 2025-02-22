@@ -1,5 +1,6 @@
 package com.agora.app.backend;
 
+import com.agora.app.backend.base.Password;
 import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.nio.charset.StandardCharsets;
@@ -12,8 +13,20 @@ public class LoginHandler {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-            return DynamoDBHandler.getPasswordItem(bytesToHex(hashbytes)).getUsername().equals(username);
-        } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
+            Password pw = DynamoDBHandler.getPasswordItem(bytesToHex(hashbytes));
+            if (pw.getUsername().equals(username)) {
+                return true;
+            } else {
+                // this case is when both the username and password provided exist, but the username associated with the password is not correct
+                throw new LoginException("Incorrect username or password.");
+            }
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println(ex.getMessage());
+            ex.printStackTrace();
+        } catch (NullPointerException ex) {
+            // this case is when either the username or password provided do not exist in the database
+            throw new LoginException("Incorrect username or password.");
+        }
         return false;
     }
 

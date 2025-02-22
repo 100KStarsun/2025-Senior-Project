@@ -31,14 +31,14 @@ public class DynamoDBHandler {
         return DynamoDbEnhancedClient.builder().dynamoDbClient(basicClient).build();
     }
 
-    public static User getUserItem (String username) {
+    public static User getUserItem (String username) throws NullPointerException {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
             return User.createFromBase64String(userTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username)).getUserBase64());
-        } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        } catch (DynamoDbException ex) {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
             return null;
         }
     }
@@ -48,20 +48,20 @@ public class DynamoDBHandler {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
             userTable.putItem(new UserWrapper(user));
-        } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        } catch (DynamoDbException ex) {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
-    public static Password getPasswordItem (String hash) {
+    public static Password getPasswordItem (String hash) throws NullPointerException {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
             return Password.createFromBase64String(passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(hash)).getPasswordBase64());
-        } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        } catch (DynamoDbException ex) {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
             return null;
         }
     }
@@ -71,32 +71,32 @@ public class DynamoDBHandler {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
             passwordTable.putItem(new PasswordWrapper(password));
-        } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        } catch (DynamoDbException ex) {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
-    public static Chat getChatItem (String otherUsername) {
+    public static Chat getChatItem (String otherUsername) throws NullPointerException {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<Chat> chatTable = enhancedClient.table(DynamoDBHandler.chatsTableName, TableSchema.fromBean(Chat.class));
             return chatTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(otherUsername));
-        } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        } catch (DynamoDbException ex) {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
             return null;
         }
     }
 
-    public static Product getProductItem (String productUUID) {
+    public static Product getProductItem (String productUUID) throws NullPointerException {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<Product> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(Product.class));
             return productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(productUUID));
-        } catch (DynamoDbException e) {
-            System.err.println(e.getMessage());
-            e.printStackTrace();
+        } catch (DynamoDbException ex) {
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();
             return null;
         }
     }
