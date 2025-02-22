@@ -26,6 +26,8 @@ replay_pid*
 
 .kotlin/
 
+.vscode/settings.json
+
 # Gradle Files
 .gradle
 build/
