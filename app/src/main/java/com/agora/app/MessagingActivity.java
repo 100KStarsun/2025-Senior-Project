@@ -3,16 +3,15 @@ package com.agora.app;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.view.MenuItem;
 
-public class UserInfoActivity extends AppCompatActivity {
+
+public class MessagingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_info);
+        setContentView(R.layout.activity_messaging);
 
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
@@ -20,7 +19,6 @@ public class UserInfoActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_messaging) {
-                startActivity(new Intent(this, MessagingActivity.class));
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
@@ -32,6 +30,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
+                startActivity(new Intent(this, UserInfoActivity.class));
                 return true;
             }
             return false;

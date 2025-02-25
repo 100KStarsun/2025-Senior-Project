@@ -3,36 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#A6D2E6"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="725dp"
         android:text="User Information"
         android:textSize="40sp" />
 
-    <Button
-        android:id="@+id/buttonMarketplace"
-        android:layout_width="wrap_content"
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_bar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:backgroundTint="#013071"
-        android:text="Marketplace"
-        android:textColor="#FFFFFF" />
-
-    <Button
-        android:id="@+id/buttonLanding"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Landing Page" />
-
-    <Button
-        android:id="@+id/buttonSwiping"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Swipe" />
+        android:background="?android:attr/windowBackground"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        app:menu="@menu/nav_bar" />
 
 </LinearLayout>

@@ -29,6 +29,7 @@
         <activity android:name=".MainActivity"/>
         <activity android:name=".AccountCreatorActivity"/>
         <activity android:name=".LoginActivity"/>
+        <activity android:name=".MessagingActivity"/>
       
     </application>
 

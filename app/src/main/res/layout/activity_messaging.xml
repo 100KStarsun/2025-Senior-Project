@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Marketplace"
+        android:text="Messaging Page"
         android:textSize="40sp"
         android:layout_marginBottom="725dp"/>
 

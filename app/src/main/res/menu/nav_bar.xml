@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_messaging"
+        android:icon="@drawable/icon_messaging"
+        android:title="Messaging" />
+
+    <item
+        android:id="@+id/nav_marketplace"
+        android:icon="@drawable/icon_marketplace"
+        android:title="Marketplace" />
+
+    <item
+        android:id="@+id/nav_swiping"
+        android:icon="@drawable/icon_swiping"
+        android:title="Swiping" />
+
+    <item
+        android:id="@+id/nav_user_info"
+        android:icon="@drawable/icon_userinfo"
+        android:title="User Information" />
+
+</menu>
