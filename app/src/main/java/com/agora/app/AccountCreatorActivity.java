@@ -12,7 +12,11 @@ public class AccountCreatorActivity extends AppCompatActivity {
 
     //public static String USERNAME;
     //public static String PASSWORD;
-
+    /**
+     * @brief This method creates blah blah blah
+     * 
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
