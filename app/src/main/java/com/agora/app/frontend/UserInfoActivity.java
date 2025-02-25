@@ -1,16 +1,17 @@
-package com.agora.app;
+package com.agora.app.frontend;
 
+import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MarketplaceActivity extends AppCompatActivity {
+public class UserInfoActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_marketplace);
+        setContentView(R.layout.activity_user_info);
 
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
@@ -22,6 +23,7 @@ public class MarketplaceActivity extends AppCompatActivity {
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
+                startActivity(new Intent(this, MarketplaceActivity.class));
                 return true;
             }
             else if (itemId == R.id.nav_swiping) {
@@ -29,7 +31,6 @@ public class MarketplaceActivity extends AppCompatActivity {
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
-                startActivity(new Intent(this, UserInfoActivity.class));
                 return true;
             }
             return false;

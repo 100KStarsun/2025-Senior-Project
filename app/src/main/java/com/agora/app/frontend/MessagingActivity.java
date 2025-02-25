@@ -1,16 +1,17 @@
-package com.agora.app;
-
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+package com.agora.app.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import com.agora.app.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class SwipingActivity extends AppCompatActivity {
+
+public class MessagingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_swiping);
+        setContentView(R.layout.activity_messaging);
 
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
@@ -18,7 +19,6 @@ public class SwipingActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_messaging) {
-                startActivity(new Intent(this, MessagingActivity.class));
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
@@ -26,6 +26,7 @@ public class SwipingActivity extends AppCompatActivity {
                 return true;
             }
             else if (itemId == R.id.nav_swiping) {
+                startActivity(new Intent(this, SwipingActivity.class));
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
