@@ -52,6 +52,23 @@ Naming Conventions:
     ```java
     public static final int MAXIMUM_CATS_IN_HOUSEHOLD = 7
     ```
+Commenting Conventions:
+
+- Utilize javadoc comments for each method of a class
+- These will be parsed to be included in our documentation webpage
+
+- Example:
+  ```java
+    /**
+    * @brief This method determines whether a cat is shedding based on inputs
+    *
+    * @param hairy, whether the cat is hairy
+    * @return shedding, whether the cat is shedding
+    */
+    public boolean isShedding(boolean hairy) {
+        // method
+    }
+    ```
 
 Repo Conventions:
 
