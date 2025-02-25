@@ -1,5 +1,7 @@
 package com.agora.app;
 
+import com.agora.app.backend.LoginException;
+import com.agora.app.backend.LoginHandler;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,14 +42,20 @@ public class LoginActivity extends AppCompatActivity {
                     return;  
                 }
 
-                if (!password.isEmpty() && !username.isEmpty()) {
-                    // Code to confirm user is in our database
-
-                    Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
-                    startActivity(intent);
-                } else {
-                    // Inform the user the passwords don't match
-                    Toast.makeText(LoginActivity.this, "Username or password is incorrect", Toast.LENGTH_SHORT).show();
+                // Code to confirm user is in database, based on similar methods to being done in TestClass
+                else if (!password.isEmpty() && !username.isEmpty()) {
+                    try {
+                        boolean loginSuccessful = LoginHandler.login(username, password);
+                        if (loginSuccessful) {
+                            Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Error logging in. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    catch (LoginException e) {
+                        Toast.makeText(LoginActivity.this, "Username or password is incorrect", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

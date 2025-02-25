@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class LoginHandler {
 
-    public static boolean login (String username, String password) {
+    public static boolean login (String username, String password) throws LoginException {
         try {
             final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
