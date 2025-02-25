@@ -10,8 +10,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LoginActivity extends AppCompatActivity {
+import java.security.NoSuchAlgorithmException;
 
+public class LoginActivity extends AppCompatActivity {
 
 
     @Override
@@ -34,12 +35,12 @@ public class LoginActivity extends AppCompatActivity {
                 // Check if username or password fields are empty
                 if (username.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Username cannot be empty", Toast.LENGTH_SHORT).show();
-                    return;  
+                    return;
                 }
 
                 if (password.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
-                    return;  
+                    return;
                 }
 
                 // Code to confirm user is in database, based on similar methods to being done in TestClass
@@ -52,9 +53,10 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             Toast.makeText(LoginActivity.this, "Error logging in. Please try again.", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                    catch (LoginException e) {
+                    } catch (LoginException ex) {
                         Toast.makeText(LoginActivity.this, "Username or password is incorrect", Toast.LENGTH_SHORT).show();
+                    } catch (NoSuchAlgorithmException ex) {
+                        Toast.makeText(LoginActivity.this, "Internal Application Error (PASS_HASH_ERR)", Toast.LENGTH_SHORT).show();
                     }
                 }
             }

@@ -15,9 +15,11 @@ public class Password implements Serializable {
     private String hash;
     private String username;
 
+    public static final String hashAlgorithm = "SHA-256";
+
     public Password (String password, String username) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
+            final MessageDigest digest = MessageDigest.getInstance(Password.hashAlgorithm);
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             this.hash = Password.bytesToHex(hashbytes);
         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }

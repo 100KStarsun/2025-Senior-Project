@@ -8,6 +8,7 @@ import com.agora.app.dynamodb.DynamoDBHandler;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.EnumMap;
 
 public class TestClass {
@@ -57,7 +58,7 @@ public class TestClass {
      * try is excluded here so that if a LoginException gets thrown, the error is easier to pinpoint
      */
     @Test
-    public void testCorrectLogin () {
+    public void testCorrectLogin () throws NoSuchAlgorithmException {
         String attemptedUsername = "lrl47"; // this is correct
         String attemptedPassword = "abc123"; // this is correct
         assert LoginHandler.login(attemptedUsername, attemptedPassword);
@@ -67,7 +68,7 @@ public class TestClass {
      * Passes if we get a LoginException, fails if not. This is because the password is not correct and that causes .login() to throw a LoginException
      */
     @Test
-    public void testWrongLogin () {
+    public void testWrongLogin () throws NoSuchAlgorithmException {
         String attemptedUsername = "lrl47"; // this is a valid username
         String attemptedPassword = "123abc"; // this is not the correct password for the username provided
         try {
