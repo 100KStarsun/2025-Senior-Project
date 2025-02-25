@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (!password.isEmpty() && !username.isEmpty()) {
                     // Code to confirm user is in our database
 
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
                     startActivity(intent);
                 } else {
                     // Inform the user the passwords don't match

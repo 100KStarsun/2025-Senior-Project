@@ -45,7 +45,7 @@ public class AccountCreatorActivity extends AppCompatActivity {
                     // Code to handle valid input, e.g., add user to database
 
                     // Example: Navigate to the next screen
-                    Intent intent = new Intent(AccountCreatorActivity.this, MainActivity.class);
+                    Intent intent = new Intent(AccountCreatorActivity.this, UserInfoActivity.class);
                     startActivity(intent);
                 } else {
                     // Inform the user the passwords don't match
