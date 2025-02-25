@@ -11,10 +11,8 @@ public class SwipingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swiping);
-        Button buttonLanding = findViewById(R.id.buttonLanding);
         Button buttonUserInfo = findViewById(R.id.buttonUserInfo);
         Button buttonMarketplace = findViewById(R.id.buttonMarketplace);
-        buttonLanding.setOnClickListener(v -> startActivity(new Intent(SwipingActivity.this, MainActivity.class)));
         buttonUserInfo.setOnClickListener(v -> startActivity(new Intent(SwipingActivity.this, UserInfoActivity.class)));
         buttonMarketplace.setOnClickListener(v -> startActivity(new Intent(SwipingActivity.this, MarketplaceActivity.class)));
     }
