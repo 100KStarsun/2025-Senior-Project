@@ -62,10 +62,12 @@ Commenting Conventions:
     /**
     * @brief This method determines whether a cat is shedding based on inputs
     *
-    * @param hairy, whether the cat is hairy
-    * @return shedding, whether the cat is shedding
+    * @param hairy whether the cat is hairy
+    * @param hairType the type of hair the cat has
+    *
+    * @return whether the cat is shedding
     */
-    public boolean isShedding(boolean hairy) {
+    public boolean isShedding(boolean hairy, int hairType) {
         // method
     }
     ```
