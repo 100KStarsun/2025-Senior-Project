@@ -1,5 +1,6 @@
-package com.agora.app;
+package com.agora.app.frontend;
 
+import com.agora.app.R;
 import com.agora.app.backend.LoginException;
 import com.agora.app.backend.LoginHandler;
 import android.content.Intent;
