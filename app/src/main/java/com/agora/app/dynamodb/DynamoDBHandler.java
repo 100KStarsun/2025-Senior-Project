@@ -61,8 +61,7 @@ public class DynamoDBHandler {
      * Retrieves a user object from the database, given a specific username
      *
      * @param username The username of the user (their CWRU Network ID)
-     * @return The {@code User} object (if it exists) that has the specified username, {@code null} if there is no User object in the database with that username
-     * @throws NullPointerException
+     * @return The {@code User} object (if it exists) that has the specified username, {@code null} if there is no {@code User} object in the database with that username
      */
     public static User getUserItem (String username) {
         try {
@@ -76,6 +75,11 @@ public class DynamoDBHandler {
         }
     }
 
+    /**
+     * Puts a {@code User} object into the database, overwriting the current {@code User} object in the database if this {@code User} and the remote {@code User} object share the same username
+     *
+     * @param user The {@code User} object to be placed into the database
+     */
     public static void putUserItem (User user) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
@@ -87,7 +91,13 @@ public class DynamoDBHandler {
         }
     }
 
-    public static Password getPasswordItem (String hash) throws NullPointerException {
+    /**
+     * Retrieves a password object from the database, given a specific hash
+     *
+     * @param hash The hash of the password
+     * @return The {@code Password} object (if it exists) that has the specified password hash, {@code null} if there is no {@code Password} object in the database with that hash
+     */
+    public static Password getPasswordItem (String hash) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
@@ -99,6 +109,11 @@ public class DynamoDBHandler {
         }
     }
 
+    /**
+     * Puts a {@code Password} object into the database, overwriting the current {@code Password} object in the database if this {@code Password} and the remote {@code Password} object share the same hash
+     *
+     * @param password The {@code Password} object to be placed into the database
+     */
     public static void putPasswordItem (Password password) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
@@ -110,7 +125,7 @@ public class DynamoDBHandler {
         }
     }
 
-    public static Chat getChatItem (String otherUsername) throws NullPointerException {
+    public static Chat getChatItem (String otherUsername) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<Chat> chatTable = enhancedClient.table(DynamoDBHandler.chatsTableName, TableSchema.fromBean(Chat.class));
@@ -122,7 +137,7 @@ public class DynamoDBHandler {
         }
     }
 
-    public static Product getProductItem (String productUUID) throws NullPointerException {
+    public static Product getProductItem (String productUUID) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
             DynamoDbTable<Product> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(Product.class));
