@@ -23,7 +23,6 @@ public class LoginActivity extends AppCompatActivity {
 
         EditText user = findViewById(R.id.username_id);
         EditText pass = findViewById(R.id.password_id);
-
         Button button = findViewById(R.id.button_id);
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -45,20 +44,19 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 // Code to confirm user is in database, based on similar methods to being done in TestClass
-                else if (!password.isEmpty() && !username.isEmpty()) {
-                    try {
-                        boolean loginSuccessful = LoginHandler.login(username, password);
-                        if (loginSuccessful) {
-                            Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Error logging in. Please try again.", Toast.LENGTH_SHORT).show();
-                        }
-                    } catch (LoginException ex) {
-                        Toast.makeText(LoginActivity.this, "Username or password is incorrect", Toast.LENGTH_SHORT).show();
-                    } catch (NoSuchAlgorithmException ex) {
-                        Toast.makeText(LoginActivity.this, "Internal Application Error (PASS_HASH_ERR)", Toast.LENGTH_SHORT).show();
+                try {
+                    boolean loginSuccessful = LoginHandler.login(username, password);
+                    if (loginSuccessful) {
+                        //Navigating next activity
+                        Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(LoginActivity.this, "Error logging in. Please try again.", Toast.LENGTH_SHORT).show();
                     }
+                } catch (LoginException ex) {
+                    Toast.makeText(LoginActivity.this, "Username or password is incorrect", Toast.LENGTH_SHORT).show();
+                } catch (NoSuchAlgorithmException ex) {
+                    Toast.makeText(LoginActivity.this, "Internal Application Error (PASS_HASH_ERR)", Toast.LENGTH_SHORT).show();
                 }
             }
         });

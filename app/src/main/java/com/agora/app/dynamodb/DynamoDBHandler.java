@@ -1,9 +1,6 @@
 package com.agora.app.dynamodb;
 
-import com.agora.app.backend.base.Chat;
-import com.agora.app.backend.base.Password;
-import com.agora.app.backend.base.Product;
-import com.agora.app.backend.base.User;
+import com.agora.app.backend.base.*;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
@@ -12,6 +9,7 @@ import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 
 
 public class DynamoDBHandler {
@@ -27,7 +25,9 @@ public class DynamoDBHandler {
     }
 
     public static DynamoDbEnhancedClient makeDynamoClient () {
-        DynamoDbClient basicClient = DynamoDbClient.builder().region(awsRegion).build();
+        DynamoDbClient basicClient = DynamoDbClient.builder()
+        .httpClient(UrlConnectionHttpClient.create())
+        .region(awsRegion).build();
         return DynamoDbEnhancedClient.builder().dynamoDbClient(basicClient).build();
     }
 

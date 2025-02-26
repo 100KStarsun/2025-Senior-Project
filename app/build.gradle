@@ -62,5 +62,6 @@ dependencies {
     implementation("software.amazon.awssdk:sso")
     implementation("software.amazon.awssdk:ssooidc")
     implementation('software.amazon.awssdk:dynamodb-enhanced')
-    implementation('software.amazon.awssdk:dynamodb')
+    implementation('software.amazon.awssdk:url-connection-client:2.13.49')
+    implementation('org.slf4j:slf4j-simple:1.7.36')
 }
