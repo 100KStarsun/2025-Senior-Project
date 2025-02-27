@@ -9,10 +9,10 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="Messaging Page"
+        android:textSize="40sp"
         android:layout_marginBottom="725dp"
-        android:gravity="center"
-        android:text="Swiping"
-        android:textSize="40sp" />
+        android:gravity="center"/>
 
     <!--page buffer-->
     <LinearLayout
@@ -31,6 +31,6 @@
         android:background="?android:attr/windowBackground"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
-        app:menu="@menu/nav_bar"/>
+        app:menu="@menu/nav_bar" />
 
 </LinearLayout>
