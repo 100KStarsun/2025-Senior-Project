@@ -8,12 +8,15 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.agora.app.R;
 
+import java.util.Objects;
+
 public class SettingsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        Objects.requireNonNull(getSupportActionBar()).hide();
         Button buttonUserInfo = findViewById(R.id.buttonUserInfo);
         buttonUserInfo.setOnClickListener(v -> startActivity(new Intent(SettingsActivity.this, UserInfoActivity.class)));
     }

@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.agora.app.R;
 
+import java.util.Objects;
+
 public class RegisterActivity extends AppCompatActivity {
 
     public static String EMAIL_TEXT;
@@ -17,6 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         EditText email = findViewById(R.id.email_text_id);
         Button button = findViewById(R.id.button_id);

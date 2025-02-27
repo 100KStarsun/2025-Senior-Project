@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class UserInfoActivity extends AppCompatActivity {
 
@@ -42,6 +43,7 @@ public class UserInfoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         //nav bar
         BottomNavigationView navBar = findViewById(R.id.nav_bar);

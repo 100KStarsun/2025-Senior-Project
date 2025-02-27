@@ -6,12 +6,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.Objects;
+
 
 public class MessagingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messaging);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 

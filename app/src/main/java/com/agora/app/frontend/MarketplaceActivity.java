@@ -7,11 +7,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.Objects;
+
 public class MarketplaceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marketplace);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 

@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.agora.app.R;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
 
@@ -17,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         EditText user = findViewById(R.id.username_id);
         EditText pass = findViewById(R.id.password_id);
