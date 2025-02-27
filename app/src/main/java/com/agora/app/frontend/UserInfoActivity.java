@@ -19,11 +19,24 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
+import com.agora.app.backend.base.Listing;
+import com.agora.app.frontend.ListingView;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserInfoActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private List<Listing> listings = new ArrayList<>();
+    private ListingView view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +52,13 @@ public class UserInfoActivity extends AppCompatActivity {
             if (itemId == R.id.nav_messaging) {
                 startActivity(new Intent(this, MessagingActivity.class));
                 return true;
-            }
-            else if (itemId == R.id.nav_marketplace) {
+            } else if (itemId == R.id.nav_marketplace) {
                 startActivity(new Intent(this, MarketplaceActivity.class));
                 return true;
-            }
-            else if (itemId == R.id.nav_swiping) {
+            } else if (itemId == R.id.nav_swiping) {
                 startActivity(new Intent(this, SwipingActivity.class));
                 return true;
-            }
-            else if (itemId == R.id.nav_user_info) {
+            } else if (itemId == R.id.nav_user_info) {
                 return true;
             }
             return false;
@@ -101,5 +111,37 @@ public class UserInfoActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        // Listings scroller
+        RecyclerView recyclerView = findViewById(R.id.item_listings);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        view = new ListingView(listings);
+        recyclerView.setAdapter(view);
+        Button addListingButton = findViewById(R.id.add_listing);
+        addListingButton.setOnClickListener(view -> addListingDialog());
+    }
+
+    private void addListingDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_listing, null);
+        builder.setView(dialogView);
+        EditText titleInput = dialogView.findViewById(R.id.input_listing_title);
+        EditText descriptionInput = dialogView.findViewById(R.id.input_listing_description);
+        Button saveButton = dialogView.findViewById(R.id.save_listing);
+        AlertDialog dialog = builder.create();
+
+        saveButton.setOnClickListener(v -> {
+            String title = titleInput.getText().toString();
+            String description = descriptionInput.getText().toString();
+
+            if(!title.isEmpty() && !description.isEmpty()) {
+                listings.add(new Listing(title, description));
+                view.notifyItemInserted(listings.size() - 1);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 }
