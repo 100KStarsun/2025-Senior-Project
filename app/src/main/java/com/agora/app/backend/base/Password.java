@@ -14,12 +14,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class Password implements Serializable {
+    public static final String hashMethod = "SHA-256";
     private String hash;
     private String username;
 
     public Password (String password, String username) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
+            final MessageDigest digest = MessageDigest.getInstance(hashMethod);
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             this.hash = Password.bytesToHex(hashbytes);
         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
