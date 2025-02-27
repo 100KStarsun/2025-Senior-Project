@@ -1,5 +1,6 @@
 package com.agora.app.frontend;
 
+import com.agora.app.backend.RegistrationHandler;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,10 +45,14 @@ public class AccountCreatorActivity extends AppCompatActivity {
 
                 if (password.equals(confirm_pass.getText().toString())) {
                     // Code to handle valid input, e.g., add user to database
-
+                    boolean registrationSuccess = RegistrationHandler.register(username, password);
+                    if (registrationSuccess) {
+                        Intent intent = new Intent(AccountCreatorActivity.this, UserInfoActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(AccountCreatorActivity.this, "Error creating account.", Toast.LENGTH_SHORT).show();
+                    }
                     // Example: Navigate to the next screen
-                    Intent intent = new Intent(AccountCreatorActivity.this, UserInfoActivity.class);
-                    startActivity(intent);
                 } else {
                     // Inform the user the passwords don't match
                     Toast.makeText(AccountCreatorActivity.this, "Passwords do not match", Toast.LENGTH_SHORT).show();

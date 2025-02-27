@@ -11,14 +11,14 @@ import com.agora.app.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    public static String EMAIL_TEXT;
+    public static String CASE_ID_TEXT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
-        EditText email = findViewById(R.id.email_text_id);
+        EditText caseid = findViewById(R.id.case_id);
         Button button = findViewById(R.id.button_id);
 
         Button buttonLogin = findViewById(R.id.buttonLoginActivity);
@@ -33,14 +33,14 @@ public class RegisterActivity extends AppCompatActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EMAIL_TEXT = email.getText().toString().trim();
+                CASE_ID_TEXT = caseid.getText().toString().trim();
 
                 // Check if email is empty or invalid
-                if (EMAIL_TEXT.isEmpty()) {
-                    Toast.makeText(RegisterActivity.this, "Please enter an email!", Toast.LENGTH_SHORT).show();
-                } else if (caseMailAuth(EMAIL_TEXT)) {
+                if (CASE_ID_TEXT.isEmpty()) {
+                    Toast.makeText(RegisterActivity.this, "Please enter a valid case id!", Toast.LENGTH_SHORT).show();
+                } else if (!caseMailAuth(CASE_ID_TEXT)) {
                     // Valid case email
-                    Toast.makeText(RegisterActivity.this, "Email verified!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Case ID verified!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegisterActivity.this, AccountCreatorActivity.class);
                     //intent.putExtra("email", EMAIL_TEXT);
                     startActivity(intent);
@@ -51,6 +51,15 @@ public class RegisterActivity extends AppCompatActivity {
                 }
             }
 
+            /**
+             * Returns a boolean that details the success of verifying a CWRU email.
+             * Input emails should be of the form cccnnn@case.edu, where c denotes individual characters, and
+             * n denotes the numbers of the case id.
+             * Currently, case ids are directly input as opposed to emails, pseudo-deprecating this method.
+             * 
+             * @param  email  the email that is being authenticated
+             * @return        true if the email is a case email, false if not
+             */
             public boolean caseMailAuth(String email) {
                 String[] emailTokens = email.split("@");
                 return emailTokens.length == 2 && emailTokens[1].equals("case.edu");
