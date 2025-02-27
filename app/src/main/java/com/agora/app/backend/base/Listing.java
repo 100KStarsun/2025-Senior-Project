@@ -1,5 +1,8 @@
 package com.agora.app.backend.base;
 
+
+// basic class placeholder to allow for listings to ba added on user info page
+// takes into account listing title and description
 public class Listing {
 
     private String title;

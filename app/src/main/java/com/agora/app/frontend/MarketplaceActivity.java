@@ -10,14 +10,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Objects;
 
 public class MarketplaceActivity extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marketplace);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
+        // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
+        // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 

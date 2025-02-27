@@ -1,26 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--xml file for allowing user interaction for adding listings-->
+<!--creates title and description fields with respective input hints-->
+<!--creates save button to complete listing-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/input_listing_title"
         android:hint="Title"/>
-
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/input_listing_description"
         android:hint="Description"
         android:inputType="textMultiLine"/>
-
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/save_listing"
         android:text="Save"/>
-
 </LinearLayout>

@@ -36,6 +36,8 @@ public class UserInfoActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+
+    // variables for the list of listing and the view in which to see listings on page
     private List<Listing> listings = new ArrayList<>();
     private ListingView view;
 
@@ -45,9 +47,10 @@ public class UserInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_info);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        //nav bar
+        // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
+        // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -114,17 +117,22 @@ public class UserInfoActivity extends AppCompatActivity {
             }
         });
 
-        // Listings scroller
+        // listings scroller
+        // finds and displays listing view on page
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         view = new ListingView(listings);
         recyclerView.setAdapter(view);
+
+        // creates button for ability to add listing
         Button addListingButton = findViewById(R.id.add_listing);
         addListingButton.setOnClickListener(view -> addListingDialog());
     }
 
+    // method to open up popup to for user to enter listing information
     private void addListingDialog() {
 
+        // builds dialogue popup with input fields
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_listing, null);
         builder.setView(dialogView);
@@ -133,6 +141,7 @@ public class UserInfoActivity extends AppCompatActivity {
         Button saveButton = dialogView.findViewById(R.id.save_listing);
         AlertDialog dialog = builder.create();
 
+        // save button on popup to pass through listing information
         saveButton.setOnClickListener(v -> {
             String title = titleInput.getText().toString();
             String description = descriptionInput.getText().toString();

@@ -6,9 +6,6 @@
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
-
-
     <androidx.drawerlayout.widget.DrawerLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -20,6 +17,7 @@
         tools:context=".frontend.UserInfoActivity"
         tools:openDrawer="start">
 
+        <!--stack for all main page contents-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,12 +33,12 @@
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:title="Navigation Drawer Example" />
-
             <FrameLayout
                 android:id="@+id/fragment_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"/>
 
+            <!--page title-->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -48,17 +46,19 @@
                 android:text="User Information"
                 android:textSize="40sp" />
 
+            <!--stack to display user information-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center">
-
+                <!--user icon-->
                 <ImageView
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:src="@drawable/icon_userinfo"/>
 
+                <!--stack to display text information next to icon-->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,6 +82,7 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!--listing scroller-->
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -89,6 +90,7 @@
                 android:scrollbars="vertical"
                 android:layout_weight="1"/>
 
+            <!--page buffer-->
             <LinearLayout
                 android:id="@+id/content"
                 android:layout_width="match_parent"
@@ -97,6 +99,7 @@
                 android:orientation="vertical">
             </LinearLayout>
 
+            <!--add listing button-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,6 +113,7 @@
                         android:text="Add Listing"/>
             </LinearLayout>
 
+            <!--nav bar-->
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/nav_bar"
                 android:layout_width="match_parent"

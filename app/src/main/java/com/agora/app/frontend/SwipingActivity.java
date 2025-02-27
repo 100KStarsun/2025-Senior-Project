@@ -16,8 +16,10 @@ public class SwipingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_swiping);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
+        // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
+        // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
