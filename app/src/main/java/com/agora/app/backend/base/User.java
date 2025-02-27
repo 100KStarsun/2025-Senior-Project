@@ -58,6 +58,11 @@ public class User implements Serializable {
         this.blockedUsers = new ArrayList<>();
     }
 
+    /**
+     * Creates a default EnumMap of the appropriate type, with the boolean fields all set to false. This would display as the user not having any valid payment method.
+     *
+     * @return an {@code EnumMap<PaymentMethods, Boolean>} where all values are set to false
+     */
     private static EnumMap<PaymentMethods, Boolean> createDefaultPaymentMethods () {
         EnumMap<PaymentMethods, Boolean> paymentMethodsSetup = new EnumMap<>(PaymentMethods.class);
         for (PaymentMethods method : PaymentMethods.values()) {
@@ -66,10 +71,24 @@ public class User implements Serializable {
         return paymentMethodsSetup;
     }
 
+    /**
+     * Uses {@code DynamoDBHandler} to query the database for this user
+     *
+     * @param username the caseID of the {@code User} to be retrieved from the database
+     * @return the {@code User} with the specified username, {@code null} if that user does not exist
+     *
+     * @see DynamoDBHandler#getUserItem(String)
+     */
     public static User getUserFromUsername (String username) {
         return DynamoDBHandler.getUserItem(username);
     }
 
+    /**
+     * Used by the {@code UserWrapper} class to turn the base64-encoded string back into a {@code User}, using an {@code ObjectInputStream}, {@code ByteArrayInputStream}, and the {@code Base64.Decoder} class.
+     *
+     * @param encodedUser a base64 string that should have been created by the {@code toBase64String()} method
+     * @return a {@code User} object that holds all the data it did before it was converted to a base64 string
+     */
     public static User createFromBase64String (String encodedUser) {
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] decodedBytes = decoder.decode(encodedUser);
@@ -81,6 +100,11 @@ public class User implements Serializable {
         return null;
     }
 
+    /**
+     * Used by the {@code UserWrapper} class to turn a {@code User} object into a base64-encoded string for easy database storage. This is done using a {@code ObjectOutputStream}, {@code ByteArrayOutputStream}, and the {@code Base64.Encoder} class.
+     *
+     * @return a string containing the base64 representation of the {@code User} object this method was called using.
+     */
     public String toBase64String () {
         Base64.Encoder encoder = Base64.getEncoder();
         try (ByteArrayOutputStream bytesOut = new ByteArrayOutputStream(); ObjectOutputStream objectOut = new ObjectOutputStream(bytesOut)) {
@@ -92,10 +116,16 @@ public class User implements Serializable {
         return null;
     }
 
+    /**
+     * Two users are considered the same if they share the same username
+     *
+     * @param obj the second user with which to compare the first user to
+     * @return true if the objects are the same, false otherwise
+     */
     @Override
     public boolean equals (Object obj) {
         try {
-            return this.toString().equals(((User) obj).toString());
+            return this.username.equals(((User) obj).username);
         } catch (ClassCastException ex) {
             return false;
         }
@@ -106,6 +136,11 @@ public class User implements Serializable {
         return "Username: " + this.username + ", Name: " + this.preferredFirstName + " " + this.lastName + " (Legal First Name: " + this.legalFirstName + "), Rating: " + this.rating + ", Swaps: " + this.numSwaps + ", Member since: " + this.timeCreatedToString();
     }
 
+    /**
+     * Pretty-prints the time this {@code User} was created at
+     *
+     * @return a string with the date of the user's creation in the form DD MMMM YYYY
+     */
     public String timeCreatedToString () {
         Calendar cal = new Calendar.Builder().setInstant(this.timeCreated).build();
         // will output string in the form DD MMMM YYYY
