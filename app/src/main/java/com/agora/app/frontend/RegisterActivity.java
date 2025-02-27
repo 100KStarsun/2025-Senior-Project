@@ -1,4 +1,4 @@
-package com.agora.app;
+package com.agora.app.frontend;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import com.agora.app.R;
+
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -16,6 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         EditText email = findViewById(R.id.email_text_id);
         Button button = findViewById(R.id.button_id);
@@ -24,11 +28,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
-                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class); 
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
-    
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,7 +44,7 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (caseMailAuth(EMAIL_TEXT)) {
                     // Valid case email
                     Toast.makeText(RegisterActivity.this, "Email verified!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterActivity.this, AccountCreatorActivity.class); 
+                    Intent intent = new Intent(RegisterActivity.this, AccountCreatorActivity.class);
                     //intent.putExtra("email", EMAIL_TEXT);
                     startActivity(intent);
                     //finish();

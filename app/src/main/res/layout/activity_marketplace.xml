@@ -2,27 +2,53 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--page title-->
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Marketplace"
         android:textSize="40sp"
-        android:layout_marginBottom="20dp"/>
+        android:gravity="center"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonUserInfo"
-        android:text="User Information"
-        android:layout_marginTop="20dp"/>
+    <!--page buffer-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".075"
+        android:orientation="vertical">
+    </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
+    <!--search bar-->
+    <androidx.appcompat.widget.SearchView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonSwiping"
-        android:text="Swipe"
-        android:layout_marginTop="20dp"/>
+        android:id="@+id/search_bar"
+        app:iconifiedByDefault="false"
+        app:searchHintIcon="@null"
+        app:queryHint="Search"
+        android:focusable="false"
+        app:searchIcon="@drawable/icon_search"
+        android:background="@drawable/search_bar"/>
+
+    <!--page buffer-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+    </LinearLayout>
+
+    <!--nav bar-->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
+        app:menu="@menu/nav_bar" />
 
 </LinearLayout>

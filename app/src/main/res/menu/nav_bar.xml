@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--xml file to set up appearance of navigation bar which is reference in layout xml files-->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<!--adds each main page to nav bar along with the page icon and page title-->
+    <item
+        android:id="@+id/nav_messaging"
+        android:icon="@drawable/icon_messaging"
+        android:title="Messaging" />
+
+    <item
+        android:id="@+id/nav_marketplace"
+        android:icon="@drawable/icon_marketplace"
+        android:title="Marketplace" />
+
+    <item
+        android:id="@+id/nav_swiping"
+        android:icon="@drawable/icon_swiping"
+        android:title="Swiping" />
+
+    <item
+        android:id="@+id/nav_user_info"
+        android:icon="@drawable/icon_userinfo"
+        android:title="User Information" />
+</menu>

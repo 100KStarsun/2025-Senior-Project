@@ -1,5 +1,7 @@
 package com.agora.app.backend.base;
 
+import com.agora.app.dynamodb.DynamoDBHandler;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,12 +14,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class Password implements Serializable {
+    public static final String hashMethod = "SHA-256";
     private String hash;
     private String username;
 
     public Password (String password, String username) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
+            final MessageDigest digest = MessageDigest.getInstance(hashMethod);
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             this.hash = Password.bytesToHex(hashbytes);
         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
@@ -32,6 +35,12 @@ public class Password implements Serializable {
         return this.username;
     }
 
+    /**
+     * Used by the {@code PasswordWrapper} class to turn the base64-encoded string back into a {@code Password}, using an {@code ObjectInputStream}, {@code ByteArrayInputStream}, and the {@code Base64.Decoder} class.
+     *
+     * @param encodedPassword a base64 string that should have been created by the {@code toBase64String()} method
+     * @return a {@code Password} object that holds all the data it did before it was converted to a base64 string
+     */
     public static Password createFromBase64String (String encodedPassword) {
         Base64.Decoder decoder = Base64.getDecoder();
         byte[] decodedBytes = decoder.decode(encodedPassword);
@@ -43,6 +52,11 @@ public class Password implements Serializable {
         return null;
     }
 
+    /**
+     * Used by the {@code PasswordWrapper} class to turn a {@code Password} object into a base64-encoded string for easy database storage. This is done using a {@code ObjectOutputStream}, {@code ByteArrayOutputStream}, and the {@code Base64.Encoder} class.
+     *
+     * @return a string containing the base64 representation of the {@code Password} object this method was called using.
+     */
     public String toBase64String () {
         Base64.Encoder encoder = Base64.getEncoder();
         try (ByteArrayOutputStream bytesOut = new ByteArrayOutputStream(); ObjectOutputStream objectOut = new ObjectOutputStream(bytesOut)) {
@@ -54,6 +68,12 @@ public class Password implements Serializable {
         return null;
     }
 
+    /**
+     * Used by the constructor of this class to convert a {@code Byte[]} to a hexadecimal string
+     *
+     * @param hash the bytes of the hashed password
+     * @return a hexadecimal string representing the bytes of the hashed password
+     */
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (int i = 0; i < hash.length; i++) {
@@ -69,5 +89,16 @@ public class Password implements Serializable {
     @Override
     public String toString() {
         return "Hash: " + this.hash + "\nUsername: " + this.username;
+    }
+
+    /**
+     * Two {@code Password} objects are equal if they share the same hash and username
+     *
+     * @param obj the second {@code Password} object with which to compare the first to
+     * @return true if the two objects are equal, false otherwise
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this.hash.equals(((Password) obj).hash) && this.username.equals(((Password) obj).username);
     }
 }

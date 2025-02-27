@@ -9,9 +9,16 @@ import java.security.NoSuchAlgorithmException;
 
 public class LoginHandler {
 
+    /**
+     * Queries the database to see if login credentials provided match those in the database. If the login info is not correct, a {@ccode LoginException} will be thrown
+     *
+     * @param username the provided username of the user trying to log in
+     * @param password the provided password of the user trying to log in
+     * @return {@code true} if the login info matches
+     */
     public static boolean login (String username, String password) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance("SHA3-256");
+            final MessageDigest digest = MessageDigest.getInstance(Password.hashMethod);
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             Password pw = DynamoDBHandler.getPasswordItem(bytesToHex(hashbytes));
             if (pw.getUsername().equals(username)) {
@@ -30,6 +37,12 @@ public class LoginHandler {
         return false;
     }
 
+    /**
+     * Used by the constructor of this class to convert a {@code Byte[]} to a hexadecimal string
+     *
+     * @param hash the bytes of the hashed password
+     * @return a hexadecimal string representing the bytes of the hashed password
+     */
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (int i = 0; i < hash.length; i++) {
