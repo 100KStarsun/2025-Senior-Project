@@ -29,6 +29,10 @@
         <activity android:name=".frontend.AccountCreatorActivity"/>
         <activity android:name=".frontend.LoginActivity"/>
         <activity android:name=".frontend.MessagingActivity"/>
+        <activity android:name=".frontend.SettingsActivity"/>
+        <activity android:name=".frontend.PreferencesActivity"/>
+        <activity android:name=".frontend.SavedPostsActivity"/>
+        <activity android:name=".frontend.TransactionHistoryActivity"/>
 
     </application>
 
