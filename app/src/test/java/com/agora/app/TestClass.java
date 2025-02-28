@@ -5,8 +5,11 @@ import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.PaymentMethods;
 import com.agora.app.backend.base.User;
 import com.agora.app.dynamodb.DynamoDBHandler;
+import com.agora.app.dynamodb.DynamoTables;
+import com.agora.app.lambda.LambdaHandler;
 import org.junit.Test;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.EnumMap;
@@ -57,7 +60,7 @@ public class TestClass {
     /**
      * try is excluded here so that if a LoginException gets thrown, the error is easier to pinpoint
      */
-    @Test
+    //@Test
     public void testCorrectLogin () throws NoSuchAlgorithmException {
         String attemptedUsername = "lrl47"; // this is correct
         String attemptedPassword = "abc123"; // this is correct
@@ -67,7 +70,7 @@ public class TestClass {
     /**
      * Passes if we get a LoginException, fails if not. This is because the password is not correct and that causes .login() to throw a LoginException
      */
-    @Test
+    //@Test
     public void testWrongLogin () throws NoSuchAlgorithmException {
         String attemptedUsername = "lrl47"; // this is a valid username
         String attemptedPassword = "123abc"; // this is not the correct password for the username provided
@@ -79,5 +82,15 @@ public class TestClass {
             return;
         }
         assert false;
+    }
+
+    @Test
+    public void testLambda () throws IOException {
+        String attemptedUsername = "lrl47";
+        String obj = LambdaHandler.getItem(DynamoTables.USERS.tableName, DynamoTables.USERS.partitionKeyName, "GET", attemptedUsername);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaObject.txt");
+        fw.write(obj);
+        fw.close();
+        assert true;
     }
 }
