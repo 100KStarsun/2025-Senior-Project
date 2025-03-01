@@ -115,7 +115,7 @@ public class LambdaHandler {
                     tableItems.put(table.tableName, new JSONObject().put("Keys", keyList));
                 }
                 jsonObj.put("RequestItems", tableItems);
-            } else if (operation.equals(Operations.BATCH_DELETE)) {
+            } else if (operation.equals(Operations.BATCH_DELETE) || operation.equals(Operations.BATCH_PUT)) {
                 filename = "lambdaBatchDeletePutPayload.json";
                 JSONObject tableItems = new JSONObject();
                 for (DynamoTables table : data.keySet()) {
