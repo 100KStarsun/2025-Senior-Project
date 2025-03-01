@@ -7,12 +7,14 @@ import com.agora.app.backend.base.User;
 import com.agora.app.dynamodb.DynamoDBHandler;
 import com.agora.app.dynamodb.DynamoTables;
 import com.agora.app.lambda.LambdaHandler;
+import com.agora.app.lambda.Operations;
 import org.junit.Test;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.EnumMap;
+import java.util.HashMap;
 
 public class TestClass {
 
@@ -85,12 +87,12 @@ public class TestClass {
     }
 
     @Test
-    public void testLambda () throws IOException {
-        String attemptedUsername = "lrl47";
-        String obj = LambdaHandler.getItem(DynamoTables.USERS.tableName, DynamoTables.USERS.partitionKeyName, "GET", attemptedUsername);
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaObject.txt");
-        fw.write(obj);
-        fw.close();
-        assert true;
+    public void testLambdaGet () {
+        String username = "lrl47";
+        HashMap<String, String> items = new HashMap<>(2);
+        items.put(username, null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+        data.put(DynamoTables.USERS, data, Operations.GET);
     }
 }

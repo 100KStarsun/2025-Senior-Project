@@ -2,7 +2,7 @@ package com.agora.app.dynamodb;
 
 public enum DynamoTables {
     USERS("agora_users","username"),
-    PASSWORDS("agora_passwords","password"),
+    PASSWORDS("agora_passwords","hash"),
     CHATS("agora_chats","uuid"),
     PRODUCTS("agora_products","uuid");
 
