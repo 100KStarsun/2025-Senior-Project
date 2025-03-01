@@ -105,6 +105,36 @@ public class TestClass {
     }
 
     @Test
+    public void testLambdaPut () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(2);
+        items.put("abc123", "some_base_64_string_for_abc123");
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+        data.put(DynamoTables.USERS, items);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.PUT);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaPutObject.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaDelete () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(2);
+        items.put("abc123", null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+        data.put(DynamoTables.USERS, items);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.DELETE);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaDeleteObject.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
     public void testLambdaBatchGet () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(4);
         items.put("lrl47", null);
