@@ -27,61 +27,66 @@ public class LambdaHandler {
                                                         .region(awsRegion)
                                                         .build();
 
-    /* Example JSON for BATCH_GET operation
+    /*
+     * Example JSON for GET
      * {
-     *   "Operation": "BATCH_GET",
-     *   "RequestItems": {
-     *     "agora_users": {
-     *       "Keys": [
-     *         {
-     *           "username": {
-     *             "S": "lrl47"
-     *           }
-     *         },
-     *         {
-     *           "username": {
-     *             "S": "ssh115"
-     *           }
-     *         }
-     *       ]
-     *     },
-     *     "agora_passwords": {
-     *       "Keys": [
-     *         {
-     *           "hash": {
-     *             "S": "f58fa3df820114f56e1544354379820cff464c9c41cb3ca0ad0b0843c9bb67ee"
-     *           }
-     *         }
-     *       ]
-     *     }
-     *   }
+     *     "TableName": "agora_users",
+     *     "Operation": "GET",
+     *     "Key": {"username": {"S": "lrl47"}}
      * }
-     */
-
-    /* Example JSON for GET/DELETE operation
+     *
+     * Example JSON for BATCH_GET
      * {
-     *   "Operation": "GET",
-     *   "TableName": "agora_users",
-     *   "Key": {
-     *     "username": {
-     *       "S": "lrl47"
-     *     }
-     *   }
-     * }
-     */
-
-    /* Example JSON for PUT operation
-     * {
-     *   "Operation": "PUT",
-     *   "TableName": "agora_users",
-     *   "Item": {
-     *     "username": {
-     *       "S": "nrm98"
+     *     "RequestItems": {
+     *         "agora_passwords": {"Keys": [{"hash": {"S": "f58fa3df820114f56e1544354379820cff464c9c41cb3ca0ad0b0843c9bb67ee"}}]},
+     *         "agora_users": {"Keys": [
+     *             {"username": {"S": "ssh115"}},
+     *             {"username": {"S": "lrl47"}}
+     *         ]}
      *     },
-     *     "base64": {
-     *       "S": "not_real_base_64_this_is_purely_a_test"
-     *     }
-     *   }
+     *     "Operation": "BATCH_GET"
+     * }
+     *
+     * Example JSON for BATCH_PUT
+     * {
+     *     "RequestItems": {
+     *         "agora_passwords": [
+     *             {"PutRequest": {"Item": {
+     *                 "base64": {"S": "fake_hash_1 + nrm98.toBase64()"},
+     *                 "hash": {"S": "fake_hash_1"}
+     *             }}},
+     *             {"PutRequest": {"Item": {
+     *                 "base64": {"S": "fake_hash_2 + msc135.toBase64()"},
+     *                 "hash": {"S": "fake_hash_2"}
+     *             }}}
+     *         ],
+     *         "agora_users": [
+     *             {"PutRequest": {"Item": {
+     *                 "base64": {"S": "fake_b642"},
+     *                 "username": {"S": "msc135"}
+     *             }}},
+     *             {"PutRequest": {"Item": {
+     *                 "base64": {"S": "fake_b641"},
+     *                 "username": {"S": "nrm98"}
+     *             }}}
+     *         ]
+     *     },
+     *     "Operation": "BATCH_PUT"
+     * }
+     *
+     * Example JSON for BATCH_DELETE
+     * {
+     *     "RequestItems": {
+     *         "agora_passwords": [
+     *             {"DeleteRequest": {"Key": {"hash": {"S": "fake_hash_1"}}}},
+     *             {"DeleteRequest": {"Key": {"hash": {"S": "fake_hash_2"}}}}
+     *         ],
+     *         "agora_users": [
+     *             {"DeleteRequest": {"Key": {"username": {"S": "msc135"}}}},
+     *             {"DeleteRequest": {"Key": {"username": {"S": "nrm98"}}}}
+     *         ]
+     *     },
+     *     "Operation": "BATCH_DELETE"
      * }
      */
 
@@ -104,7 +109,7 @@ public class LambdaHandler {
                     jsonObj.put("Key", buildSingleKeyJSON(table.partitionKeyName, key));
                 }
             } else if (operation.equals(Operations.BATCH_GET)) {
-                filename = "lambdaBatchGetPayload.json";
+                filename = "lambdaBatch_GetPayload.json";
                 JSONObject tableItems = new JSONObject();
                 for (DynamoTables table : data.keySet()) {
                     HashMap<String, String> items = data.get(table);
@@ -116,17 +121,19 @@ public class LambdaHandler {
                 }
                 jsonObj.put("RequestItems", tableItems);
             } else if (operation.equals(Operations.BATCH_DELETE) || operation.equals(Operations.BATCH_PUT)) {
-                filename = "lambdaBatchDeletePutPayload.json";
+                filename = "lambda" + operation.toString() + "Payload.json";
                 JSONObject tableItems = new JSONObject();
                 for (DynamoTables table : data.keySet()) {
                     HashMap<String, String> items = data.get(table);
+                    JSONArray requestList = new JSONArray();
                     for (String key : items.keySet()) {
                         if (operation.isDataCarryingOp) {
-                            tableItems.put("PutRequest", new JSONObject().put("Item", buildSingleKeyValueJSON(table.partitionKeyName, key, items.get(key))));
+                            requestList.put(new JSONObject().put("PutRequest", new JSONObject().put("Item", buildSingleKeyValueJSON(table.partitionKeyName, key, items.get(key)))));
                         } else {
-                            tableItems.put("DeleteRequest", new JSONObject().put("Item", buildSingleKeyJSON(table.partitionKeyName, key)));
+                            requestList.put(new JSONObject().put("DeleteRequest", new JSONObject().put("Key", buildSingleKeyJSON(table.partitionKeyName, key))));
                         }
                     }
+                    tableItems.put(table.tableName, requestList);
                 }
                 jsonObj.put("RequestItems", tableItems);
             }

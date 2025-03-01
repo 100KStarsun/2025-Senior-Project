@@ -8,8 +8,11 @@ import com.agora.app.dynamodb.DynamoDBHandler;
 import com.agora.app.dynamodb.DynamoTables;
 import com.agora.app.lambda.LambdaHandler;
 import com.agora.app.lambda.Operations;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -87,12 +90,79 @@ public class TestClass {
     }
 
     @Test
-    public void testLambdaGet () {
-        String username = "lrl47";
+    public void testLambdaGet () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(2);
-        items.put(username, null);
+        items.put("lrl47", null);
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
-        data.put(DynamoTables.USERS, data, Operations.GET);
+        data.put(DynamoTables.USERS, items);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.GET);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaGetObject.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaBatchGet () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(4);
+        items.put("lrl47", null);
+        items.put("ssh115", null);
+
+        HashMap<String, String> items2 = new HashMap<>(2);
+        items2.put("f58fa3df820114f56e1544354379820cff464c9c41cb3ca0ad0b0843c9bb67ee", null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
+        data.put(DynamoTables.USERS, items);
+        data.put(DynamoTables.PASSWORDS, items2);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_GET);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchGetObject.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaBatchPut () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(4);
+        items.put("nrm98", "fake_b641");
+        items.put("msc135", "fake_b642");
+
+        HashMap<String, String> items2 = new HashMap<>(2);
+        items2.put("fake_hash_1", "fake_hash_1 + nrm98.toBase64()");
+        items2.put("fake_hash_2", "fake_hash_2 + msc135.toBase64()");
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
+        data.put(DynamoTables.USERS, items);
+        data.put(DynamoTables.PASSWORDS, items2);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_PUT);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchPutObject.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaBatchDelete () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(4);
+        items.put("nrm98", null);
+        items.put("msc135", null);
+
+        HashMap<String, String> items2 = new HashMap<>(2);
+        items2.put("fake_hash_1", null);
+        items2.put("fake_hash_2", null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
+        data.put(DynamoTables.USERS, items);
+        data.put(DynamoTables.PASSWORDS, items2);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_DELETE);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchDeleteObject.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
     }
 }
