@@ -97,8 +97,25 @@ public class TestClass {
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
 
-        JSONObject obj = LambdaHandler.invoke(data, Operations.GET);
+        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.GET).getString("body"));
+        obj.remove("ResponseMetadata");
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaGetObject.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaGetNonExistant () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(2);
+        items.put("definitelyNotAMimic", null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+        data.put(DynamoTables.USERS, items);
+
+        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.GET).getString("body"));
+        obj.remove("ResponseMetadata");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaFailToGetObject.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;
@@ -112,7 +129,8 @@ public class TestClass {
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
 
-        JSONObject obj = LambdaHandler.invoke(data, Operations.PUT);
+        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.PUT).getString("body"));
+        obj.remove("ResponseMetadata");
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaPutObject.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -127,7 +145,8 @@ public class TestClass {
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
 
-        JSONObject obj = LambdaHandler.invoke(data, Operations.DELETE);
+        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.DELETE).getString("body"));
+        obj.remove("ResponseMetadata");
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaDeleteObject.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -147,7 +166,8 @@ public class TestClass {
         data.put(DynamoTables.USERS, items);
         data.put(DynamoTables.PASSWORDS, items2);
 
-        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_GET);
+        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_GET).getString("body"));
+        obj.remove("ResponseMetadata");
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchGetObject.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -168,7 +188,8 @@ public class TestClass {
         data.put(DynamoTables.USERS, items);
         data.put(DynamoTables.PASSWORDS, items2);
 
-        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_PUT);
+        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_PUT).getString("body"));
+        obj.remove("ResponseMetadata");
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchPutObject.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -189,7 +210,8 @@ public class TestClass {
         data.put(DynamoTables.USERS, items);
         data.put(DynamoTables.PASSWORDS, items2);
 
-        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_DELETE);
+        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_DELETE).getString("body"));
+        obj.remove("ResponseMetadata");
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchDeleteObject.json");
         fw.write(obj.toString(4));
         fw.close();

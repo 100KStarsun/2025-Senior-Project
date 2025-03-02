@@ -14,13 +14,13 @@ import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class LambdaHandler {
 
     private static String dynamoDBInteractionFunctionName = "dynamoInteractions";
     public static String homeDir = System.getProperty("user.home");
     public static String agoraTempDir = "\\.agora\\";
-    private static String[] noDataOperations = {"BATCH_GET", "DELETE", "GET"};
     private static Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
     private static LambdaClient awsLambda = LambdaClient.builder()
                                                         .httpClient(UrlConnectionHttpClient.create())
@@ -171,4 +171,5 @@ public class LambdaHandler {
         jsonObj.put("base64", new JSONObject("{'S':'" + value + "'}"));
         return jsonObj;
     }
+
 }
