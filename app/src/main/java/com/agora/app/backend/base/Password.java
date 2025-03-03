@@ -1,7 +1,6 @@
 package com.agora.app.backend.base;
 
 import com.agora.app.dynamodb.DynamoDBHandler;
-import com.agora.app.backend.base.User;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
