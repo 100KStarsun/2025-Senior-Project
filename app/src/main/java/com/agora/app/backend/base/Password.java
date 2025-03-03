@@ -1,7 +1,5 @@
 package com.agora.app.backend.base;
 
-import com.agora.app.dynamodb.DynamoDBHandler;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,13 +12,14 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class Password implements Serializable {
-    public static final String hashMethod = "SHA-256";
     private String hash;
     private String username;
 
+    public static final String hashAlgorithm = "SHA-256";
+
     public Password (String password, String username) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance(hashMethod);
+            final MessageDigest digest = MessageDigest.getInstance(Password.hashAlgorithm);
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             this.hash = Password.bytesToHex(hashbytes);
         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
