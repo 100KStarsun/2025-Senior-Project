@@ -1,6 +1,7 @@
 package com.agora.app.backend;
 
 import com.agora.app.backend.base.Password;
+import com.agora.app.backend.base.User;
 import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.nio.charset.StandardCharsets;
@@ -10,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
 public class LoginHandler {
 
     /**
-     * Queries the database to see if login credentials provided match those in the database. If the login info is not correct, a {@ccode LoginException} will be thrown
+     * Queries the database to see if login credentials provided match those in the database. If the login info is not correct, a {@code LoginException} will be thrown
      *
      * @param username the provided username of the user trying to log in
      * @param password the provided password of the user trying to log in
@@ -19,8 +20,11 @@ public class LoginHandler {
     public static boolean login (String username, String password) {
         try {
             final MessageDigest digest = MessageDigest.getInstance(Password.hashMethod);
+            User user = DynamoDBHandler.getUserItem(username);
+            password = password.concat(user.getSaltString());
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             Password pw = DynamoDBHandler.getPasswordItem(bytesToHex(hashbytes));
+
             if (pw.getUsername().equals(username)) {
                 return true;
             } else {
