@@ -19,7 +19,7 @@ public class LoginHandler {
      */
     public static boolean login (String username, String password) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance(Password.hashMethod);
+            final MessageDigest digest = MessageDigest.getInstance(Password.hashAlgorithm);
             User user = DynamoDBHandler.getUserItem(username);
             password = password.concat(user.getSaltString());
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
