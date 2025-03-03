@@ -92,13 +92,13 @@ public class DynamoDBHandler {
     /**
      * Retrieves a password object from the database, given a specific hash
      *
-     * @param hash The hash of the password
+     * @param saltedHash The hash of the password with salt in it
      * @return The {@code Password} object (if it exists) that has the specified password hash, {@code null} if there is no {@code Password} object in the database with that hash
      */
-    public static Password getPasswordItem (String hash) {
+    public static Password getPasswordItem (String saltedHash) {
         try {
             DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
-            return Password.createFromBase64String(passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(hash)).getPasswordBase64());
+            return Password.createFromBase64String(passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(saltedHash)).getPasswordBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();

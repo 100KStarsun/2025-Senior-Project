@@ -21,7 +21,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 
 public class TestClass {
-
     private static String caseID = "lrl47";
     private static String legalFirstName = "Levi";
     private static String preferredFirstName = ""; // leave blank to automatically use legalFirstName
@@ -34,7 +33,7 @@ public class TestClass {
     public static String homeDir = System.getProperty("user.home");
     public static String agoraTempDir = "\\.agora\\";
 
-    //@Test
+    @Test
     public void puttingAndGettingUserAndPassword () throws IOException {
         // logic for setting preferred name
         TestClass.preferredFirstName = TestClass.preferredFirstName.isEmpty() ? TestClass.legalFirstName : TestClass.preferredFirstName;
@@ -49,25 +48,53 @@ public class TestClass {
 
         // Create user + password
         User demoUser = new User(TestClass.caseID, TestClass.preferredFirstName, TestClass.legalFirstName, TestClass.lastName, TestClass.caseID + TestClass.caseEmailDomain, paymentMethodsSetup);
-        Password demoPassword = new Password(TestClass.passwordString, demoUser);
-
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "user.txt");
-        fw.write(demoUser.toString() + "\n");
-        fw.write(demoUser.getSaltString() + "\n");
-        fw.write(demoUser.toBase64String());
-        fw.close();
-        fw = new FileWriter(homeDir + agoraTempDir + "password.txt");
-        fw.write(demoPassword.getHash() + "\n");
-        fw.write(demoPassword.toBase64String());
-        fw.close();
 
         // Put user + password into db
-        DynamoDBHandler.putUserItem(demoUser);
-        DynamoDBHandler.putPasswordItem(demoPassword);
+        boolean userExistsAlready = false;
+        try {
+            User test = DynamoDBHandler.getUserItem(caseID);
+            if (test != null && !test.toString().contains("null")) {
+                userExistsAlready = true;
+            }
+        } catch (NullPointerException ex) {}
 
-        // retrieve user + password
+        if (!userExistsAlready) {
+            DynamoDBHandler.putUserItem(demoUser);
+        }
         User user = DynamoDBHandler.getUserItem(TestClass.caseID);
-        Password password = DynamoDBHandler.getPasswordItem(demoPassword.getHash());
+        Password demoPassword = new Password(TestClass.passwordString, user);
+
+        boolean passwordExistsAlready = false;
+        try {
+            Password test = DynamoDBHandler.getPasswordItem(new Password(passwordString, caseID).getHash());
+            if (test != null && !test.toString().contains("null")) {
+                passwordExistsAlready = true;
+            }
+        } catch (NullPointerException ex) {}
+
+        if (!passwordExistsAlready) {
+            DynamoDBHandler.putPasswordItem(demoPassword);
+        }
+        Password password = null;
+        try {
+            password = DynamoDBHandler.getPasswordItem(demoPassword.getHash());
+        } catch (NullPointerException ex) {}
+//        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "user.txt");
+//        fw.write(user.toString() + "\n");
+//        fw.write(user.getSaltString() + "\n");
+//        fw.write(user.toBase64String());
+//        fw.close();
+//        fw = new FileWriter(homeDir + agoraTempDir + "password.txt");
+//        try {
+//            fw.write(password.getHash() + "\n");
+//            fw.write(password.toBase64String());
+//        } catch (Exception ex) {}
+//        fw.close();
+//        fw = new FileWriter(homeDir + agoraTempDir + "bools.txt");
+//        fw.write(userExistsAlready + "\n");
+//        fw.write(passwordExistsAlready + "\n");
+//        fw.close();
+
 
         // make sure none of the printed fields are null which /should/ mean we have fully retrieved the user + password
         assert !user.toString().contains("null") && !password.toString().contains("null");
