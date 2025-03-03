@@ -14,13 +14,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class Password implements Serializable {
-    public static final String hashMethod = "SHA-256";
+    public static final String hashAlgorithm = "SHA-256";
     private String hash;
     private String username;
 
     public Password (String password, String username) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance(hashMethod);
+            final MessageDigest digest = MessageDigest.getInstance(hashAlgorithm);
             User user = DynamoDBHandler.getUserItem(username);
             password = password.concat(user.getSaltString());
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
@@ -31,7 +31,7 @@ public class Password implements Serializable {
 
     public Password (String password, User user) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance(hashMethod);
+            final MessageDigest digest = MessageDigest.getInstance(hashAlgorithm);
             password = password.concat(user.getSaltString());
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             this.hash = Password.bytesToHex(hashbytes);
@@ -86,7 +86,7 @@ public class Password implements Serializable {
      * @param hash the bytes of the hashed password
      * @return a hexadecimal string representing the bytes of the hashed password
      */
-    private static String bytesToHex(byte[] hash) {
+    private static String bytesToHex (byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (int i = 0; i < hash.length; i++) {
             String hex = Integer.toHexString(0xff & hash[i]);
