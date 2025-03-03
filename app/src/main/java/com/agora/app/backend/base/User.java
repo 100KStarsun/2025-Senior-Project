@@ -17,6 +17,7 @@ import java.util.EnumMap;
 import java.util.Locale;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.security.SecureRandom;
 
 
 public class User implements Serializable {
@@ -26,6 +27,9 @@ public class User implements Serializable {
     private String legalFirstName;
     private String lastName;
     private String email;
+    private byte[] salt;
+    private SecureRandom rng = new SecureRandom();
+    private String saltString;
     private final Date timeCreated;
     private int numSwaps;
     private short rating;
@@ -46,6 +50,9 @@ public class User implements Serializable {
         this.legalFirstName = legalFirstName;
         this.lastName = lastName;
         this.email = email;
+        this.salt = new byte[16];
+        rng.nextBytes(salt);
+        this.saltString = Base64.getEncoder().encodeToString(salt);
         this.timeCreated = Date.from(Instant.now());
         numSwaps = 0;
         rating = 0;
@@ -166,6 +173,10 @@ public class User implements Serializable {
     public String getEmail () { return email; }
 
     public void setEmail (String email) { this.email = email; }
+
+    public byte[] getSalt () { return salt; }
+
+    public String getSaltString () { return saltString; }
 
     public Date getTimeCreated () { return timeCreated; }
 
