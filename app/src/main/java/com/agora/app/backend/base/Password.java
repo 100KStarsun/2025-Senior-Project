@@ -32,7 +32,7 @@ public class Password implements Serializable {
 
     public Password (String password, User user) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance(hashMethod);
+            final MessageDigest digest = MessageDigest.getInstance(hashAlgorithm);
             password = password.concat(user.getSaltString());
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             this.hash = Password.bytesToHex(hashbytes);
