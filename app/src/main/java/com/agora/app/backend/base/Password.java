@@ -29,6 +29,16 @@ public class Password implements Serializable {
         this.username = username;
     }
 
+    public Password (String password, User user) {
+        try {
+            final MessageDigest digest = MessageDigest.getInstance(hashMethod);
+            password = password.concat(user.getSaltString());
+            final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            this.hash = Password.bytesToHex(hashbytes);
+        } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
+        this.username = user.getUsername();
+    }
+
     public String getHash() {
         return this.hash;
     }
