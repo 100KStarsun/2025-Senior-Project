@@ -1,5 +1,7 @@
 package com.agora.app.backend.base;
 
+import com.agora.app.dynamodb.DynamoDBHandler;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,11 +21,23 @@ public class Password implements Serializable {
 
     public Password (String password, String username) {
         try {
-            final MessageDigest digest = MessageDigest.getInstance(Password.hashAlgorithm);
+            final MessageDigest digest = MessageDigest.getInstance(hashAlgorithm);
+            User user = DynamoDBHandler.getUserItem(username);
+            password = password.concat(user.getSaltString());
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             this.hash = Password.bytesToHex(hashbytes);
         } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
         this.username = username;
+    }
+
+    public Password (String password, User user) {
+        try {
+            final MessageDigest digest = MessageDigest.getInstance(hashMethod);
+            password = password.concat(user.getSaltString());
+            final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+            this.hash = Password.bytesToHex(hashbytes);
+        } catch (NoSuchAlgorithmException e) { e.printStackTrace(); }
+        this.username = user.getUsername();
     }
 
     public String getHash() {
