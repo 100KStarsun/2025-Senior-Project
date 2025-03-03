@@ -4,7 +4,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import javax.security.auth.login.LoginException;
+import com.agora.app.backend.LoginException;
 
 import com.agora.app.backend.base.Password;
 import com.agora.app.dynamodb.DynamoDBHandler;

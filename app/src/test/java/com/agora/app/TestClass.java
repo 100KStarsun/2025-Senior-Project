@@ -1,4 +1,5 @@
 package com.agora.app;
+
 import com.agora.app.backend.LoginHandler;
 import com.agora.app.backend.LoginException;
 import com.agora.app.backend.base.Password;
@@ -97,9 +98,8 @@ public class TestClass {
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
 
-        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.GET).getString("body"));
-        obj.remove("ResponseMetadata");
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaGetObject.json");
+        JSONObject obj = LambdaHandler.invoke(data, Operations.GET);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.GET + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;
@@ -115,7 +115,7 @@ public class TestClass {
 
         JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.GET).getString("body"));
         obj.remove("ResponseMetadata");
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaFailToGetObject.json");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.GET + "_object_fail.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;
@@ -131,7 +131,7 @@ public class TestClass {
 
         JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.PUT).getString("body"));
         obj.remove("ResponseMetadata");
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaPutObject.json");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.PUT + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;
@@ -147,7 +147,7 @@ public class TestClass {
 
         JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.DELETE).getString("body"));
         obj.remove("ResponseMetadata");
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaDeleteObject.json");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.DELETE + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;
@@ -168,7 +168,7 @@ public class TestClass {
 
         JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_GET).getString("body"));
         obj.remove("ResponseMetadata");
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchGetObject.json");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_GET + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;
@@ -190,7 +190,7 @@ public class TestClass {
 
         JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_PUT).getString("body"));
         obj.remove("ResponseMetadata");
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchPutObject.json");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_PUT + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;
@@ -212,7 +212,7 @@ public class TestClass {
 
         JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_DELETE).getString("body"));
         obj.remove("ResponseMetadata");
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaBatchDeleteObject.json");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_DELETE + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;

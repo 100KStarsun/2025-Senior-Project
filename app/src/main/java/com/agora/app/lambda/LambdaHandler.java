@@ -1,6 +1,5 @@
 package com.agora.app.lambda;
 
-
 import com.agora.app.dynamodb.DynamoTables;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -96,7 +95,7 @@ public class LambdaHandler {
             JSONObject jsonObj = new JSONObject();
             // if there is only one table AND one key value pair for that table -> GET, PUT, DELETE
             if (data.size() == 1 && data.get(data.keySet().iterator().next()).size() == 1 && operation.isSingleOp) {
-                filename = "lambdaGetPayload.json";
+                filename = "lambda_" + operation + "_payload.json";
                 DynamoTables table = data.keySet().iterator().next();
                 String key = data.get(table).keySet().iterator().next();
                 String value = data.get(table).get(key);
@@ -108,34 +107,32 @@ public class LambdaHandler {
                 } else {
                     jsonObj.put("Key", buildSingleKeyJSON(table.partitionKeyName, key));
                 }
-            } else if (operation.equals(Operations.BATCH_GET)) {
-                filename = "lambdaBatch_GetPayload.json";
+            } else if (!operation.isSingleOp) {
+                filename = "lambda_" + operation + "_payload.json";
                 JSONObject tableItems = new JSONObject();
                 for (DynamoTables table : data.keySet()) {
                     HashMap<String, String> items = data.get(table);
-                    JSONArray keyList = new JSONArray();
+                    JSONArray list = new JSONArray();
                     for (String key : items.keySet()) {
-                        keyList.put(buildSingleKeyJSON(table.partitionKeyName, key));
-                    }
-                    tableItems.put(table.tableName, new JSONObject().put("Keys", keyList));
-                }
-                jsonObj.put("RequestItems", tableItems);
-            } else if (operation.equals(Operations.BATCH_DELETE) || operation.equals(Operations.BATCH_PUT)) {
-                filename = "lambda" + operation.toString() + "Payload.json";
-                JSONObject tableItems = new JSONObject();
-                for (DynamoTables table : data.keySet()) {
-                    HashMap<String, String> items = data.get(table);
-                    JSONArray requestList = new JSONArray();
-                    for (String key : items.keySet()) {
-                        if (operation.isDataCarryingOp) {
-                            requestList.put(new JSONObject().put("PutRequest", new JSONObject().put("Item", buildSingleKeyValueJSON(table.partitionKeyName, key, items.get(key)))));
+                        if (operation == Operations.BATCH_GET) {
+                            list.put(buildSingleKeyJSON(table.partitionKeyName, key));
+                        } else if (operation == Operations.BATCH_PUT) {
+                            list.put(new JSONObject().put("PutRequest", new JSONObject().put("Item", buildSingleKeyValueJSON(table.partitionKeyName, key, items.get(key)))));
+                        } else if (operation == Operations.BATCH_DELETE) {
+                            list.put(new JSONObject().put("DeleteRequest", new JSONObject().put("Key", buildSingleKeyJSON(table.partitionKeyName, key))));
                         } else {
-                            requestList.put(new JSONObject().put("DeleteRequest", new JSONObject().put("Key", buildSingleKeyJSON(table.partitionKeyName, key))));
+                            throw new RuntimeException("Error: Operation " + operation + " not yet implemented");
                         }
                     }
-                    tableItems.put(table.tableName, requestList);
+                    if (operation == Operations.BATCH_GET) {
+                        tableItems.put(table.tableName, new JSONObject().put("Keys", list));
+                    } else {
+                        tableItems.put(table.tableName, list);
+                    }
                 }
                 jsonObj.put("RequestItems", tableItems);
+            } else {
+                throw new IllegalArgumentException("Error: Operation " + operation + " had too many arguments in data.");
             }
             jsonObj.put("Operation", operation);
             String jsonString = jsonObj.toString();
@@ -144,8 +141,11 @@ public class LambdaHandler {
             fw.close();
 
             SdkBytes payload = SdkBytes.fromUtf8String(jsonString);
-            String response = awsLambda.invoke(makeRequest(payload)).payload().asUtf8String();
-            return new JSONObject(response);
+            JSONObject response = new JSONObject(awsLambda.invoke(makeRequest(payload)).payload().asUtf8String());
+            if (!response.get("statusCode").equals("200")) {
+                throw new RuntimeException("Error: Some kind of lambda error");
+            }
+            return response;
 
         } catch (JSONException | IOException ex) {
             return null;
