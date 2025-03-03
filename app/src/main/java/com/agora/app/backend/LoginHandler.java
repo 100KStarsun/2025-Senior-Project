@@ -1,6 +1,7 @@
 package com.agora.app.backend;
 
 import com.agora.app.backend.base.Password;
+import com.agora.app.backend.base.User;
 import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.nio.charset.StandardCharsets;
