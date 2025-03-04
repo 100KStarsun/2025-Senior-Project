@@ -21,12 +21,12 @@ import java.util.EnumMap;
 import java.util.HashMap;
 
 public class TestClass {
-    private static String caseID = "lrl47";
-    private static String legalFirstName = "Levi";
+    private static String caseID = "nrm98";
+    private static String legalFirstName = "Noah";
     private static String preferredFirstName = ""; // leave blank to automatically use legalFirstName
-    private static String lastName = "Ladd";
+    private static String lastName = "Mollerstuen";
     private static String[] bools = {"n","n","n","n","n","n","n","y","n"}; // PayPal, Zelle, CashApp, Venmo, Apple Pay, Samsung Pay, Google Pay, Cash, Check | Note: everyone has cash enabled by default
-    private static String passwordString = "xX-yeet-Xx";
+    private static String passwordString = "penguin3000";
 
 
     public static String caseEmailDomain = "@case.edu";
@@ -148,8 +148,7 @@ public class TestClass {
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
 
-        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.GET).getString("body"));
-        obj.remove("ResponseMetadata");
+        JSONObject obj = LambdaHandler.invoke(data, Operations.GET);
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.GET + "_object_fail.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -164,8 +163,7 @@ public class TestClass {
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
 
-        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.PUT).getString("body"));
-        obj.remove("ResponseMetadata");
+        JSONObject obj = LambdaHandler.invoke(data, Operations.PUT);
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.PUT + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -180,8 +178,7 @@ public class TestClass {
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
 
-        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.DELETE).getString("body"));
-        obj.remove("ResponseMetadata");
+        JSONObject obj = LambdaHandler.invoke(data, Operations.DELETE);
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.DELETE + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -191,18 +188,18 @@ public class TestClass {
     @Test
     public void testLambdaBatchGet () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(4);
+        items.put("nrm98", null);
         items.put("lrl47", null);
         items.put("ssh115", null);
 
         HashMap<String, String> items2 = new HashMap<>(2);
-        items2.put("f58fa3df820114f56e1544354379820cff464c9c41cb3ca0ad0b0843c9bb67ee", null);
+        items2.put("yeet", null);
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
         data.put(DynamoTables.USERS, items);
         data.put(DynamoTables.PASSWORDS, items2);
 
-        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_GET).getString("body"));
-        obj.remove("ResponseMetadata");
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_GET);
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_GET + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -223,8 +220,7 @@ public class TestClass {
         data.put(DynamoTables.USERS, items);
         data.put(DynamoTables.PASSWORDS, items2);
 
-        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_PUT).getString("body"));
-        obj.remove("ResponseMetadata");
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_PUT);
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_PUT + "_object.json");
         fw.write(obj.toString(4));
         fw.close();
@@ -245,8 +241,7 @@ public class TestClass {
         data.put(DynamoTables.USERS, items);
         data.put(DynamoTables.PASSWORDS, items2);
 
-        JSONObject obj = new JSONObject(LambdaHandler.invoke(data, Operations.BATCH_DELETE).getString("body"));
-        obj.remove("ResponseMetadata");
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_DELETE);
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_DELETE + "_object.json");
         fw.write(obj.toString(4));
         fw.close();

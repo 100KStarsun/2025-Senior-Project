@@ -145,11 +145,17 @@ public class LambdaHandler {
             if (!response.get("statusCode").equals("200")) {
                 throw new RuntimeException("Error: Some kind of lambda error");
             }
-            return response;
+            return LambdaHandler.bodyStringToObject(response);
 
         } catch (JSONException | IOException ex) {
             return null;
         }
+    }
+
+    private static JSONObject bodyStringToObject (JSONObject obj) throws JSONException {
+        String bodyStr = (String)obj.remove("body");
+        obj.put("body", new JSONObject(bodyStr));
+        return obj;
     }
 
     private static InvokeRequest makeRequest (SdkBytes payload) {

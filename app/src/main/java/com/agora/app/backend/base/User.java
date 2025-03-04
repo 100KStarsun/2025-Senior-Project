@@ -28,7 +28,6 @@ public class User implements Serializable {
     private String lastName;
     private String email;
     private byte[] salt;
-    private SecureRandom rng = new SecureRandom();
     private String saltString;
     private final Date timeCreated;
     private int numSwaps;
@@ -51,7 +50,7 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.email = email;
         this.salt = new byte[16];
-        rng.nextBytes(salt);
+        Password.rng.nextBytes(salt);
         this.saltString = Base64.getEncoder().encodeToString(salt);
         this.timeCreated = Date.from(Instant.now());
         numSwaps = 0;
