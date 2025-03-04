@@ -41,17 +41,17 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView description;
-        TextView tag1;
-        TextView tag2;
-        TextView tag3;
+        //TextView tag1;
+        //TextView tag2;
+        //TextView tag3;
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.listing_title);
             description = itemView.findViewById(R.id.listing_description);
-            tag1 = itemView.findViewById(R.id.listing_tag1);
-            tag2 = itemView.findViewById(R.id.listing_tag2);
-            tag3 = itemView.findViewById(R.id.listing_tag3);
+            //tag1 = itemView.findViewById(R.id.listing_tag1);
+            //tag2 = itemView.findViewById(R.id.listing_tag2);
+            //tag3 = itemView.findViewById(R.id.listing_tag3);
         }
     }
 

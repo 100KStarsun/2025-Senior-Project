@@ -4,12 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="4dp">
+    android:padding="16dp"
+    android:background="@drawable/box_border"
+    android:layout_marginBottom="10dp">
+    <ImageView
+        android:id="@+id/listing_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_placeholder" 
+        android:scaleType="centerCrop"
+        android:contentDescription="Listing Image"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/listing_title"
-        android:textSize="14sp"
+        android:textSize="20sp"
+        android:layout_marginTop="10dp"
         android:text="Listing Title"/>
     <TextView
         android:layout_width="match_parent"
