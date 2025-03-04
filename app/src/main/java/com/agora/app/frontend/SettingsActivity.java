@@ -23,12 +23,35 @@ public class SettingsActivity extends AppCompatActivity {
         Button buttonUserInfo = findViewById(R.id.buttonUserInfo);
         buttonUserInfo.setOnClickListener(v -> startActivity(new Intent(SettingsActivity.this, UserInfoActivity.class)));
 
-        CheckBox simpleCheckBox = (CheckBox) findViewById(R.id.simpleCheckBox);
+        CheckBox paypalCheckBox = (CheckBox) findViewById(R.id.paypalCheckBox);
+        CheckBox zelleCheckBox = (CheckBox) findViewById(R.id.zelleCheckBox);
+        CheckBox cashappCheckBox = (CheckBox) findViewById(R.id.cashappCheckBox);
+        CheckBox venmoCheckBox = (CheckBox) findViewById(R.id.venmoCheckBox);
+        CheckBox applepayCheckBox = (CheckBox) findViewById(R.id.applepayCheckBox);
+        CheckBox googlepayCheckBox = (CheckBox) findViewById(R.id.googlepayCheckBox);
+        CheckBox samsungpayCheckBox = (CheckBox) findViewById(R.id.samsungpayCheckBox);
+        CheckBox cashCheckBox = (CheckBox) findViewById(R.id.cashCheckBox);
+        CheckBox checkCheckBox = (CheckBox) findViewById(R.id.checkCheckBox);
 
         ActivitySettingsBinding binding = ActivitySettingsBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
 
-        binding.materialSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        binding.chatnotifSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // The switch is checked.
+            } else {
+                // The switch isn't checked.
+            }
+        });
+
+        binding.postnotifSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // The switch is checked.
+            } else {
+                // The switch isn't checked.
+            }
+        });
+
+        binding.pushnotifSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 // The switch is checked.
             } else {

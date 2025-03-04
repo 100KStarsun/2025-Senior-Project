@@ -54,30 +54,131 @@
         </LinearLayout>
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Payment Preferences"
+        android:textSize="20sp" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:gravity="center">
 
-        <CheckBox
-            android:id="@+id/simpleCheckBox"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Payment Method"/>
+            android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/paypalCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="PayPal"/>
+
+        <CheckBox
+            android:id="@+id/zelleCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Zelle"/>
+
+        <CheckBox
+            android:id="@+id/cashappCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Cash App"/>
+
+        <CheckBox
+            android:id="@+id/venmoCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Venmo"/>
+
+        <CheckBox
+            android:id="@+id/applepayCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Apple Pay"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/samsungpayCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Samsung Pay"/>
+
+        <CheckBox
+            android:id="@+id/googlepayCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Google Pay"/>
+
+        <CheckBox
+            android:id="@+id/cashCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Cash"/>
+
+        <CheckBox
+            android:id="@+id/checkCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Check"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Notifications"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
     <com.google.android.material.switchmaterial.SwitchMaterial
-        android:text="Turn on Notifications for Chat Messages"
-        android:id="@+id/materialSwitch"
+        android:text="Toggle Notifications for Chat Messages "
+        android:id="@+id/chatnotifSwitch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:text="Toggle Notifications for New Posts"
+        android:id="@+id/postnotifSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:text="Toggle Push Notifications "
+        android:id="@+id/pushnotifSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/buttonDeleteAccount"
-        android:text="Delete Account"
-        android:layout_marginTop="10dp"/>
+        android:text="Delete Account "
+        android:layout_marginTop="10dp"
+        android:gravity="center"/>
+
+    </LinearLayout>
 
 </LinearLayout>
