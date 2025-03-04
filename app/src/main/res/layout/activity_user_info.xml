@@ -32,7 +32,7 @@
                 android:elevation="4dp"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="Navigation Drawer Example" />
+                app:title="Agora" />
             <FrameLayout
                 android:id="@+id/fragment_container"
                 android:layout_width="0dp"
