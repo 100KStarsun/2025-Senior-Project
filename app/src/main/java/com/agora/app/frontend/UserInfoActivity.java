@@ -138,6 +138,9 @@ public class UserInfoActivity extends AppCompatActivity {
         builder.setView(dialogView);
         EditText titleInput = dialogView.findViewById(R.id.input_listing_title);
         EditText descriptionInput = dialogView.findViewById(R.id.input_listing_description);
+        EditText tag1Input = dialogView.findViewById(R.id.input_listing_tag1);
+        EditText tag2Input = dialogView.findViewById(R.id.input_listing_tag2);
+        EditText tag3Input = dialogView.findViewById(R.id.input_listing_tag3);
         Button saveButton = dialogView.findViewById(R.id.save_listing);
         AlertDialog dialog = builder.create();
 
@@ -145,9 +148,13 @@ public class UserInfoActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> {
             String title = titleInput.getText().toString();
             String description = descriptionInput.getText().toString();
+            String tag1 = tag1Input.getText().toString();
+            String tag2 = tag2Input.getText().toString();
+            String tag3 = tag3Input.getText().toString();
+
 
             if(!title.isEmpty() && !description.isEmpty()) {
-                listings.add(new Listing(title, description));
+                listings.add(new Listing(title, description, tag1, tag2, tag3));
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();
             }
