@@ -145,17 +145,53 @@ public class LambdaHandler {
             if (!response.get("statusCode").equals("200")) {
                 throw new RuntimeException("Error: Some kind of lambda error");
             }
-            return LambdaHandler.bodyStringToObject(response);
+            response = LambdaHandler.bodyStringToObject(response);
+
+            // check if keys passed match up with keys received
+            switch (operation) {
+                case GET:
+                    DynamoTables dynamoTable = data.keySet().iterator().next();
+                    String itemKey = data.get(dynamoTable).keySet().iterator().next();
+                    try {
+                        response.getJSONObject("Item");
+                    } catch (JSONException ex) {
+                        throw new RuntimeException("Key " + itemKey + " not found in table: " + dynamoTable.tableName);
+                    }
+                    break;
+                case PUT:
+                case DELETE:
+                case BATCH_PUT:
+                case BATCH_DELETE:
+                    break;
+                case BATCH_GET:
+                    JSONObject responses = response.getJSONObject("Responses");
+                    for (DynamoTables table : data.keySet()) {
+                        HashMap<String, String> items = data.get(table);
+                        JSONArray list = new JSONArray();
+                        for (String key : items.keySet()) {
+                        }
+                    }
+
+            }
+
+            return response;
 
         } catch (JSONException | IOException ex) {
             return null;
         }
     }
 
+    /**
+     * Isolates the body of the Lambda response from the rest of the clutter, removes metadata from response
+     *
+     * @param obj the json object representing the response from AWS Lambda
+     * @return a JSON Object that represents the body of the response from AWS Lambda
+     * @throws JSONException if something goes wrong lol
+     */
     private static JSONObject bodyStringToObject (JSONObject obj) throws JSONException {
-        String bodyStr = (String)obj.remove("body");
-        obj.put("body", new JSONObject(bodyStr));
-        return obj;
+        JSONObject obj2 = new JSONObject((String)obj.remove("body"));
+        obj2.remove("ResponseMetadata");
+        return obj2;
     }
 
     private static InvokeRequest makeRequest (SdkBytes payload) {
