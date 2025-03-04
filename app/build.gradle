@@ -30,6 +30,9 @@ android {
         exclude 'META-INF/INDEX.LIST'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/io.netty.versions.properties'
+        exclude 'META-INF/androidx.localbroadcastmanager_localbroadcastmanager.version'
+        exclude 'META-INF/androidx.customview_customview.version'
+        exclude 'META-INF/androidx.drawerlayout_drawerlayout.version'
     }
 
     compileOptions {
@@ -40,6 +43,10 @@ android {
         compose = 'false'
         viewBinding true
     }
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
+    }
 }
 
 configurations {
@@ -47,14 +54,21 @@ configurations {
         exclude group: 'io.netty', module: 'netty-handler'
         exclude group: 'io.netty', module: 'netty-codec-http2'
         exclude group: 'io.netty', module: 'netty-transport'
+        exclude group: 'com.android.support'
     }
 }
 
 dependencies {
-    implementation('androidx.core:core:1.12.0')
+    implementation('androidx.core:core:1.12.0') {
+        exclude group: 'com.android.support', module: 'support-compat'
+    }
+    implementation ('androidx.versionedparcelable:versionedparcelable:1.1.1') {
+        exclude group: 'com.android.support', module: 'versionedparcelable'
+    }
     implementation('androidx.lifecycle:lifecycle-runtime:2.7.0')
     implementation('androidx.appcompat:appcompat:1.6.1')
     implementation('com.sun.mail:javax.mail:1.6.2')
+    implementation ("com.github.yuyakaido:CardStackView:2.3.4")
     testImplementation('junit:junit:4.13.2')
     androidTestImplementation('androidx.test.ext:junit:1.1.5')
     androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1')

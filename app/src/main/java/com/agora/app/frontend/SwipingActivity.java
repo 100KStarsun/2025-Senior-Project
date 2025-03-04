@@ -7,6 +7,13 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Objects;
 
+import com.agora.app.backend.base.Listing;
+import com.yuyakaido.android.cardstackview.CardStackView;
+import com.yuyakaido.android.cardstackview.CardStackListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 /**
  * @class SwipingActivity
  * @brief Activity for swiping page.
@@ -42,5 +49,15 @@ public class SwipingActivity extends AppCompatActivity {
             }
             return false;
         });
+
+        /*
+        CardStackView cardStackView = findViewById(R.id.card_view);
+        List<Listing> listings = new ArrayList<>();
+
+        SwipingView swipingView = new SwipingView(listings);
+        cardStackView.setAdapter(swipingView);
+        */
+
+
     }
 }
