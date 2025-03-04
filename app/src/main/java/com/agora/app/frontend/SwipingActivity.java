@@ -2,13 +2,15 @@ package com.agora.app.frontend;
 
 import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-
 import java.util.Objects;
 
+/**
+ * @class SwipingActivity
+ * @brief Activity for swiping page.
+ */ 
 public class SwipingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

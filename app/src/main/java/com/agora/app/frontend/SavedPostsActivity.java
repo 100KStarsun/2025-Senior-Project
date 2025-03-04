@@ -3,13 +3,14 @@ package com.agora.app.frontend;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.agora.app.R;
-
 import java.util.Objects;
 
+/**
+ * @class SavedPostsActivity
+ * @brief Activity for posts a user has saved to come back to later.
+ */
 public class SavedPostsActivity extends AppCompatActivity {
 
     @Override

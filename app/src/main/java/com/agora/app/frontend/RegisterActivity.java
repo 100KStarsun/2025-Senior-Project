@@ -8,9 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.agora.app.R;
-
 import java.util.Objects;
 
+/**
+ * @class RegisterActivity
+ * @brief Activity for entering case email to register for the app initially.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     public static String EMAIL_TEXT;

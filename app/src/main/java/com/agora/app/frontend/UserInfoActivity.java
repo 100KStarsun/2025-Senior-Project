@@ -2,11 +2,9 @@ package com.agora.app.frontend;
 
 import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,9 +14,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
-
 import com.google.android.material.navigation.NavigationView;
-
 import com.agora.app.backend.base.Listing;
 import com.agora.app.frontend.ListingView;
 import androidx.appcompat.app.AlertDialog;
@@ -31,6 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * @class UserInfoActivity
+ * @brief Activity for the user information page.
+ */
 public class UserInfoActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -138,6 +138,7 @@ public class UserInfoActivity extends AppCompatActivity {
         builder.setView(dialogView);
         EditText titleInput = dialogView.findViewById(R.id.input_listing_title);
         EditText descriptionInput = dialogView.findViewById(R.id.input_listing_description);
+        EditText priceInput = dialogView.findViewById(R.id.input_listing_price);
         EditText tag1Input = dialogView.findViewById(R.id.input_listing_tag1);
         EditText tag2Input = dialogView.findViewById(R.id.input_listing_tag2);
         EditText tag3Input = dialogView.findViewById(R.id.input_listing_tag3);
@@ -148,13 +149,25 @@ public class UserInfoActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> {
             String title = titleInput.getText().toString();
             String description = descriptionInput.getText().toString();
+            
             String tag1 = tag1Input.getText().toString();
             String tag2 = tag2Input.getText().toString();
             String tag3 = tag3Input.getText().toString();
 
+            float price = 0.0f;
+            String priceString = priceInput.getText().toString();
+ 
+            if (!priceString.isEmpty()) {
+                try {
+                    price = Float.parseFloat(priceString); // Parse to float
+                } catch (NumberFormatException e) {
+                    price = 0.0f;  //default price if not entered
+                    // Add toast error message later
+                }
+            }    
 
             if(!title.isEmpty() && !description.isEmpty()) {
-                listings.add(new Listing(title, description, tag1, tag2, tag3));
+                listings.add(new Listing(title, description, price, tag1, tag2, tag3));
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();
             }

@@ -3,13 +3,14 @@ package com.agora.app.frontend;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.agora.app.R;
-
 import java.util.Objects;
 
+/**
+ * @class PreferencesActivity
+ * @brief Activity for setting account preferences.
+ */
 public class PreferencesActivity extends AppCompatActivity {
 
     @Override

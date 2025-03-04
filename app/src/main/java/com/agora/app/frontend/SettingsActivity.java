@@ -4,14 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.CheckBox;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.agora.app.R;
 import com.agora.app.databinding.ActivitySettingsBinding;
-
 import java.util.Objects;
 
+/**
+ * @class SettingsActivity
+ * @brief Activity for application settings.
+ */
 public class SettingsActivity extends AppCompatActivity {
 
     @Override

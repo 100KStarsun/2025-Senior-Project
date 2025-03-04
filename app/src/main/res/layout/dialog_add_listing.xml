@@ -18,6 +18,13 @@
         android:hint="Description"
         android:inputType="textMultiLine"/>
     <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/input_listing_price"
+        android:hint="Price"
+        android:inputType="numberDecimal"
+        android:importantForAccessibility="yes" />
+    <EditText
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:id="@+id/input_listing_tag1"
