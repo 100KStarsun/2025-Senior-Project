@@ -4,12 +4,18 @@ import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Objects;
 
 import com.agora.app.backend.base.Listing;
+import com.yuyakaido.android.cardstackview.CardStackLayoutManager;
 import com.yuyakaido.android.cardstackview.CardStackView;
 import com.yuyakaido.android.cardstackview.CardStackListener;
+import com.yuyakaido.android.cardstackview.Direction;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,7 +24,16 @@ import java.util.Objects;
  * @class SwipingActivity
  * @brief Activity for swiping page.
  */ 
-public class SwipingActivity extends AppCompatActivity {
+public class SwipingActivity extends AppCompatActivity implements CardStackListener {
+
+
+    //variables for card stack
+    private CardStackView cardStackView;
+    private CardStackLayoutManager layoutManager;
+    private SwipingView swipingView;
+    private List<Listing> listings;
+    private List<Listing> savedListings;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,13 +66,49 @@ public class SwipingActivity extends AppCompatActivity {
         });
 
 
-        CardStackView cardStackView = findViewById(R.id.listing_card_stack);
-        List<Listing> listings = new ArrayList<>();
-
-        SwipingView swipingView = new SwipingView(listings);
+        cardStackView = findViewById(R.id.listing_card_stack);
+        listings = new ArrayList<>();
+        savedListings = new ArrayList<>();
+        layoutManager = new CardStackLayoutManager(this, this);
+        cardStackView.setLayoutManager(layoutManager);
+        swipingView = new SwipingView(listings);
         cardStackView.setAdapter(swipingView);
+    }
 
+    @Override
+    public void onCardSwiped(Direction direction) {
+        int i = layoutManager.getTopPosition() - 1;
+        if (i >= 0 && i < listings.size()) {
+            Listing currentListing = listings.get(i);
+            if (direction == Direction.Right) {
+                savedListings.add(currentListing);
+                Toast.makeText(this, currentListing.getTitle() + " has been saved.", Toast.LENGTH_SHORT).show();
+            }
+            else if (direction == Direction.Left) {
+                listings.remove(i);
+                swipingView.notifyItemRemoved(i);
+                Toast.makeText(this, "X", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
+    @Override
+    public void onCardDragging(Direction direction, float amount) {
+    }
+    @Override
+    public void onCardAppeared(View view, int index) {
+    }
+    @Override
+    public void onCardDisappeared(View view, int index) {
+    }
+    @Override
+    public void onCardRewound() {
+    }
+    @Override
+    public void onCardCanceled() {
+    }
 
+    public List<Listing> getSavedListings() {
+        return savedListings;
     }
 }
