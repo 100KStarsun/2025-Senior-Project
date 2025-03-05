@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Date;
 import java.util.UUID;
 
 public class Product implements Serializable {
@@ -17,7 +18,7 @@ public class Product implements Serializable {
 
     private UUID productUUID;
     private String title;
-    private Instant listingTime;
+    private Date listingTime;
     private double price;
     private String description;
     private UUID sellerUUID;
@@ -33,7 +34,7 @@ public class Product implements Serializable {
     private String[] tags;
 
     //Every field provided
-    public Product(UUID uuid, String title, Instant listingTime, double price, String desc, UUID seller, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, String[] tags) {
+    public Product(UUID uuid, String title, Date listingTime, double price, String desc, UUID seller, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, String[] tags) {
         this.productUUID = uuid;
         this.title = title;
         this.listingTime = listingTime;
@@ -52,10 +53,10 @@ public class Product implements Serializable {
         this.tags = tags;
     }
     //Defaults where applicable
-    public Product(UUID uuid, String title, Instant listingTime, double price, String desc, UUID seller, String displayName, String username, String type, String[] tags) {
+    public Product(UUID uuid, String title, double price, String desc, UUID seller, String displayName, String username, String type, String[] tags) {
         this.productUUID = uuid;
         this.title = title;
-        this.listingTime = listingTime;
+        this.listingTime = Date.from(Instant.now());
         this.price = price;
         this.description = desc;
         this.sellerUUID = seller;
