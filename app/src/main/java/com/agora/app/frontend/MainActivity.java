@@ -6,6 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 import com.agora.app.R;
 
+/**
+ * @class MainActivity
+ * @brief Activity for main app pages and flow.
+ */
 public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -4,19 +4,181 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonUserInfo"
+            android:text="User Info"
+            android:layout_marginTop="-10dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Settings"
+            android:textSize="40sp" />
+
+    <!--stack to display user information-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+        <!--user icon-->
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@drawable/icon_userinfo"/>
+
+        <!--stack to display text information next to icon-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="User Name"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Case ID"
+                android:textSize="15dp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Transactions to Date: #"
+                android:textSize="15dp"/>
+        </LinearLayout>
+    </LinearLayout>
+
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Payment Preferences"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/paypalCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="PayPal"/>
+
+        <CheckBox
+            android:id="@+id/zelleCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Zelle"/>
+
+        <CheckBox
+            android:id="@+id/cashappCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Cash App"/>
+
+        <CheckBox
+            android:id="@+id/venmoCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Venmo"/>
+
+        <CheckBox
+            android:id="@+id/applepayCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Apple Pay"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/samsungpayCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Samsung Pay"/>
+
+        <CheckBox
+            android:id="@+id/googlepayCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Google Pay"/>
+
+        <CheckBox
+            android:id="@+id/cashCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Cash"/>
+
+        <CheckBox
+            android:id="@+id/checkCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Check"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Notifications"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:text="Toggle Notifications for Chat Messages "
+        android:id="@+id/chatnotifSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Settings"
-        android:textSize="40sp"
-        android:layout_marginBottom="20dp"/>
+        android:gravity="center"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:text="Toggle Notifications for New Posts"
+        android:id="@+id/postnotifSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:text="Toggle Push Notifications "
+        android:id="@+id/pushnotifSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/buttonUserInfo"
-        android:text="User Info"
-        android:layout_marginTop="20dp"/>
+        android:id="@+id/buttonDeleteAccount"
+        android:text="Delete Account "
+        android:layout_marginTop="10dp"
+        android:gravity="center"/>
 
+    </LinearLayout>
 
 </LinearLayout>

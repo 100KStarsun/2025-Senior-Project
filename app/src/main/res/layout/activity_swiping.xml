@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:orientation="vertical">
 
     <!--page title-->
     <TextView
@@ -14,14 +14,18 @@
         android:text="Swiping"
         android:textSize="40sp" />
 
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/item_card_stack"/>
+
     <!--page buffer-->
     <LinearLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
     <!--nav bar-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -31,6 +35,6 @@
         android:background="?android:attr/windowBackground"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
-        app:menu="@menu/nav_bar"/>
+        app:menu="@menu/nav_bar" />
 
 </LinearLayout>

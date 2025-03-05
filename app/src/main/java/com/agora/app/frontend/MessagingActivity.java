@@ -5,10 +5,12 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import java.util.Objects;
 
-
+/**
+ * @class MessagingActivity
+ * @brief Activity for messaging between users.
+ */
 public class MessagingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {

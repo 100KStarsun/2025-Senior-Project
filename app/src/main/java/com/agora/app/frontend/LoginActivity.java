@@ -11,6 +11,10 @@ import com.agora.app.R;
 
 import java.util.Objects;
 
+/**
+ * @class LoginActivity
+ * @brief Activity that allows the user to login to the app with their saved credentials.
+ */
 public class LoginActivity extends AppCompatActivity {
 
 
