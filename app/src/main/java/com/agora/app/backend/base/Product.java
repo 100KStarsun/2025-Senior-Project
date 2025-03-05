@@ -32,6 +32,44 @@ public class Product implements Serializable {
     private ArrayList<UUID> previousBuyers;
     private String[] tags;
 
+    //Every field provided
+    public Product(UUID uuid, String title, Instant listingTime, double price, String desc, UUID seller, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, String[] tags) {
+        this.productUUID = uuid;
+        this.title = title;
+        this.listingTime = listingTime;
+        this.price = price;
+        this.description = desc;
+        this.sellerUUID = seller;
+        this.sellerDisplayName = displayName;
+        this.sellerUsername = username;
+        this.typeOfProduct = type;
+        this.quantity = quantity;
+        this.hasInfiniteAvailable = hasInfinite;
+        this.isPublished = published;
+        this.isAcceptingCash = acceptingCash;
+        this.isTradable = tradable;
+        this.previousBuyers = previousBuyers;
+        this.tags = tags;
+    }
+    //Defaults where applicable
+    public Product(UUID uuid, String title, Instant listingTime, double price, String desc, UUID seller, String displayName, String username, String type, String[] tags) {
+        this.productUUID = uuid;
+        this.title = title;
+        this.listingTime = listingTime;
+        this.price = price;
+        this.description = desc;
+        this.sellerUUID = seller;
+        this.sellerDisplayName = displayName;
+        this.sellerUsername = username;
+        this.typeOfProduct = type;
+        this.quantity = 1;
+        this.hasInfiniteAvailable = false;
+        this.isPublished = true;
+        this.isAcceptingCash = true;
+        this.isTradable = false;
+        this.previousBuyers = new ArrayList<>();
+        this.tags = tags;
+    }
     /**
      * Used by the {@code ProductWrapper} class to turn the base64-encoded string back into a {@code Product}, using an {@code ObjectInputStream}, {@code ByteArrayInputStream}, and the {@code Base64.Decoder} class.
      *
@@ -65,7 +103,33 @@ public class Product implements Serializable {
         return null;
     }
 
-    public UUID getUUID () {
-        return this.productUUID;
-    }
+    //1 million getters + setters
+    public UUID getUUID () { return this.productUUID; }
+    public String getTitle () { return this.title; }
+    public Instant getListingTime () { return this.listingTime; }
+    public double getPrice () { return this.price; }
+    public String getDescription () { return this.description; }
+    public UUID getSellerUUID() { return this.sellerUUID; }
+    public String getSellerDisplayName() { return this.sellerDisplayName; }
+    public String getSellerUsername() { return this.sellerUsername; }
+    public String getTypeOfProduct() { return this.typeOfProduct; }
+    public int getQuantity() { return this.quantity; }
+    public boolean getHasInfiniteAvailable() { return this.hasInfiniteAvailable; }
+    public boolean getIsPublished() { return this.isPublished; }
+    public boolean getIsAcceptingCash() { return this.isAcceptingCash; }
+    public boolean getIsTradable() { return this.isTradable; }
+    public ArrayList<UUID> getPreviousBuyers() { return this.previousBuyers; }
+    public String[] getTags() { return this.tags; }
+    public void setTitle (String title) { this.title = title; }
+    public void setPrice (double price) { this.price = price; }
+    public void setDescription (String description) { this.description = description; }
+    public void setSellerDisplayName (String sellerDisplayName) { this.sellerDisplayName = sellerDisplayName; }
+    public void setTypeOfProduct (String typeOfProduct) { this.typeOfProduct = typeOfProduct; }
+    public void setQuantity (int quantity) { this.quantity = quantity; }
+    public void toggleHasInfiniteAvailable() { this.hasInfiniteAvailable = !this.hasInfiniteAvailable; }
+    public void toggleIsPublished() { this.isPublished = !this.isPublished; }
+    public void toggleIsAcceptingCash() { this.isAcceptingCash = !this.isAcceptingCash; }
+    public void toggleIsTradable() { this.isTradable = !this.isTradable; }
+    public void addPreviousBuyer (UUID previousBuyer) { this.previousBuyers.add(previousBuyer); }
+    public void setTags (String[] tags) { this.tags = tags; }
 }
