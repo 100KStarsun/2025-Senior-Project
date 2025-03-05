@@ -13,6 +13,7 @@ import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class LambdaHandler {
@@ -165,11 +166,29 @@ public class LambdaHandler {
                     break;
                 case BATCH_GET:
                     JSONObject responses = response.getJSONObject("Responses");
+                    JSONObject unfoundKeys = new JSONObject();
                     for (DynamoTables table : data.keySet()) {
                         HashMap<String, String> items = data.get(table);
                         JSONArray list = new JSONArray();
+                        JSONArray tableResponses = responses.getJSONArray(table.tableName);
                         for (String key : items.keySet()) {
+                            boolean wasFound = false;
+                            for (int i = 0; i < tableResponses.length(); i++) {
+                                if (tableResponses.getJSONObject(i).getJSONObject(table.partitionKeyName).getString("S").equals(key)) {
+                                    wasFound = true;
+                                    break;
+                                }
+                            }
+                            if (!wasFound) {
+                                list.put(key);
+                            }
                         }
+                        if (list.length() != 0) {
+                            unfoundKeys.put(table.tableName, list);
+                        }
+                    }
+                    if (unfoundKeys.length() != 0) {
+                        throw new RuntimeException("There were keys that were not found");
                     }
 
             }

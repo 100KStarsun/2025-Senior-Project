@@ -143,16 +143,25 @@ public class TestClass {
     @Test
     public void testLambdaGetNonExistant () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(2);
-        items.put("definitelyNotAMimic", null);
+        String key = "definitelyNotAMimic";
+        items.put(key, null);
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
-        data.put(DynamoTables.USERS, items);
+        DynamoTables table = DynamoTables.USERS;
+        data.put(table, items);
 
-        JSONObject obj = LambdaHandler.invoke(data, Operations.GET);
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.GET + "_object_fail.json");
-        fw.write(obj.toString(4));
-        fw.close();
-        assert true;
+        try {
+            JSONObject obj = LambdaHandler.invoke(data, Operations.GET);
+            FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.GET + "_object_fail.json");
+            fw.write(obj.toString(4));
+            fw.close();
+        } catch (RuntimeException ex) {
+            if (ex.getMessage().equals("Key " + key + " not found in table: " + table.tableName)) {
+                assert true;
+                return;
+            }
+        }
+        assert false;
     }
 
     @Test
