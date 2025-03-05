@@ -1,6 +1,5 @@
 package com.agora.app.dynamodb;
 
-import com.agora.app.backend.base.Chat;
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.Product;
 import com.agora.app.backend.base.User;
@@ -12,6 +11,7 @@ import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
+
 
 
 public class DynamoDBHandler {
@@ -125,11 +125,17 @@ public class DynamoDBHandler {
         }
     }
 
-    public static Chat getChatItem (String otherUsername) {
+    /**
+     * Retrieves a product object from the database, given a specific productUUID
+     *
+     * @param uuid The productUUID of the product
+     * @return The {@code Product} object (if it exists) that has the specified productUUID, {@code null} if there is no {@code Product} object in the database with that productUUID
+     */
+    public static Product getProductItem (String uuid) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<Chat> chatTable = enhancedClient.table(DynamoDBHandler.chatsTableName, TableSchema.fromBean(Chat.class));
-            return chatTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(otherUsername));
+            DynamoDbTable<ProductWrapper> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
+            return Product.createFromBase64String(productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(uuid)).getProductBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();
@@ -137,15 +143,19 @@ public class DynamoDBHandler {
         }
     }
 
-    public static Product getProductItem (String productUUID) {
+    /**
+     * Puts a {@code Product} object into the database, overwriting the current {@code Product} object in the database if this {@code Product} and the remote {@code Product} object share the same productUUID
+     *
+     * @param product The {@code Product} object to be placed into the database
+     */
+    public static void putProductItem (Product product) {
         try {
             DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<Product> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(Product.class));
-            return productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(productUUID));
+            DynamoDbTable<ProductWrapper> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
+            productTable.putItem(new ProductWrapper(product));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();
-            return null;
         }
     }
 
