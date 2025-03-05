@@ -17,7 +17,7 @@
     <com.yuyakaido.android.cardstackview.CardStackView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/item_card_stack"/>
+        android:id="@+id/listing_card_stack"/>
 
     <!--page buffer-->
     <LinearLayout
@@ -25,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
+    </LinearLayout>
 
     <!--nav bar-->
     <com.google.android.material.bottomnavigation.BottomNavigationView

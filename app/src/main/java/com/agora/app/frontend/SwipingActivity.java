@@ -50,13 +50,13 @@ public class SwipingActivity extends AppCompatActivity {
             return false;
         });
 
-        /*
-        CardStackView cardStackView = findViewById(R.id.card_view);
+
+        CardStackView cardStackView = findViewById(R.id.listing_card_stack);
         List<Listing> listings = new ArrayList<>();
 
         SwipingView swipingView = new SwipingView(listings);
         cardStackView.setAdapter(swipingView);
-        */
+
 
 
     }

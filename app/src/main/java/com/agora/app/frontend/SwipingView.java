@@ -5,8 +5,6 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.agora.app.backend.base.Listing;
-import com.yuyakaido.android.cardstackview.CardStackView;
-import com.yuyakaido.android.cardstackview.CardStackListener;
 import java.util.List;
 import android.view.ViewGroup;
 import android.view.LayoutInflater;
