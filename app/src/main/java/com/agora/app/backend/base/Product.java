@@ -21,7 +21,6 @@ public class Product implements Serializable {
     private Date listingTime;
     private double price;
     private String description;
-    private UUID sellerUUID;
     private String sellerDisplayName;
     private String sellerUsername;
     private String typeOfProduct;
@@ -34,13 +33,12 @@ public class Product implements Serializable {
     private String[] tags;
 
     //Every field provided
-    public Product(UUID uuid, String title, Date listingTime, double price, String desc, UUID seller, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, String[] tags) {
+    public Product(UUID uuid, String title, Date listingTime, double price, String desc, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, String[] tags) {
         this.productUUID = uuid;
         this.title = title;
         this.listingTime = listingTime;
         this.price = price;
         this.description = desc;
-        this.sellerUUID = seller;
         this.sellerDisplayName = displayName;
         this.sellerUsername = username;
         this.typeOfProduct = type;
@@ -53,13 +51,12 @@ public class Product implements Serializable {
         this.tags = tags;
     }
     //Defaults where applicable
-    public Product(UUID uuid, String title, double price, String desc, UUID seller, String displayName, String username, String type, String[] tags) {
+    public Product(UUID uuid, String title, double price, String desc, String displayName, String username, String type, String[] tags) {
         this.productUUID = uuid;
         this.title = title;
         this.listingTime = Date.from(Instant.now());
         this.price = price;
         this.description = desc;
-        this.sellerUUID = seller;
         this.sellerDisplayName = displayName;
         this.sellerUsername = username;
         this.typeOfProduct = type;
@@ -69,6 +66,42 @@ public class Product implements Serializable {
         this.isAcceptingCash = true;
         this.isTradable = false;
         this.previousBuyers = new ArrayList<>();
+        this.tags = tags;
+    }
+    //Defaults for most things, but allows quantity and infiniteavailabilty
+    public Product(UUID uuid, String title, double price, String desc, String displayName, String username, String type, int quantity, boolean infiniteAvailable, String[] tags) {
+        this.productUUID = uuid;
+        this.title = title;
+        this.listingTime = Date.from(Instant.now());
+        this.price = price;
+        this.description = desc;
+        this.sellerDisplayName = displayName;
+        this.sellerUsername = username;
+        this.typeOfProduct = type;
+        this.quantity = quantity;
+        this.hasInfiniteAvailable = infiniteAvailable;
+        this.isPublished = true;
+        this.isAcceptingCash = true;
+        this.isTradable = false;
+        this.previousBuyers = new ArrayList<>();
+        this.tags = tags;
+    }
+    //Seller information comes from a User object
+    public Product(UUID uuid, String title, Date listingTime, double price, String desc, User user, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, String[] tags) {
+        this.productUUID = uuid;
+        this.title = title;
+        this.listingTime = listingTime;
+        this.price = price;
+        this.description = desc;
+        this.sellerDisplayName = user.getPreferredFirstName();
+        this.sellerUsername = user.getUsername;
+        this.typeOfProduct = type;
+        this.quantity = quantity;
+        this.hasInfiniteAvailable = hasInfinite;
+        this.isPublished = published;
+        this.isAcceptingCash = acceptingCash;
+        this.isTradable = tradable;
+        this.previousBuyers = previousBuyers;
         this.tags = tags;
     }
     /**
@@ -107,10 +140,9 @@ public class Product implements Serializable {
     //1 million getters + setters
     public UUID getUUID () { return this.productUUID; }
     public String getTitle () { return this.title; }
-    public Instant getListingTime () { return this.listingTime; }
+    public Date getListingTime () { return this.listingTime; }
     public double getPrice () { return this.price; }
     public String getDescription () { return this.description; }
-    public UUID getSellerUUID() { return this.sellerUUID; }
     public String getSellerDisplayName() { return this.sellerDisplayName; }
     public String getSellerUsername() { return this.sellerUsername; }
     public String getTypeOfProduct() { return this.typeOfProduct; }
