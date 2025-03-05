@@ -94,7 +94,7 @@ public class Product implements Serializable {
         this.price = price;
         this.description = desc;
         this.sellerDisplayName = user.getPreferredFirstName();
-        this.sellerUsername = user.getUsername;
+        this.sellerUsername = user.getUsername();
         this.typeOfProduct = type;
         this.quantity = quantity;
         this.hasInfiniteAvailable = hasInfinite;
