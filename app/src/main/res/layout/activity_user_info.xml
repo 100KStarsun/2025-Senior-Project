@@ -31,8 +31,23 @@
                 android:background="?attr/colorPrimary"
                 android:elevation="4dp"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:title="Agora" />
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="500dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/agora_header"
+                        android:layout_gravity="center"
+                        android:contentDescription="Agora Header"/>
+                </FrameLayout>
+
+            </androidx.appcompat.widget.Toolbar>
+
+
             <FrameLayout
                 android:id="@+id/fragment_container"
                 android:layout_width="0dp"
@@ -90,7 +105,7 @@
                 android:scrollbars="vertical"
                 android:layout_weight="1"/>
 
-            
+
 
             <!--add listing button-->
             <LinearLayout

@@ -12,6 +12,8 @@
     android:orientation="vertical"
     tools:context=".frontend.RegisterActivity">
 
+
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="200dp"
