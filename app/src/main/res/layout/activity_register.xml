@@ -10,7 +10,12 @@
     android:gravity="center"
     android:padding="64dp"
     android:orientation="vertical"
-    tools:context=".Registerctivity">
+    tools:context=".frontend.RegisterActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_banner_foreground" />
 
     <EditText
         android:id="@+id/email_text_id"
@@ -27,7 +32,7 @@
         android:layout_marginTop="32dp"
         android:text="Submit"
         android:textColor="@color/white"
-        android:backgroundTint="@color/light_green"/>
+        android:backgroundTint="@color/teal_700"/>
     <Button
         android:id="@+id/buttonLoginActivity"
         android:layout_width="match_parent"
@@ -35,6 +40,6 @@
         android:layout_marginTop="16dp"
         android:text="Already have an account? Login"
         android:textColor="@color/white"
-        android:backgroundTint="@color/light_green" />
+        android:backgroundTint="@color/teal_700" />
     
 </LinearLayout>
