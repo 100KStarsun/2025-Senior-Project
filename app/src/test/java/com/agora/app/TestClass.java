@@ -1,15 +1,23 @@
 package com.agora.app;
+
 import com.agora.app.backend.LoginHandler;
 import com.agora.app.backend.LoginException;
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.PaymentMethods;
 import com.agora.app.backend.base.User;
-import com.agora.app.dynamodb.DynamoDBHandler;
+import com.agora.app.dynamodb.DynamoTables;
+import com.agora.app.lambda.KeyNotFoundException;
+import com.agora.app.lambda.LambdaHandler;
+import com.agora.app.lambda.Operations;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.EnumMap;
+import java.util.HashMap;
 
 public class TestClass {
     private static String caseID = "lrl47";
@@ -17,7 +25,7 @@ public class TestClass {
     private static String preferredFirstName = ""; // leave blank to automatically use legalFirstName
     private static String lastName = "Ladd";
     private static String[] bools = {"n","n","n","n","n","n","n","y","n"}; // PayPal, Zelle, CashApp, Venmo, Apple Pay, Samsung Pay, Google Pay, Cash, Check | Note: everyone has cash enabled by default
-    private static String passwordString = "xX-yeet-Xx";
+    private static String passwordString = "100kstarsun";
 
 
     public static String caseEmailDomain = "@case.edu";
@@ -25,7 +33,7 @@ public class TestClass {
     public static String agoraTempDir = "\\.agora\\";
 
     @Test
-    public void puttingAndGettingUserAndPassword () throws IOException {
+    public void puttingAndGettingUserAndPassword () throws IOException, JSONException {
         // logic for setting preferred name
         TestClass.preferredFirstName = TestClass.preferredFirstName.isEmpty() ? TestClass.legalFirstName : TestClass.preferredFirstName;
 
@@ -43,50 +51,46 @@ public class TestClass {
         // Put user + password into db
         boolean userExistsAlready = false;
         try {
-            User test = DynamoDBHandler.getUserItem(caseID);
-            if (test != null && !test.toString().contains("null")) {
-                userExistsAlready = true;
-            }
-        } catch (NullPointerException ex) {}
+            HashMap<String, String> items = new HashMap<>(2);
+            items.put(caseID, null);
+
+            HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+            data.put(DynamoTables.USERS, items);
+            JSONObject response = LambdaHandler.invoke(data, Operations.BATCH_GET);
+            data = LambdaHandler.jsonToBase64(response);
+            User test = User.createFromBase64String(data.get(DynamoTables.USERS).get(caseID));
+            userExistsAlready = true;
+        } catch (NullPointerException | KeyNotFoundException ex) {}
 
         if (!userExistsAlready) {
-            DynamoDBHandler.putUserItem(demoUser);
+            HashMap<String, String> items = new HashMap<>(2);
+            items.put(demoUser.getUsername(), demoUser.toBase64String());
+
+            HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+            data.put(DynamoTables.USERS, items);
+
+            LambdaHandler.invoke(data, Operations.PUT);
         }
-        User user = DynamoDBHandler.getUserItem(TestClass.caseID);
+
+        User user = LambdaHandler.getUsers(new String[] {caseID}).get(caseID);
         Password demoPassword = new Password(TestClass.passwordString, user);
 
         boolean passwordExistsAlready = false;
         try {
-            Password test = DynamoDBHandler.getPasswordItem(new Password(passwordString, caseID).getHash());
+            String hash = new Password(passwordString, user).getHash();
+            Password test = LambdaHandler.getPasswords(new String[] {hash}).get(hash);
             if (test != null && !test.toString().contains("null")) {
                 passwordExistsAlready = true;
             }
         } catch (NullPointerException ex) {}
 
         if (!passwordExistsAlready) {
-            DynamoDBHandler.putPasswordItem(demoPassword);
+            LambdaHandler.putPasswords(new String[] {demoPassword.getHash()}, new String[] {demoPassword.toBase64String()});
         }
         Password password = null;
         try {
-            password = DynamoDBHandler.getPasswordItem(demoPassword.getHash());
+            password = LambdaHandler.getPasswords(new String[] {demoPassword.getHash()}).get(demoPassword.getHash());
         } catch (NullPointerException ex) {}
-//        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "user.txt");
-//        fw.write(user.toString() + "\n");
-//        fw.write(user.getSaltString() + "\n");
-//        fw.write(user.toBase64String());
-//        fw.close();
-//        fw = new FileWriter(homeDir + agoraTempDir + "password.txt");
-//        try {
-//            fw.write(password.getHash() + "\n");
-//            fw.write(password.toBase64String());
-//        } catch (Exception ex) {}
-//        fw.close();
-//        fw = new FileWriter(homeDir + agoraTempDir + "bools.txt");
-//        fw.write(userExistsAlready + "\n");
-//        fw.write(passwordExistsAlready + "\n");
-//        fw.close();
-
-
         // make sure none of the printed fields are null which /should/ mean we have fully retrieved the user + password
         assert !user.toString().contains("null") && !password.toString().contains("null");
     }
@@ -95,7 +99,7 @@ public class TestClass {
      * try is excluded here so that if a LoginException gets thrown, the error is easier to pinpoint
      */
     @Test
-    public void testCorrectLogin () {
+    public void testCorrectLogin () throws NoSuchAlgorithmException {
         assert LoginHandler.login(caseID, passwordString);
     }
 
@@ -103,7 +107,7 @@ public class TestClass {
      * Passes if we get a LoginException, fails if not. This is because the password is not correct and that causes .login() to throw a LoginException
      */
     @Test
-    public void testWrongLogin () {
+    public void testWrongLogin () throws NoSuchAlgorithmException {
         String attemptedUsername = "lrl47"; // this is a valid username
         String attemptedPassword = "xX-skeet-Xx"; // this is not the correct password for the username provided
         try {
@@ -114,5 +118,135 @@ public class TestClass {
             return;
         }
         assert false;
+    }
+
+    @Test
+    public void testLambdaGetSimple () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(2);
+        items.put("lrl47", null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+        data.put(DynamoTables.USERS, items);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_GET);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_GET + "_simple_object.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaGetNonExistant () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(2);
+        String key = "definitelyNotAMimic";
+        items.put(key, null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+        DynamoTables table = DynamoTables.USERS;
+        data.put(table, items);
+
+        try {
+            JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_GET);
+            FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_GET + "_simple_object_fail.json");
+            fw.write(obj.toString(4));
+            fw.close();
+        } catch (KeyNotFoundException ex) {
+            assert true;
+            return;
+        }
+        assert false;
+    }
+
+    @Test
+    public void testLambdaPut () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(2);
+        items.put("abc123", "some_base_64_string_for_abc123");
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+        data.put(DynamoTables.USERS, items);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.PUT);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.PUT + "_object.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaDelete () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(2);
+        items.put("abc123", null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+        data.put(DynamoTables.USERS, items);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.DELETE);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.DELETE + "_object.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaBatchGet () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(4);
+        items.put("nrm98", null);
+        items.put("lrl47", null);
+        items.put("ssh115", null);
+
+        HashMap<String, String> items2 = new HashMap<>(2);
+        items2.put("318cc452b68dca17de02fceb63ba7e1f91e6e2bf1d3b9b7b27b0b628ba703390", null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
+        data.put(DynamoTables.USERS, items);
+        data.put(DynamoTables.PASSWORDS, items2);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_GET);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_GET + "_object.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaBatchPut () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(4);
+        items.put("def654", "fake_b641");
+        items.put("msc135", "fake_b642");
+
+        HashMap<String, String> items2 = new HashMap<>(2);
+        items2.put("fake_hash_1", "fake_hash_1 + def654.toBase64()");
+        items2.put("fake_hash_2", "fake_hash_2 + msc135.toBase64()");
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
+        data.put(DynamoTables.USERS, items);
+        data.put(DynamoTables.PASSWORDS, items2);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_PUT);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_PUT + "_object.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
+    }
+
+    @Test
+    public void testLambdaBatchDelete () throws IOException, JSONException {
+        HashMap<String, String> items = new HashMap<>(4);
+        items.put("def654", null);
+        items.put("msc135", null);
+
+        HashMap<String, String> items2 = new HashMap<>(2);
+        items2.put("fake_hash_1", null);
+        items2.put("fake_hash_2", null);
+
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
+        data.put(DynamoTables.USERS, items);
+        data.put(DynamoTables.PASSWORDS, items2);
+
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_DELETE);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_DELETE + "_object.json");
+        fw.write(obj.toString(4));
+        fw.close();
+        assert true;
     }
 }

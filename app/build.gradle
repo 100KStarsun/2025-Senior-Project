@@ -5,7 +5,7 @@ plugins {
 android {
     namespace = "com.agora.app"
     compileSdk = 35
-   
+
     sourceSets {
         main.java.srcDirs = ['src/main/java']
     }
@@ -59,9 +59,12 @@ dependencies {
     androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1')
     implementation('com.google.android.material:material:1.11.0')
 
-    platform(implementation('software.amazon.awssdk:bom:2.30.21'))
-    implementation("software.amazon.awssdk:sso")
-    implementation("software.amazon.awssdk:ssooidc")
+    platform(implementation('software.amazon.awssdk:bom:2.30.31'))
+    implementation('software.amazon.awssdk:sso')
+    implementation('software.amazon.awssdk:ssooidc')
     implementation('software.amazon.awssdk:dynamodb-enhanced')
-    implementation('software.amazon.awssdk:dynamodb')
+    implementation('software.amazon.awssdk:lambda')
+    implementation('software.amazon.awssdk:url-connection-client:2.13.49')
+    implementation('org.json:json:20250107')
+    implementation('org.slf4j:slf4j-simple:1.7.36')
 }

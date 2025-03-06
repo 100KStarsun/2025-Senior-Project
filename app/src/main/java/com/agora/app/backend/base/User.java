@@ -4,6 +4,7 @@ import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,14 +22,16 @@ import java.security.SecureRandom;
 
 
 public class User implements Serializable {
+    private static final long serialVersionUID = 2042010294253052140L;
+
 
     private String username;
     private String preferredFirstName;
     private String legalFirstName;
     private String lastName;
     private String email;
-    private byte[] salt;
     private SecureRandom rng = new SecureRandom();
+    private byte[] salt;
     private String saltString;
     private final Date timeCreated;
     private int numSwaps;
@@ -102,6 +105,15 @@ public class User implements Serializable {
         try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
             return (User) objectIn.readObject();
         } catch (IOException | ClassNotFoundException ex) {
+            try {
+                FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error.txt");
+                fw.write(ex.getMessage() + "\n");
+                fw.write(ex.getLocalizedMessage() + "\n");
+                for (StackTraceElement element : ex.getStackTrace()) {
+                    fw.write(element.toString() + "\n");
+                }
+                fw.close();
+            } catch (IOException e) {}
             ex.printStackTrace();
         }
         return null;
@@ -122,6 +134,8 @@ public class User implements Serializable {
         }
         return null;
     }
+
+
 
     /**
      * Two users are considered the same if they share the same username
@@ -158,61 +172,9 @@ public class User implements Serializable {
 
     public void setUsername (String username) { this.username = username; }
 
-    public String getPreferredFirstName () { return preferredFirstName; }
-
-    public void setPreferredFirstName (String preferredFirstName) { this.preferredFirstName = preferredFirstName; }
-
-    public String getLegalFirstName () { return legalFirstName; }
-
-    public void setLegalFirstName (String legalFirstName) { this.legalFirstName = legalFirstName; }
-
-    public String getLastName () { return lastName; }
-
-    public void setLastName (String lastName) { this.lastName = lastName; }
-
-    public String getEmail () { return email; }
-
-    public void setEmail (String email) { this.email = email; }
-
-    public byte[] getSalt () { return salt; }
-
     public String getSaltString () { return saltString; }
-
-    public Date getTimeCreated () { return timeCreated; }
-
-    public int getNumSwaps () { return numSwaps; }
-
-    public void setNumSwaps (int numSwaps) { this.numSwaps = numSwaps; }
-
-    public short getRating () { return rating; }
-
-    public void setRating (short rating) { this.rating = rating; }
-
-    public EnumMap<PaymentMethods, Boolean> getPaymentMethodsSetup () { return paymentMethodsSetup; }
-
-    public void setPaymentMethodsSetup (EnumMap<PaymentMethods, Boolean> paymentMethodsSetup) { this.paymentMethodsSetup = paymentMethodsSetup; }
 
     public TreeMap<String, ArrayList<UUID>> getChats () { return chats; }
 
-    public void setChats (TreeMap<String, ArrayList<UUID>> chats) { this.chats = chats; }
-
-    public ArrayList<UUID> getDraftedProducts () { return draftedProducts; }
-
-    public void setDraftedProducts (ArrayList<UUID> draftedProducts) { this.draftedProducts = draftedProducts; }
-
-    public ArrayList<UUID> getPublishedProducts () { return publishedProducts; }
-
-    public void setPublishedProducts (ArrayList<UUID> publishedProducts) { this.publishedProducts = publishedProducts; }
-
-    public ArrayList<UUID> getLikedProducts () { return likedProducts; }
-
-    public void setLikedProducts (ArrayList<UUID> likedProducts) { this.likedProducts = likedProducts; }
-
-    public ArrayList<UUID> getMutedUsers () { return mutedUsers; }
-
-    public void setMutedUsers (ArrayList<UUID> mutedUsers) { this.mutedUsers = mutedUsers; }
-
-    public ArrayList<UUID> getBlockedUsers () { return blockedUsers; }
-
-    public void setBlockedUsers (ArrayList<UUID> blockedUsers) { this.blockedUsers = blockedUsers; }
+    public String getPreferredFirstName () { return this.preferredFirstName; }
 }

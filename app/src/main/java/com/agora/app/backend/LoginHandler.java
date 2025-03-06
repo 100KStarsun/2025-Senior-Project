@@ -17,7 +17,7 @@ public class LoginHandler {
      * @param password the provided password of the user trying to log in
      * @return {@code true} if the login info matches
      */
-    public static boolean login (String username, String password) {
+    public static boolean login (String username, String password) throws LoginException, NoSuchAlgorithmException {
         try {
             final MessageDigest digest = MessageDigest.getInstance(Password.hashAlgorithm);
             User user = DynamoDBHandler.getUserItem(username);
@@ -31,14 +31,10 @@ public class LoginHandler {
                 // this case is when both the username and password provided exist, but the username associated with the password is not correct
                 throw new LoginException("Incorrect username or password.");
             }
-        } catch (NoSuchAlgorithmException ex) {
-            System.out.println(ex.getMessage());
-            ex.printStackTrace();
         } catch (NullPointerException ex) {
             // this case is when either the username or password provided do not exist in the database
             throw new LoginException("Incorrect username or password.");
         }
-        return false;
     }
 
     /**

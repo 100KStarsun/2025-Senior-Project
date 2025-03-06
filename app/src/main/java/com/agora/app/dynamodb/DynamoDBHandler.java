@@ -1,17 +1,21 @@
 package com.agora.app.dynamodb;
 
 import com.agora.app.backend.base.Password;
+
 import com.agora.app.backend.base.Product;
 import com.agora.app.backend.base.User;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
 
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class DynamoDBHandler {
@@ -37,24 +41,22 @@ public class DynamoDBHandler {
      */
     public static Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
 
-    /**
-     * Creates the request object that asks for the item with the specified partition key
-     *
-     * @param partitionKey A unique string that can be used to find the item in the DynamoDB table
-     * @return a {@code GetItemEnhancedRequest} object that is the properly formatted object for retrieving an item from a DynamoDB table
-     */
+
     public static GetItemEnhancedRequest makeRequestFromPartitionKey (String partitionKey) {
-        return GetItemEnhancedRequest.builder().key(Key.builder().partitionValue(partitionKey).build()).build();
+        return GetItemEnhancedRequest.builder()
+                                     .key(Key.builder()
+                                             .partitionValue(partitionKey)
+                                             .build())
+                                     .build();
     }
 
-    /**
-     * Creates the {@code DynamoDbEnhancedClient} required to interface with the DynamoDB tables
-     *
-     * @return a {@code DynamoDbEnhancedClient} object that is set up to be based in the AWS Region specified earlier
-     */
-    public static DynamoDbEnhancedClient makeDynamoClient () {
-        DynamoDbClient basicClient = DynamoDbClient.builder().region(awsRegion).build();
-        return DynamoDbEnhancedClient.builder().dynamoDbClient(basicClient).build();
+    private static DynamoDbEnhancedClient makeClient () {
+        return DynamoDbEnhancedClient.builder()
+                                     .dynamoDbClient(DynamoDbClient.builder()
+                                                                   .httpClient(UrlConnectionHttpClient.create())
+                                                                   .region(awsRegion)
+                                                                   .build())
+                                     .build();
     }
 
     /**
@@ -65,10 +67,18 @@ public class DynamoDBHandler {
      */
     public static User getUserItem (String username) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
+            DynamoDbTable<UserWrapper> userTable = makeClient().table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
             return User.createFromBase64String(userTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username)).getUserBase64());
-        } catch (DynamoDbException ex) {
+        } catch (DynamoDbException |NullPointerException ex) {
+            try {
+                FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error3.txt");
+                fw.write(ex.getMessage() + "\n");
+                fw.write(ex.getLocalizedMessage() + "\n");
+                for (StackTraceElement element : ex.getStackTrace()) {
+                    fw.write(element.toString() + "\n");
+                }
+                fw.close();
+            } catch (IOException e) {}
             System.err.println(ex.getMessage());
             ex.printStackTrace();
             return null;
@@ -82,8 +92,7 @@ public class DynamoDBHandler {
      */
     public static void putUserItem (User user) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
+            DynamoDbTable<UserWrapper> userTable = makeClient().table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
             userTable.putItem(new UserWrapper(user));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -99,8 +108,7 @@ public class DynamoDBHandler {
      */
     public static Password getPasswordItem (String saltedHash) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
+            DynamoDbTable<PasswordWrapper> passwordTable = makeClient().table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
             return Password.createFromBase64String(passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(saltedHash)).getPasswordBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -116,8 +124,7 @@ public class DynamoDBHandler {
      */
     public static void putPasswordItem (Password password) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
+            DynamoDbTable<PasswordWrapper> passwordTable = makeClient().table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
             passwordTable.putItem(new PasswordWrapper(password));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -133,8 +140,7 @@ public class DynamoDBHandler {
      */
     public static Product getProductItem (String uuid) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<ProductWrapper> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
+            DynamoDbTable<ProductWrapper> productTable = makeClient().table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
             return Product.createFromBase64String(productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(uuid)).getProductBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -150,8 +156,7 @@ public class DynamoDBHandler {
      */
     public static void putProductItem (Product product) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<ProductWrapper> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
+            DynamoDbTable<ProductWrapper> productTable = makeClient().table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
             productTable.putItem(new ProductWrapper(product));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
