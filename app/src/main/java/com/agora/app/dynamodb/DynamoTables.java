@@ -13,4 +13,20 @@ public enum DynamoTables {
         this.tableName = tableName;
         this.partitionKeyName = partitionKeyName;
     }
+
+    public static DynamoTables getEnumFromTableName (String tableName) {
+        switch (tableName) {
+            case "agora_users":
+                return USERS;
+            case "agora_passwords":
+                return PASSWORDS;
+            case "agora_chats":
+                return CHATS;
+            case "agora_products":
+                return PRODUCTS;
+            default:
+                return null;
+
+        }
+    }
 }

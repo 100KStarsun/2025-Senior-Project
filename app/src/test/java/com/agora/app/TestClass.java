@@ -53,10 +53,23 @@ public class TestClass {
         boolean userExistsAlready = false;
         try {
             User test = DynamoDBHandler.getUserItem(caseID);
+            FileWriter fw = new FileWriter(homeDir + agoraTempDir + "testUser.txt");
+            fw.write(test.toString() + "\n");
+            fw.write(test.getSaltString() + "\n");
+            fw.write(test.toBase64String());
+            fw.close();
             if (test != null && !test.toString().contains("null")) {
                 userExistsAlready = true;
             }
-        } catch (NullPointerException ex) {}
+        } catch (NullPointerException ex) {
+            FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error2.txt");
+            fw.write(ex.getMessage() + "\n");
+            fw.write(ex.getLocalizedMessage() + "\n");
+            for (StackTraceElement element : ex.getStackTrace()) {
+                fw.write(element.toString() + "\n");
+            }
+            fw.close();
+        }
 
         if (!userExistsAlready) {
             DynamoDBHandler.putUserItem(demoUser);
@@ -126,15 +139,15 @@ public class TestClass {
     }
 
     @Test
-    public void testLambdaGet () throws IOException, JSONException {
+    public void testLambdaGetSimple () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(2);
         items.put("lrl47", null);
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
 
-        JSONObject obj = LambdaHandler.invoke(data, Operations.GET);
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.GET + "_object.json");
+        JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_GET);
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_GET + "_simple_object.json");
         fw.write(obj.toString(4));
         fw.close();
         assert true;
@@ -151,8 +164,8 @@ public class TestClass {
         data.put(table, items);
 
         try {
-            JSONObject obj = LambdaHandler.invoke(data, Operations.GET);
-            FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.GET + "_object_fail.json");
+            JSONObject obj = LambdaHandler.invoke(data, Operations.BATCH_GET);
+            FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_GET + "_simple_object_fail.json");
             fw.write(obj.toString(4));
             fw.close();
         } catch (RuntimeException ex) {
@@ -202,7 +215,7 @@ public class TestClass {
         items.put("ssh115", null);
 
         HashMap<String, String> items2 = new HashMap<>(2);
-        items2.put("yeet", null);
+        items2.put("c7cb0a0d3ab7c632dde548c09c07074756ecb2c815583e8995f8710afdc9843b", null);
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
         data.put(DynamoTables.USERS, items);

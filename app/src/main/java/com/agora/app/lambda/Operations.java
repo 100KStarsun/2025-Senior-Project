@@ -1,7 +1,6 @@
 package com.agora.app.lambda;
 
 public enum Operations {
-    GET(true, false),
     PUT(true, true),
     DELETE(true, false),
     BATCH_GET(false, false),

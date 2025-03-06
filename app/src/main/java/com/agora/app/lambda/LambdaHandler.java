@@ -150,15 +150,6 @@ public class LambdaHandler {
 
             // check if keys passed match up with keys received
             switch (operation) {
-                case GET:
-                    DynamoTables dynamoTable = data.keySet().iterator().next();
-                    String itemKey = data.get(dynamoTable).keySet().iterator().next();
-                    try {
-                        response.getJSONObject("Item");
-                    } catch (JSONException ex) {
-                        throw new RuntimeException("Key " + itemKey + " not found in table: " + dynamoTable.tableName);
-                    }
-                    break;
                 case PUT:
                 case DELETE:
                 case BATCH_PUT:
@@ -211,6 +202,25 @@ public class LambdaHandler {
         JSONObject obj2 = new JSONObject((String)obj.remove("body"));
         obj2.remove("ResponseMetadata");
         return obj2;
+    }
+
+    private static HashMap<DynamoTables, HashMap<String, String>> jsonToBase64 (JSONObject obj) throws JSONException {
+        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>();
+        obj = obj.getJSONObject("Responses");
+        Iterator<String> iter = obj.keys();
+        while (iter.hasNext()) {
+            String tableName = iter.next();
+            HashMap<String, String> base64Data = new HashMap<>();
+            JSONArray tableResponses = obj.getJSONArray(tableName);
+            for (int i = 0; i < tableResponses.length(); i++) {
+                JSONObject entry = tableResponses.getJSONObject(i);
+                String pKey = entry.getJSONObject(DynamoTables.getEnumFromTableName(tableName).partitionKeyName).getString("S");
+                String b64 = entry.getString("base64");
+                base64Data.put(pKey, b64);
+            }
+            data.put(DynamoTables.getEnumFromTableName(tableName), base64Data);
+        }
+        return data;
     }
 
     private static InvokeRequest makeRequest (SdkBytes payload) {

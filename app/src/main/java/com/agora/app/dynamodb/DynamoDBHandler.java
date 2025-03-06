@@ -9,9 +9,13 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
 import software.amazon.awssdk.enhanced.dynamodb.Key;
 import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class DynamoDBHandler {
@@ -37,20 +41,21 @@ public class DynamoDBHandler {
      */
     public static Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
 
-    private static DynamoDbClient basicClient = DynamoDbClient.builder()
-                                                              //.httpClient(UrlConnectionHttpClient.create())
-                                                              .region(awsRegion)
-                                                              .build();
-    private static DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
-                                                                                 .dynamoDbClient(basicClient)
-                                                                                 .build();
-
 
     public static GetItemEnhancedRequest makeRequestFromPartitionKey (String partitionKey) {
         return GetItemEnhancedRequest.builder()
                                      .key(Key.builder()
                                              .partitionValue(partitionKey)
                                              .build())
+                                     .build();
+    }
+
+    private static DynamoDbEnhancedClient makeClient () {
+        return DynamoDbEnhancedClient.builder()
+                                     .dynamoDbClient(DynamoDbClient.builder()
+                                                                   .httpClient(UrlConnectionHttpClient.create())
+                                                                   .region(awsRegion)
+                                                                   .build())
                                      .build();
     }
 
@@ -62,9 +67,18 @@ public class DynamoDBHandler {
      */
     public static User getUserItem (String username) {
         try {
-            DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
+            DynamoDbTable<UserWrapper> userTable = makeClient().table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
             return User.createFromBase64String(userTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username)).getUserBase64());
-        } catch (DynamoDbException ex) {
+        } catch (DynamoDbException |NullPointerException ex) {
+            try {
+                FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error3.txt");
+                fw.write(ex.getMessage() + "\n");
+                fw.write(ex.getLocalizedMessage() + "\n");
+                for (StackTraceElement element : ex.getStackTrace()) {
+                    fw.write(element.toString() + "\n");
+                }
+                fw.close();
+            } catch (IOException e) {}
             System.err.println(ex.getMessage());
             ex.printStackTrace();
             return null;
@@ -78,7 +92,7 @@ public class DynamoDBHandler {
      */
     public static void putUserItem (User user) {
         try {
-            DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
+            DynamoDbTable<UserWrapper> userTable = makeClient().table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
             userTable.putItem(new UserWrapper(user));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -94,7 +108,7 @@ public class DynamoDBHandler {
      */
     public static Password getPasswordItem (String saltedHash) {
         try {
-            DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
+            DynamoDbTable<PasswordWrapper> passwordTable = makeClient().table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
             return Password.createFromBase64String(passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(saltedHash)).getPasswordBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -110,7 +124,7 @@ public class DynamoDBHandler {
      */
     public static void putPasswordItem (Password password) {
         try {
-            DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
+            DynamoDbTable<PasswordWrapper> passwordTable = makeClient().table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
             passwordTable.putItem(new PasswordWrapper(password));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -126,7 +140,7 @@ public class DynamoDBHandler {
      */
     public static Product getProductItem (String uuid) {
         try {
-            DynamoDbTable<ProductWrapper> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
+            DynamoDbTable<ProductWrapper> productTable = makeClient().table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
             return Product.createFromBase64String(productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(uuid)).getProductBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -142,7 +156,7 @@ public class DynamoDBHandler {
      */
     public static void putProductItem (Product product) {
         try {
-            DynamoDbTable<ProductWrapper> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
+            DynamoDbTable<ProductWrapper> productTable = makeClient().table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
             productTable.putItem(new ProductWrapper(product));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());

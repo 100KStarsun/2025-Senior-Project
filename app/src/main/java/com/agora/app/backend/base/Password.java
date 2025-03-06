@@ -16,7 +16,6 @@ import java.util.Base64;
 
 public class Password implements Serializable {
     public static final String hashAlgorithm = "SHA-256";
-    public static final SecureRandom rng = new SecureRandom();
     private String hash;
     private String username;
 

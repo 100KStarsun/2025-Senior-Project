@@ -4,6 +4,7 @@ import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,12 +22,15 @@ import java.security.SecureRandom;
 
 
 public class User implements Serializable {
+    private static final long serialVersionUID = 2042010294253052140L;
+
 
     private String username;
     private String preferredFirstName;
     private String legalFirstName;
     private String lastName;
     private String email;
+    private SecureRandom rng = new SecureRandom();
     private byte[] salt;
     private String saltString;
     private final Date timeCreated;
@@ -50,7 +54,7 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.email = email;
         this.salt = new byte[16];
-        Password.rng.nextBytes(salt);
+        rng.nextBytes(salt);
         this.saltString = Base64.getEncoder().encodeToString(salt);
         this.timeCreated = Date.from(Instant.now());
         numSwaps = 0;
@@ -101,6 +105,15 @@ public class User implements Serializable {
         try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
             return (User) objectIn.readObject();
         } catch (IOException | ClassNotFoundException ex) {
+            try {
+                FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error.txt");
+                fw.write(ex.getMessage() + "\n");
+                fw.write(ex.getLocalizedMessage() + "\n");
+                for (StackTraceElement element : ex.getStackTrace()) {
+                    fw.write(element.toString() + "\n");
+                }
+                fw.close();
+            } catch (IOException e) {}
             ex.printStackTrace();
         }
         return null;
@@ -121,6 +134,8 @@ public class User implements Serializable {
         }
         return null;
     }
+
+
 
     /**
      * Two users are considered the same if they share the same username
@@ -160,4 +175,6 @@ public class User implements Serializable {
     public String getSaltString () { return saltString; }
 
     public TreeMap<String, ArrayList<UUID>> getChats () { return chats; }
+
+    public String getPreferredFirstName () { return this.preferredFirstName; }
 }
