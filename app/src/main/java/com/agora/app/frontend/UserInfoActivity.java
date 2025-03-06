@@ -38,7 +38,7 @@ public class UserInfoActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     // variables for the list of listing and the view in which to see listings on page
-    private List<Listing> listings = new ArrayList<>();
+    private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
 
     @Override
@@ -167,7 +167,8 @@ public class UserInfoActivity extends AppCompatActivity {
             }    
 
             if(!title.isEmpty() && !description.isEmpty()) {
-                listings.add(new Listing(title, description, price, tag1, tag2, tag3));
+                Listing newListing = new Listing(title, description, price, tag1, tag2, tag3);
+                ListingManager.getInstance().addListing(newListing);
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();
             }

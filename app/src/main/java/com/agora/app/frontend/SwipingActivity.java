@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.HashSet;
 import java.util.Objects;
 
 import com.agora.app.backend.base.Listing;
@@ -19,6 +21,7 @@ import com.yuyakaido.android.cardstackview.Direction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @class SwipingActivity
@@ -33,6 +36,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     private SwipingView swipingView;
     private List<Listing> listings;
     private List<Listing> savedListings;
+    private Set<String> swipedCards;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +71,12 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
 
 
         cardStackView = findViewById(R.id.listing_card_stack);
-        listings = new ArrayList<>();
+        listings = new ArrayList<>(ListingManager.getInstance().getListings());
         savedListings = new ArrayList<>();
+        swipedCards = new HashSet<>();
         layoutManager = new CardStackLayoutManager(this, this);
         cardStackView.setLayoutManager(layoutManager);
+        updateListings();
         swipingView = new SwipingView(listings);
         cardStackView.setAdapter(swipingView);
     }
@@ -80,16 +86,18 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         int i = layoutManager.getTopPosition() - 1;
         if (i >= 0 && i < listings.size()) {
             Listing currentListing = listings.get(i);
+            swipedCards.add(currentListing.getTitle());
             if (direction == Direction.Right) {
                 savedListings.add(currentListing);
                 Toast.makeText(this, currentListing.getTitle() + " has been saved.", Toast.LENGTH_SHORT).show();
             }
             else if (direction == Direction.Left) {
-                listings.remove(i);
-                swipingView.notifyItemRemoved(i);
                 Toast.makeText(this, "X", Toast.LENGTH_SHORT).show();
             }
+            listings.remove(i);
+            swipingView.notifyItemRemoved(i);
         }
+        refreshCards();
     }
 
     @Override
@@ -107,8 +115,38 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     @Override
     public void onCardCanceled() {
     }
-
+    public void refreshCards() {
+        if (listings.isEmpty()) {
+            findViewById(R.id.no_cards).setVisibility(View.VISIBLE);
+        }
+        else {
+            findViewById(R.id.no_cards).setVisibility(View.GONE);
+            swipingView.notifyDataSetChanged();
+        }
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateListings();
+        swipingView.notifyDataSetChanged();
+        refreshCards();
+    }
     public List<Listing> getSavedListings() {
+
         return savedListings;
     }
+    private void updateListings() {
+        List<Listing> newListings = new ArrayList<>();
+        for (Listing listing : ListingManager.getInstance().getListings()) {
+            if (!swipedCards.contains(listing.getTitle())) {
+                newListings.add(listing);
+            }
+        }
+        listings.clear();
+        listings.addAll(newListings);
+        if (swipingView != null) {
+            swipingView.notifyDataSetChanged();  // Update adapter
+        }
+    }
+
 }

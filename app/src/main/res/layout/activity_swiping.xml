@@ -9,14 +9,32 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="725dp"
         android:gravity="center"
         android:text="Swiping"
         android:textSize="40sp" />
 
-    <com.yuyakaido.android.cardstackview.CardStackView
+    <!--page buffer-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:orientation="vertical">
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/no_cards"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/holo_blue_dark"
+        android:text="No more product listings available :("
+        android:textSize="30sp"
+        android:gravity="center"
+        />
+
+    <com.yuyakaido.android.cardstackview.CardStackView
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
         android:id="@+id/listing_card_stack"/>
 
     <!--page buffer-->
