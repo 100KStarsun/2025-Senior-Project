@@ -49,6 +49,9 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             intent.putExtra("description", listing.getDescription());
             intent.putExtra("price", listing.getPrice());
             intent.putExtra("image", R.drawable.ic_placeholder); 
+            intent.putExtra("tag1", listing.getTag1());
+            intent.putExtra("tag2", listing.getTag2());
+            intent.putExtra("tag3", listing.getTag3());
             v.getContext().startActivity(intent);
         });
     }
@@ -63,7 +66,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         TextView title;
         TextView description;
         TextView price;
-        LinearLayout expandedView; // The expanded view to show more details
+        //LinearLayout expandedView; // The expanded view to show more details
 
         public ViewHolder(View itemView) {
             super(itemView);
