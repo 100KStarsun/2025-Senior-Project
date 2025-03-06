@@ -9,11 +9,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
+import android.widget.LinearLayout;
+import androidx.annotation.NonNull;
 import java.util.List;
+import android.content.Intent;
 
 /**
- * @class ListingActivity
- * @brief Activity for displaying listings that a user has posted.
+ * @class ListingView
+ * @brief Adapter for displaying listings that a user has posted.
  */
 public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
@@ -31,13 +34,25 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int place) {
-        Listing listing = listings.get(place);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        final Listing listing = listings.get(position);
+    
+        // Set data to views
         holder.title.setText(listing.getTitle());
         holder.description.setText(listing.getDescription());
-        float price = listing.getPrice();
-        holder.price.setText("$" + String.format("%.2f", price));
+        holder.price.setText("$" + String.format("%.2f", listing.getPrice()));
+    
+        // Set click listener for each listing card
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), ExpandedListingActivity.class);
+            intent.putExtra("title", listing.getTitle());
+            intent.putExtra("description", listing.getDescription());
+            intent.putExtra("price", listing.getPrice());
+            intent.putExtra("image", R.drawable.ic_placeholder); 
+            v.getContext().startActivity(intent);
+        });
     }
+    
 
     @Override
     public int getItemCount() {
@@ -48,21 +63,18 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         TextView title;
         TextView description;
         TextView price;
-        //TextView tag1;
-        //TextView tag2;
-        //TextView tag3;
+        LinearLayout expandedView; // The expanded view to show more details
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.listing_title);
             description = itemView.findViewById(R.id.listing_description);
             price = itemView.findViewById(R.id.listing_price);
-            //price = itemView.findViewById(R.id.listing_price);
-            //price.setText("$" + String.format("%.2f", price));  
-            //tag1 = itemView.findViewById(R.id.listing_tag1);
-            //tag2 = itemView.findViewById(R.id.listing_tag2);
-            //tag3 = itemView.findViewById(R.id.listing_tag3);
+            //tag = itemView.findViewById(R.id.listing_)
+            //expandedView = itemView.findViewById(R.id.expanded_view); // Reference to expanded view
+
+            // Initially hide the expanded view
+            //expandedView.setVisibility(View.GONE);
         }
     }
-
 }

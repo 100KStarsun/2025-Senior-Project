@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:layout_width="match_parent"
+   android:layout_height="match_parent"
+   android:orientation="vertical"
+   android:padding="16dp"
+   android:background="#A6D2E6">
+
+   <!-- Listing Title -->
+   <TextView
+       android:id="@+id/expanded_listing_title"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="Title"
+       android:textSize="40sp"
+       android:layout_marginTop="10dp"/>
+
+   <!-- Listing Image -->
+   <ImageView
+       android:id="@+id/expanded_listing_image"
+       android:layout_width="match_parent"
+       android:layout_height="200dp"
+       android:scaleType="centerCrop"
+       android:contentDescription="Listing Image"
+       android:src="@drawable/ic_placeholder"/>
+
+
+   <!-- Listing Price -->
+   <TextView
+       android:id="@+id/expanded_listing_price"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="$0.00"
+       android:textSize="18sp"
+       android:textColor="@android:color/holo_green_dark"
+       android:layout_marginTop="10dp"/>
+
+    
+
+   <!-- Listing Description -->
+   <TextView
+       android:id="@+id/expanded_listing_description"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:text="Description"
+       android:textSize="16sp"
+       android:layout_marginTop="10dp"/>
+
+</LinearLayout>

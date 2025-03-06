@@ -35,6 +35,8 @@
         <activity android:name=".frontend.PreferencesActivity"/>
         <activity android:name=".frontend.SavedPostsActivity"/>
         <activity android:name=".frontend.TransactionHistoryActivity"/>
+        <activity android:name=".frontend.ExpandedListingActivity"/>
+
 
     </application>
 
