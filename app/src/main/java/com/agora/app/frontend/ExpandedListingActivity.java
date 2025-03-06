@@ -20,6 +20,9 @@ public class ExpandedListingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_expanded_listing);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         // Initialize views
         titleTextView = findViewById(R.id.expanded_listing_title);
