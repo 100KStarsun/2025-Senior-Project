@@ -5,15 +5,14 @@ import com.agora.app.backend.LoginException;
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.PaymentMethods;
 import com.agora.app.backend.base.User;
-import com.agora.app.dynamodb.DynamoDBHandler;
 import com.agora.app.dynamodb.DynamoTables;
+import com.agora.app.lambda.KeyNotFoundException;
 import com.agora.app.lambda.LambdaHandler;
 import com.agora.app.lambda.Operations;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -21,12 +20,12 @@ import java.util.EnumMap;
 import java.util.HashMap;
 
 public class TestClass {
-    private static String caseID = "nrm98";
-    private static String legalFirstName = "Noah";
+    private static String caseID = "lrl47";
+    private static String legalFirstName = "Levi";
     private static String preferredFirstName = ""; // leave blank to automatically use legalFirstName
-    private static String lastName = "Mollerstuen";
+    private static String lastName = "Ladd";
     private static String[] bools = {"n","n","n","n","n","n","n","y","n"}; // PayPal, Zelle, CashApp, Venmo, Apple Pay, Samsung Pay, Google Pay, Cash, Check | Note: everyone has cash enabled by default
-    private static String passwordString = "penguin3000";
+    private static String passwordString = "100kstarsun";
 
 
     public static String caseEmailDomain = "@case.edu";
@@ -34,7 +33,7 @@ public class TestClass {
     public static String agoraTempDir = "\\.agora\\";
 
     @Test
-    public void puttingAndGettingUserAndPassword () throws IOException {
+    public void puttingAndGettingUserAndPassword () throws IOException, JSONException {
         // logic for setting preferred name
         TestClass.preferredFirstName = TestClass.preferredFirstName.isEmpty() ? TestClass.legalFirstName : TestClass.preferredFirstName;
 
@@ -52,63 +51,46 @@ public class TestClass {
         // Put user + password into db
         boolean userExistsAlready = false;
         try {
-            User test = DynamoDBHandler.getUserItem(caseID);
-            FileWriter fw = new FileWriter(homeDir + agoraTempDir + "testUser.txt");
-            fw.write(test.toString() + "\n");
-            fw.write(test.getSaltString() + "\n");
-            fw.write(test.toBase64String());
-            fw.close();
-            if (test != null && !test.toString().contains("null")) {
-                userExistsAlready = true;
-            }
-        } catch (NullPointerException ex) {
-            FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error2.txt");
-            fw.write(ex.getMessage() + "\n");
-            fw.write(ex.getLocalizedMessage() + "\n");
-            for (StackTraceElement element : ex.getStackTrace()) {
-                fw.write(element.toString() + "\n");
-            }
-            fw.close();
-        }
+            HashMap<String, String> items = new HashMap<>(2);
+            items.put(caseID, null);
+
+            HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+            data.put(DynamoTables.USERS, items);
+            JSONObject response = LambdaHandler.invoke(data, Operations.BATCH_GET);
+            data = LambdaHandler.jsonToBase64(response);
+            User test = User.createFromBase64String(data.get(DynamoTables.USERS).get(caseID));
+            userExistsAlready = true;
+        } catch (NullPointerException | KeyNotFoundException ex) {}
 
         if (!userExistsAlready) {
-            DynamoDBHandler.putUserItem(demoUser);
+            HashMap<String, String> items = new HashMap<>(2);
+            items.put(demoUser.getUsername(), demoUser.toBase64String());
+
+            HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
+            data.put(DynamoTables.USERS, items);
+
+            LambdaHandler.invoke(data, Operations.PUT);
         }
-        User user = DynamoDBHandler.getUserItem(TestClass.caseID);
+
+        User user = LambdaHandler.getUsers(new String[] {caseID}).get(caseID);
         Password demoPassword = new Password(TestClass.passwordString, user);
 
         boolean passwordExistsAlready = false;
         try {
-            Password test = DynamoDBHandler.getPasswordItem(new Password(passwordString, caseID).getHash());
+            String hash = new Password(passwordString, user).getHash();
+            Password test = LambdaHandler.getPasswords(new String[] {hash}).get(hash);
             if (test != null && !test.toString().contains("null")) {
                 passwordExistsAlready = true;
             }
         } catch (NullPointerException ex) {}
 
         if (!passwordExistsAlready) {
-            DynamoDBHandler.putPasswordItem(demoPassword);
+            LambdaHandler.putPasswords(new String[] {demoPassword.getHash()}, new String[] {demoPassword.toBase64String()});
         }
         Password password = null;
         try {
-            password = DynamoDBHandler.getPasswordItem(demoPassword.getHash());
+            password = LambdaHandler.getPasswords(new String[] {demoPassword.getHash()}).get(demoPassword.getHash());
         } catch (NullPointerException ex) {}
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "user.txt");
-        fw.write(user.toString() + "\n");
-        fw.write(user.getSaltString() + "\n");
-        fw.write(user.toBase64String());
-        fw.close();
-        fw = new FileWriter(homeDir + agoraTempDir + "password.txt");
-        try {
-            fw.write(password.getHash() + "\n");
-            fw.write(password.toBase64String());
-        } catch (Exception ex) {}
-        fw.close();
-        fw = new FileWriter(homeDir + agoraTempDir + "bools.txt");
-        fw.write(userExistsAlready + "\n");
-        fw.write(passwordExistsAlready + "\n");
-        fw.close();
-
-
         // make sure none of the printed fields are null which /should/ mean we have fully retrieved the user + password
         assert !user.toString().contains("null") && !password.toString().contains("null");
     }
@@ -168,11 +150,9 @@ public class TestClass {
             FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambda_" + Operations.BATCH_GET + "_simple_object_fail.json");
             fw.write(obj.toString(4));
             fw.close();
-        } catch (RuntimeException ex) {
-            if (ex.getMessage().equals("Key " + key + " not found in table: " + table.tableName)) {
-                assert true;
-                return;
-            }
+        } catch (KeyNotFoundException ex) {
+            assert true;
+            return;
         }
         assert false;
     }
@@ -215,7 +195,7 @@ public class TestClass {
         items.put("ssh115", null);
 
         HashMap<String, String> items2 = new HashMap<>(2);
-        items2.put("c7cb0a0d3ab7c632dde548c09c07074756ecb2c815583e8995f8710afdc9843b", null);
+        items2.put("318cc452b68dca17de02fceb63ba7e1f91e6e2bf1d3b9b7b27b0b628ba703390", null);
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
         data.put(DynamoTables.USERS, items);
@@ -231,11 +211,11 @@ public class TestClass {
     @Test
     public void testLambdaBatchPut () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(4);
-        items.put("nrm98", "fake_b641");
+        items.put("def654", "fake_b641");
         items.put("msc135", "fake_b642");
 
         HashMap<String, String> items2 = new HashMap<>(2);
-        items2.put("fake_hash_1", "fake_hash_1 + nrm98.toBase64()");
+        items2.put("fake_hash_1", "fake_hash_1 + def654.toBase64()");
         items2.put("fake_hash_2", "fake_hash_2 + msc135.toBase64()");
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(4);
@@ -252,7 +232,7 @@ public class TestClass {
     @Test
     public void testLambdaBatchDelete () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(4);
-        items.put("nrm98", null);
+        items.put("def654", null);
         items.put("msc135", null);
 
         HashMap<String, String> items2 = new HashMap<>(2);

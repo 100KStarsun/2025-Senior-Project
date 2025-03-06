@@ -1,5 +1,8 @@
 package com.agora.app.lambda;
 
+import com.agora.app.backend.base.Password;
+import com.agora.app.backend.base.Product;
+import com.agora.app.backend.base.User;
 import com.agora.app.dynamodb.DynamoTables;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,12 +86,121 @@ public class LambdaHandler {
      *         ],
      *         "agora_users": [
      *             {"DeleteRequest": {"Key": {"username": {"S": "msc135"}}}},
-     *             {"DeleteRequest": {"Key": {"username": {"S": "nrm98"}}}}
+     *             {"DeleteRequest": {"Key": {"username": {"S": "def892"}}}}
      *         ]
      *     },
      *     "Operation": "BATCH_DELETE"
      * }
      */
+
+    public static HashMap<String, User> getUsers (String[] usernames) {
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.USERS, usernames, new String[0]);
+        JSONObject response = invoke(payload, Operations.BATCH_GET);
+        return getUsersFromStruct(jsonToBase64(response));
+    }
+
+    public static HashMap<DynamoTables, HashMap<String, String>> putUsers (String[] usernames, String[] base64s) {
+        if (usernames.length != base64s.length) {
+            throw new IllegalArgumentException("usernames and base64s are not the same length");
+        }
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.USERS, usernames, base64s);
+        JSONObject response = invoke(payload, Operations.BATCH_PUT);
+        return jsonToBase64(response);
+    }
+
+    public static HashMap<DynamoTables, HashMap<String, String>> deleteUsers (String[] usernames) {
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.USERS, usernames, new String[0]);
+        JSONObject response = invoke(payload, Operations.BATCH_DELETE);
+        return jsonToBase64(response);
+    }
+
+    public static HashMap<String, Password> getPasswords (String[] hashes) {
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, hashes, new String[0]);
+        JSONObject response = invoke(payload, Operations.BATCH_GET);
+        return getPasswordsFromStruct(jsonToBase64(response));
+    }
+
+    public static HashMap<DynamoTables, HashMap<String, String>> putPasswords (String[] hashes, String[] base64s) {
+        if (hashes.length != base64s.length) {
+            throw new IllegalArgumentException("hashes and base64s are not the same length");
+        }
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, hashes, base64s);
+        JSONObject response = invoke(payload, Operations.BATCH_PUT);
+        return jsonToBase64(response);
+    }
+
+    public static HashMap<DynamoTables, HashMap<String, String>> deletePasswords (String[] hashes) {
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, hashes, new String[0]);
+        JSONObject response = invoke(payload, Operations.BATCH_DELETE);
+        return jsonToBase64(response);
+    }
+
+    public static HashMap<String, Product> getProducts (String[] products) {
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, products, new String[0]);
+        JSONObject response = invoke(payload, Operations.BATCH_GET);
+        return getProductsFromStruct(jsonToBase64(response));
+    }
+
+    public static HashMap<DynamoTables, HashMap<String, String>> putProducts (String[] products, String[] base64s) {
+        if (products.length != base64s.length) {
+            throw new IllegalArgumentException("products and base64s are not the same length");
+        }
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PRODUCTS, products, base64s);
+        JSONObject response = invoke(payload, Operations.BATCH_PUT);
+        return jsonToBase64(response);
+    }
+
+    public static HashMap<DynamoTables, HashMap<String, String>> deleteProducts (String[] products) {
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PRODUCTS, products, new String[0]);
+        JSONObject response = invoke(payload, Operations.BATCH_DELETE);
+        return jsonToBase64(response);
+    }
+
+    private static HashMap<DynamoTables, HashMap<String, String>> makePayload (DynamoTables table, String[] keys, String[] values) {
+        HashMap<String, String> map = new HashMap<>(keys.length);
+        for (int i = 0; i < keys.length; i++) {
+            map.put(keys[i], values.length != 0 ? values[i] : null);
+        }
+        HashMap<DynamoTables, HashMap<String, String>> payload = new HashMap<>();
+        payload.put(table, map);
+        return payload;
+    }
+
+    public static HashMap<String, User> getUsersFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {
+        HashMap<String, String> data = struct.get(DynamoTables.USERS);
+        if (data.keySet().isEmpty()) {
+            return null;
+        }
+        HashMap<String, User> users = new HashMap<>();
+        for (String key : data.keySet()) {
+            users.put(key, User.createFromBase64String(data.get(key)));
+        }
+        return users;
+    }
+
+    public static HashMap<String, Password> getPasswordsFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {
+        HashMap<String, String> data = struct.get(DynamoTables.PASSWORDS);
+        if (data.keySet().isEmpty()) {
+            return null;
+        }
+        HashMap<String, Password> passwords = new HashMap<>();
+        for (String key : data.keySet()) {
+            passwords.put(key, Password.createFromBase64String(data.get(key)));
+        }
+        return passwords;
+    }
+
+    public static HashMap<String, Product> getProductsFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {
+        HashMap<String, String> data = struct.get(DynamoTables.PRODUCTS);
+        if (data.keySet().isEmpty()) {
+            return null;
+        }
+        HashMap<String, Product> products = new HashMap<>();
+        for (String key : data.keySet()) {
+            products.put(key, Product.createFromBase64String(data.get(key)));
+        }
+        return products;
+    }
 
     public static JSONObject invoke (HashMap<DynamoTables, HashMap<String, String>> data, Operations operation) {
         String filename = "";
@@ -179,7 +291,7 @@ public class LambdaHandler {
                         }
                     }
                     if (unfoundKeys.length() != 0) {
-                        throw new RuntimeException("There were keys that were not found");
+                        throw new KeyNotFoundException("There were keys that were not found");
                     }
 
             }
@@ -204,23 +316,27 @@ public class LambdaHandler {
         return obj2;
     }
 
-    private static HashMap<DynamoTables, HashMap<String, String>> jsonToBase64 (JSONObject obj) throws JSONException {
-        HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>();
-        obj = obj.getJSONObject("Responses");
-        Iterator<String> iter = obj.keys();
-        while (iter.hasNext()) {
-            String tableName = iter.next();
-            HashMap<String, String> base64Data = new HashMap<>();
-            JSONArray tableResponses = obj.getJSONArray(tableName);
-            for (int i = 0; i < tableResponses.length(); i++) {
-                JSONObject entry = tableResponses.getJSONObject(i);
-                String pKey = entry.getJSONObject(DynamoTables.getEnumFromTableName(tableName).partitionKeyName).getString("S");
-                String b64 = entry.getString("base64");
-                base64Data.put(pKey, b64);
+    public static HashMap<DynamoTables, HashMap<String, String>> jsonToBase64 (JSONObject obj) {
+        try {
+            HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>();
+            obj = obj.getJSONObject("Responses");
+            Iterator<String> iter = obj.keys();
+            while (iter.hasNext()) {
+                String tableName = iter.next();
+                HashMap<String, String> base64Data = new HashMap<>();
+                JSONArray tableResponses = obj.getJSONArray(tableName);
+                for (int i = 0; i < tableResponses.length(); i++) {
+                    JSONObject entry = tableResponses.getJSONObject(i);
+                    String pKey = entry.getJSONObject(DynamoTables.getEnumFromTableName(tableName).partitionKeyName).getString("S");
+                    String b64 = entry.getJSONObject("base64").getString("S");
+                    base64Data.put(pKey, b64);
+                }
+                data.put(DynamoTables.getEnumFromTableName(tableName), base64Data);
             }
-            data.put(DynamoTables.getEnumFromTableName(tableName), base64Data);
+            return data;
+        } catch (JSONException ex) {
+            return null;
         }
-        return data;
     }
 
     private static InvokeRequest makeRequest (SdkBytes payload) {
