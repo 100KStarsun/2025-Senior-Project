@@ -1,5 +1,6 @@
 package com.agora.app;
 import com.agora.app.backend.LoginHandler;
+import com.agora.app.backend.RegistrationHandler;
 import com.agora.app.backend.LoginException;
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.PaymentMethods;
@@ -21,20 +22,21 @@ import java.util.HashMap;
 
 public class TestClass {
 
-    private static String caseID = "lrl47";
-    private static String legalFirstName = "Levi";
+    private static String caseID = "ssh115";
+    private static String legalFirstName = "Stephen";
     private static String preferredFirstName = ""; // leave blank to automatically use legalFirstName
-    private static String lastName = "Ladd";
-    private static String[] bools = {"n","n","n","n","n","n","n","y","n"}; // PayPal, Zelle, CashApp, Venmo, Apple Pay, Samsung Pay, Google Pay, Cash, Check | Note: everyone has cash enabled by default
-    private static String passwordString = "abc123";
+    private static String lastName = "Hogeman";
+    private static String[] bools = {"y","n","n","y","n","n","n","y","n"}; // PayPal, Zelle, CashApp, Venmo, Apple Pay, Samsung Pay, Google Pay, Cash, Check | Note: everyone has cash enabled by default
+    private static String passwordString = "simple";
 
 
     public static String caseEmailDomain = "@case.edu";
     public static String homeDir = System.getProperty("user.home");
     public static String agoraTempDir = "\\.agora\\";
 
-    @Test
-    public void puttingAndGettingUserAndPassword () throws IOException {
+    //If you want this run for inputting user info in the database uncomment line below
+    //@Test
+    public void puttingAndGettingUserAndPassword () throws IOException, JSONException {
         // logic for setting preferred name
         TestClass.preferredFirstName = TestClass.preferredFirstName.isEmpty() ? TestClass.legalFirstName : TestClass.preferredFirstName;
 
@@ -65,10 +67,10 @@ public class TestClass {
     /**
      * try is excluded here so that if a LoginException gets thrown, the error is easier to pinpoint
      */
-    //@Test
-    public void testCorrectLogin () throws NoSuchAlgorithmException {
-        String attemptedUsername = "lrl47"; // this is correct
-        String attemptedPassword = "abc123"; // this is correct
+    @Test
+    public void testCorrectLogin () throws NoSuchAlgorithmException, IOException, JSONException {
+        String attemptedUsername = "ssh115"; // this is correct
+        String attemptedPassword = "simple"; // this is correct
         assert LoginHandler.login(attemptedUsername, attemptedPassword);
     }
 
@@ -76,9 +78,9 @@ public class TestClass {
      * Passes if we get a LoginException, fails if not. This is because the password is not correct and that causes .login() to throw a LoginException
      */
     //@Test
-    public void testWrongLogin () throws NoSuchAlgorithmException {
-        String attemptedUsername = "lrl47"; // this is a valid username
-        String attemptedPassword = "123abc"; // this is not the correct password for the username provided
+    public void testWrongLogin () throws NoSuchAlgorithmException, IOException, JSONException {
+        String attemptedUsername = "xxx999"; // this is a valid username
+        String attemptedPassword = "falsepass"; // this is not the correct password for the username provided
         try {
             LoginHandler.login(attemptedUsername, attemptedPassword);
         } catch (LoginException ex) {
@@ -89,10 +91,23 @@ public class TestClass {
         assert false;
     }
 
+    //@Test
+    public void testAccountCreation () throws NoSuchAlgorithmException, JSONException {
+        String newUsername = "xxx999";
+        String newPass = "testpass";
+        try {
+            RegistrationHandler.register(newUsername, newPass);
+            assert LoginHandler.login(newUsername, newPass);
+        } catch (NoSuchAlgorithmException | JSONException ex) {
+            assert false;
+            return;
+        }
+    }
+
     @Test
     public void testLambdaGet () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(2);
-        items.put("lrl47", null);
+        items.put("ssh115", null);
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);
@@ -102,7 +117,10 @@ public class TestClass {
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lambdaGetObject.json");
         fw.write(obj.toString(4));
         fw.close();
-        assert true;
+        JSONObject item = obj.optJSONObject("Item");
+        JSONObject usernameObj = item.optJSONObject("username");
+        String extractedUsername = usernameObj.optString("S", "");
+        assert extractedUsername.equals("ssh115");
     }
 
     @Test

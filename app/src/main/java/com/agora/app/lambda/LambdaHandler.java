@@ -10,6 +10,8 @@ import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.InvokeRequest;
+import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,6 +24,7 @@ public class LambdaHandler {
     public static String homeDir = System.getProperty("user.home");
     public static String agoraTempDir = "\\.agora\\";
     private static Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
+    //private static AwsSessionCredentials awsCreds = AwsSessionCredentials.create(); Replace with your session/regular credentials
     private static LambdaClient awsLambda = LambdaClient.builder()
                                                         .httpClient(UrlConnectionHttpClient.create())
                                                         .region(awsRegion)
@@ -139,15 +142,17 @@ public class LambdaHandler {
             }
             jsonObj.put("Operation", operation);
             String jsonString = jsonObj.toString();
+            /*
             FileWriter fw = new FileWriter(homeDir + agoraTempDir + filename);
             fw.write(jsonObj.toString(4));
             fw.close();
+            */
 
             SdkBytes payload = SdkBytes.fromUtf8String(jsonString);
             String response = awsLambda.invoke(makeRequest(payload)).payload().asUtf8String();
             return new JSONObject(response);
 
-        } catch (JSONException | IOException ex) {
+        } catch (JSONException ex) {
             return null;
         }
     }
@@ -161,15 +166,14 @@ public class LambdaHandler {
 
     private static JSONObject buildSingleKeyJSON (String partitionKeyName, String key) throws JSONException {
         JSONObject jsonObj = new JSONObject();
-        jsonObj.put(partitionKeyName, new JSONObject("{'S':'" + key + "'}"));
+        jsonObj.put(partitionKeyName, new JSONObject("{\"S\":\"" + key + "\"}"));
         return jsonObj;
     }
 
     private static JSONObject buildSingleKeyValueJSON (String partitionKeyName, String key, String value) throws JSONException {
         JSONObject jsonObj = new JSONObject();
-        jsonObj.put(partitionKeyName, new JSONObject("{'S':'" + key + "'}"));
-        jsonObj.put("base64", new JSONObject("{'S':'" + value + "'}"));
+        jsonObj.put(partitionKeyName, new JSONObject("{\"S\":\"" + key + "\"}"));
+        jsonObj.put("base64", new JSONObject("{\"S\":\"" + value + "\"}"));
         return jsonObj;
     }
-
 }

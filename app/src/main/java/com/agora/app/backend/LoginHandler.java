@@ -6,10 +6,11 @@ import com.agora.app.dynamodb.DynamoDBHandler;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.json.JSONException;
 
 public class LoginHandler {
 
-    public static boolean login (String username, String password) throws LoginException, NoSuchAlgorithmException {
+    public static boolean login (String username, String password) throws JSONException, LoginException, NoSuchAlgorithmException {
         try {
             final MessageDigest digest = MessageDigest.getInstance(Password.hashAlgorithm);
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
