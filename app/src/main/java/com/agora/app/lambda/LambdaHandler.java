@@ -99,19 +99,17 @@ public class LambdaHandler {
         return getUsersFromStruct(jsonToBase64(response));
     }
 
-    public static HashMap<DynamoTables, HashMap<String, String>> putUsers (String[] usernames, String[] base64s) {
+    public static void putUsers (String[] usernames, String[] base64s) {
         if (usernames.length != base64s.length) {
             throw new IllegalArgumentException("usernames and base64s are not the same length");
         }
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.USERS, usernames, base64s);
-        JSONObject response = invoke(payload, Operations.BATCH_PUT);
-        return jsonToBase64(response);
+        invoke(payload, Operations.BATCH_PUT);
     }
 
-    public static HashMap<DynamoTables, HashMap<String, String>> deleteUsers (String[] usernames) {
+    public static void deleteUsers (String[] usernames) {
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.USERS, usernames, new String[0]);
-        JSONObject response = invoke(payload, Operations.BATCH_DELETE);
-        return jsonToBase64(response);
+        invoke(payload, Operations.BATCH_DELETE);
     }
 
     public static HashMap<String, Password> getPasswords (String[] hashes) {
@@ -120,19 +118,17 @@ public class LambdaHandler {
         return getPasswordsFromStruct(jsonToBase64(response));
     }
 
-    public static HashMap<DynamoTables, HashMap<String, String>> putPasswords (String[] hashes, String[] base64s) {
+    public static void putPasswords (String[] hashes, String[] base64s) {
         if (hashes.length != base64s.length) {
             throw new IllegalArgumentException("hashes and base64s are not the same length");
         }
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, hashes, base64s);
-        JSONObject response = invoke(payload, Operations.BATCH_PUT);
-        return jsonToBase64(response);
+        invoke(payload, Operations.BATCH_PUT);
     }
 
-    public static HashMap<DynamoTables, HashMap<String, String>> deletePasswords (String[] hashes) {
+    public static void deletePasswords (String[] hashes) {
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, hashes, new String[0]);
-        JSONObject response = invoke(payload, Operations.BATCH_DELETE);
-        return jsonToBase64(response);
+        invoke(payload, Operations.BATCH_DELETE);
     }
 
     public static HashMap<String, Product> getProducts (String[] products) {
@@ -141,19 +137,17 @@ public class LambdaHandler {
         return getProductsFromStruct(jsonToBase64(response));
     }
 
-    public static HashMap<DynamoTables, HashMap<String, String>> putProducts (String[] products, String[] base64s) {
+    public static void putProducts (String[] products, String[] base64s) {
         if (products.length != base64s.length) {
             throw new IllegalArgumentException("products and base64s are not the same length");
         }
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PRODUCTS, products, base64s);
-        JSONObject response = invoke(payload, Operations.BATCH_PUT);
-        return jsonToBase64(response);
+        invoke(payload, Operations.BATCH_PUT);
     }
 
-    public static HashMap<DynamoTables, HashMap<String, String>> deleteProducts (String[] products) {
+    public static void deleteProducts (String[] products) {
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PRODUCTS, products, new String[0]);
-        JSONObject response = invoke(payload, Operations.BATCH_DELETE);
-        return jsonToBase64(response);
+        invoke(payload, Operations.BATCH_DELETE);
     }
 
     private static HashMap<DynamoTables, HashMap<String, String>> makePayload (DynamoTables table, String[] keys, String[] values) {
