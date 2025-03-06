@@ -33,11 +33,30 @@
         app:searchIcon="@drawable/icon_search"
         android:background="@drawable/search_bar"/>
 
+    <TextView
+        android:id="@+id/no_listings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/holo_blue_dark"
+        android:text="No product listings are currently available :("
+        android:textSize="30sp"
+        android:gravity="center"
+        />
+
+    <!--listing scroller-->
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/item_listings"
+        android:scrollbars="vertical"
+        android:layout_weight="1"/>
+
     <!--page buffer-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_weight=".1"
         android:orientation="vertical">
     </LinearLayout>
 
