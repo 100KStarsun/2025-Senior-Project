@@ -1,6 +1,7 @@
 package com.agora.app.backend;
 
 import com.agora.app.backend.base.Password;
+import com.agora.app.backend.base.User;
 import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.nio.charset.StandardCharsets;
@@ -10,11 +11,21 @@ import org.json.JSONException;
 
 public class LoginHandler {
 
-    public static boolean login (String username, String password) throws JSONException, LoginException, NoSuchAlgorithmException {
+    /**
+     * Queries the database to see if login credentials provided match those in the database. If the login info is not correct, a {@code LoginException} will be thrown
+     *
+     * @param username the provided username of the user trying to log in
+     * @param password the provided password of the user trying to log in
+     * @return {@code true} if the login info matches
+     */
+    public static boolean login (String username, String password) {
         try {
             final MessageDigest digest = MessageDigest.getInstance(Password.hashAlgorithm);
+            User user = DynamoDBHandler.getUserItem(username);
+            password = password.concat(user.getSaltString());
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             Password pw = DynamoDBHandler.getPasswordItem(bytesToHex(hashbytes));
+
             if (pw.getUsername().equals(username)) {
                 return true;
             } else {
@@ -24,9 +35,17 @@ public class LoginHandler {
         } catch (NullPointerException ex) {
             // this case is when either the username or password provided do not exist in the database
             throw new LoginException("Incorrect username or password.");
+        } catch (NoSuchAlgorithmException | JSONException e) {
+            return false;
         }
     }
 
+    /**
+     * Used by the constructor of this class to convert a {@code Byte[]} to a hexadecimal string
+     *
+     * @param hash the bytes of the hashed password
+     * @return a hexadecimal string representing the bytes of the hashed password
+     */
     private static String bytesToHex(byte[] hash) {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (int i = 0; i < hash.length; i++) {

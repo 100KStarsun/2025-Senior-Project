@@ -5,15 +5,39 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
 import com.agora.app.R;
+import java.util.Objects;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MarketplaceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marketplace);
-        Button buttonUserInfo = findViewById(R.id.buttonUserInfo);
-        Button buttonSwiping = findViewById(R.id.buttonSwiping);
-        buttonUserInfo.setOnClickListener(v -> startActivity(new Intent(MarketplaceActivity.this, UserInfoActivity.class)));
-        buttonSwiping.setOnClickListener(v -> startActivity(new Intent(MarketplaceActivity.this, SwipingActivity.class)));
+        Objects.requireNonNull(getSupportActionBar()).hide();
+
+        // navigation bar routing section
+        BottomNavigationView navBar = findViewById(R.id.nav_bar);
+
+        // maps nav bar item to correct page redirection
+        navBar.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_messaging) {
+                startActivity(new Intent(this, MessagingActivity.class));
+                return true;
+            }
+            else if (itemId == R.id.nav_marketplace) {
+                return true;
+            }
+            else if (itemId == R.id.nav_swiping) {
+                startActivity(new Intent(this, SwipingActivity.class));
+                return true;
+            }
+            else if (itemId == R.id.nav_user_info) {
+                startActivity(new Intent(this, UserInfoActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 }

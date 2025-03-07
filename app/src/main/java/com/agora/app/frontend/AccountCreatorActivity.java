@@ -14,17 +14,23 @@ import com.agora.app.R;
 import java.security.NoSuchAlgorithmException;
 import org.json.JSONException;
 import android.util.Log;
-
+import java.util.Objects;
 
 public class AccountCreatorActivity extends AppCompatActivity {
 
     //public static String USERNAME;
     //public static String PASSWORD;
-
+    
+    /**
+     * @brief This method creates blah blah blah
+     * 
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.account_creator);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         EditText user = findViewById(R.id.username_id);
         EditText pass = findViewById(R.id.password_id);
@@ -89,7 +95,11 @@ public class AccountCreatorActivity extends AppCompatActivity {
         protected Boolean doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
-            return RegistrationHandler.register(username, password);
+            try {
+                return RegistrationHandler.register(username, password);
+            } catch (NullPointerException e) {
+                return false;
+            }
         }
 
         /**

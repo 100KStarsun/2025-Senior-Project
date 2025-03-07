@@ -12,7 +12,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.Light"
+        android:theme="@style/Theme.Agora"
         tools:targetApi="31">
         <activity
             android:name=".frontend.RegisterActivity"
@@ -30,6 +30,11 @@
         <activity android:name=".frontend.UserInfoActivity"/>
         <activity android:name=".frontend.AccountCreatorActivity"/>
         <activity android:name=".frontend.LoginActivity"/>
+        <activity android:name=".frontend.MessagingActivity"/>
+        <activity android:name=".frontend.SettingsActivity"/>
+        <activity android:name=".frontend.PreferencesActivity"/>
+        <activity android:name=".frontend.SavedPostsActivity"/>
+        <activity android:name=".frontend.TransactionHistoryActivity"/>
 
     </application>
 

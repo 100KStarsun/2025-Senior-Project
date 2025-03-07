@@ -9,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.agora.app.R;
 
+import java.util.Objects;
+
 public class RegisterActivity extends AppCompatActivity {
 
     public static String CASE_ID_TEXT;
@@ -17,6 +19,7 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         EditText caseid = findViewById(R.id.case_id);
         Button button = findViewById(R.id.button_id);
@@ -40,7 +43,7 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Please enter a valid case id!", Toast.LENGTH_SHORT).show();
                 } else if (!caseMailAuth(CASE_ID_TEXT)) {
                     // Valid case email
-                    Toast.makeText(RegisterActivity.this, "Case ID verified!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Email verified!", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(RegisterActivity.this, AccountCreatorActivity.class);
                     //intent.putExtra("email", EMAIL_TEXT);
                     startActivity(intent);

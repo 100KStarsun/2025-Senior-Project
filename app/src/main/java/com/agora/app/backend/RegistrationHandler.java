@@ -20,8 +20,8 @@ public class RegistrationHandler {
         try {
             String email = username + "@case.edu";
             User regUser = new User(username, null, null, null, email, null);
-            Password regPass = new Password(password, username);
             DynamoDBHandler.putUserItem(regUser);
+            Password regPass = new Password(password, username);
             DynamoDBHandler.putPasswordItem(regPass);
             return true; //Should the put methods for db return boolean types to indicate success?
         } catch (JSONException e) {

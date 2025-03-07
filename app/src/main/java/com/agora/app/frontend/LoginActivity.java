@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import android.util.Log;
 
+import java.util.Objects;
 import java.security.NoSuchAlgorithmException;
 import java.io.IOException;
 import org.json.JSONException;
@@ -23,17 +24,21 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+        Objects.requireNonNull(getSupportActionBar()).hide();
 
         EditText user = findViewById(R.id.username_id);
         EditText pass = findViewById(R.id.password_id);
+
         Button button = findViewById(R.id.button_id);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Get values from the EditTexts when the button is clicked
                 String username = user.getText().toString();
                 String password = pass.getText().toString();
 
+                // Check if username or password fields are empty
                 if (username.isEmpty()) {
                     Toast.makeText(LoginActivity.this, "Username cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
@@ -71,8 +76,7 @@ public class LoginActivity extends AppCompatActivity {
             String password = params[1];
             try {
                 return LoginHandler.login(username, password);
-            } catch (JSONException | NoSuchAlgorithmException e) {
-                errorMessage = e.getMessage();
+            } catch (LoginException e) {
                 return false;
             }
         }

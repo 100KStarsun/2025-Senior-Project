@@ -1,5 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="Theme.Agora" parent="Theme.AppCompat.Light" />
+    <style name="Theme.Agora" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Primary colors -->
+        <item name="colorPrimary">#003071</item>
+        <item name="colorAccent">#03DAC5</item>
+
+        <!-- Background color -->
+        <item name="android:windowBackground">#A6D2E6</item>
+
+        <!-- Button Styling -->
+        <item name="android:buttonStyle">@style/CustomButtonStyle</item>
+    </style>
+
+    <!-- Define global button style -->
+    <style name="CustomButtonStyle">
+        <item name="android:backgroundTint">#003071</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+    </style>
+
 </resources>
