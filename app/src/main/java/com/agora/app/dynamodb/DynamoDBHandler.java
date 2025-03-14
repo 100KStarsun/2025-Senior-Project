@@ -1,17 +1,21 @@
 package com.agora.app.dynamodb;
 
-import com.agora.app.backend.base.Chat;
 import com.agora.app.backend.base.Password;
+
 import com.agora.app.backend.base.Product;
 import com.agora.app.backend.base.User;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
+import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.DynamoDbException;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
-import software.amazon.awssdk.enhanced.dynamodb.Key;
-import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
-import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
-import software.amazon.awssdk.enhanced.dynamodb.model.GetItemEnhancedRequest;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 
 public class DynamoDBHandler {
@@ -37,24 +41,22 @@ public class DynamoDBHandler {
      */
     public static Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
 
-    /**
-     * Creates the request object that asks for the item with the specified partition key
-     *
-     * @param partitionKey A unique string that can be used to find the item in the DynamoDB table
-     * @return a {@code GetItemEnhancedRequest} object that is the properly formatted object for retrieving an item from a DynamoDB table
-     */
+
     public static GetItemEnhancedRequest makeRequestFromPartitionKey (String partitionKey) {
-        return GetItemEnhancedRequest.builder().key(Key.builder().partitionValue(partitionKey).build()).build();
+        return GetItemEnhancedRequest.builder()
+                                     .key(Key.builder()
+                                             .partitionValue(partitionKey)
+                                             .build())
+                                     .build();
     }
 
-    /**
-     * Creates the {@code DynamoDbEnhancedClient} required to interface with the DynamoDB tables
-     *
-     * @return a {@code DynamoDbEnhancedClient} object that is set up to be based in the AWS Region specified earlier
-     */
-    public static DynamoDbEnhancedClient makeDynamoClient () {
-        DynamoDbClient basicClient = DynamoDbClient.builder().region(awsRegion).build();
-        return DynamoDbEnhancedClient.builder().dynamoDbClient(basicClient).build();
+    private static DynamoDbEnhancedClient makeClient () {
+        return DynamoDbEnhancedClient.builder()
+                                     .dynamoDbClient(DynamoDbClient.builder()
+                                                                   .httpClient(UrlConnectionHttpClient.create())
+                                                                   .region(awsRegion)
+                                                                   .build())
+                                     .build();
     }
 
     /**
@@ -65,10 +67,18 @@ public class DynamoDBHandler {
      */
     public static User getUserItem (String username) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
+            DynamoDbTable<UserWrapper> userTable = makeClient().table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
             return User.createFromBase64String(userTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(username)).getUserBase64());
-        } catch (DynamoDbException ex) {
+        } catch (DynamoDbException |NullPointerException ex) {
+            try {
+                FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error3.txt");
+                fw.write(ex.getMessage() + "\n");
+                fw.write(ex.getLocalizedMessage() + "\n");
+                for (StackTraceElement element : ex.getStackTrace()) {
+                    fw.write(element.toString() + "\n");
+                }
+                fw.close();
+            } catch (IOException e) {}
             System.err.println(ex.getMessage());
             ex.printStackTrace();
             return null;
@@ -82,8 +92,7 @@ public class DynamoDBHandler {
      */
     public static void putUserItem (User user) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<UserWrapper> userTable = enhancedClient.table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
+            DynamoDbTable<UserWrapper> userTable = makeClient().table(DynamoDBHandler.usersTableName, TableSchema.fromBean(UserWrapper.class));
             userTable.putItem(new UserWrapper(user));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -94,14 +103,13 @@ public class DynamoDBHandler {
     /**
      * Retrieves a password object from the database, given a specific hash
      *
-     * @param hash The hash of the password
+     * @param saltedHash The hash of the password with salt in it
      * @return The {@code Password} object (if it exists) that has the specified password hash, {@code null} if there is no {@code Password} object in the database with that hash
      */
-    public static Password getPasswordItem (String hash) {
+    public static Password getPasswordItem (String saltedHash) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
-            return Password.createFromBase64String(passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(hash)).getPasswordBase64());
+            DynamoDbTable<PasswordWrapper> passwordTable = makeClient().table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
+            return Password.createFromBase64String(passwordTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(saltedHash)).getPasswordBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();
@@ -116,8 +124,7 @@ public class DynamoDBHandler {
      */
     public static void putPasswordItem (Password password) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<PasswordWrapper> passwordTable = enhancedClient.table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
+            DynamoDbTable<PasswordWrapper> passwordTable = makeClient().table(DynamoDBHandler.passwordsTableName, TableSchema.fromBean(PasswordWrapper.class));
             passwordTable.putItem(new PasswordWrapper(password));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
@@ -125,11 +132,16 @@ public class DynamoDBHandler {
         }
     }
 
-    public static Chat getChatItem (String otherUsername) {
+    /**
+     * Retrieves a product object from the database, given a specific productUUID
+     *
+     * @param uuid The productUUID of the product
+     * @return The {@code Product} object (if it exists) that has the specified productUUID, {@code null} if there is no {@code Product} object in the database with that productUUID
+     */
+    public static Product getProductItem (String uuid) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<Chat> chatTable = enhancedClient.table(DynamoDBHandler.chatsTableName, TableSchema.fromBean(Chat.class));
-            return chatTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(otherUsername));
+            DynamoDbTable<ProductWrapper> productTable = makeClient().table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
+            return Product.createFromBase64String(productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(uuid)).getProductBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();
@@ -137,15 +149,18 @@ public class DynamoDBHandler {
         }
     }
 
-    public static Product getProductItem (String productUUID) {
+    /**
+     * Puts a {@code Product} object into the database, overwriting the current {@code Product} object in the database if this {@code Product} and the remote {@code Product} object share the same productUUID
+     *
+     * @param product The {@code Product} object to be placed into the database
+     */
+    public static void putProductItem (Product product) {
         try {
-            DynamoDbEnhancedClient enhancedClient = makeDynamoClient();
-            DynamoDbTable<Product> productTable = enhancedClient.table(DynamoDBHandler.productsTableName, TableSchema.fromBean(Product.class));
-            return productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(productUUID));
+            DynamoDbTable<ProductWrapper> productTable = makeClient().table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
+            productTable.putItem(new ProductWrapper(product));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();
-            return null;
         }
     }
 
