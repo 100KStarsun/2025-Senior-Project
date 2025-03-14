@@ -11,7 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Agora"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+        tools:replace="android:appComponentFactory">
         <activity
             android:name=".frontend.RegisterActivity"
             android:exported="true"
@@ -33,6 +35,8 @@
         <activity android:name=".frontend.PreferencesActivity"/>
         <activity android:name=".frontend.SavedPostsActivity"/>
         <activity android:name=".frontend.TransactionHistoryActivity"/>
+        <activity android:name=".frontend.ExpandedListingActivity"/>
+
 
     </application>
 

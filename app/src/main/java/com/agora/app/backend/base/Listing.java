@@ -7,10 +7,18 @@ public class Listing {
 
     private String title;
     private String description;
+    private float price;
+    private String tag1;
+    private String tag2;
+    private String tag3;
 
-    public Listing(String title, String description) {
+    public Listing(String title, String description, float price, String tag1, String tag2, String tag3) {
         this.title = title;
         this.description = description;
+        this.price = price;
+        this.tag1 = tag1;
+        this.tag2 = tag2;
+        this.tag3 = tag3;
     }
 
     public String getTitle() {
@@ -19,5 +27,20 @@ public class Listing {
     public String getDescription() {
         return description;
     }
+
+    public Float getPrice(){
+        return price;
+    }
+
+    public String getTag1(){
+        return tag1;
+    }
+    public String getTag2(){
+        return tag2;
+    }
+    public String getTag3(){
+        return tag3;
+    }
+ 
 
 }

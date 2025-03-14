@@ -4,19 +4,110 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Preferences"
-        android:textSize="40sp"
-        android:layout_marginBottom="20dp"/>
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/buttonUserInfo"
         android:text="User Info"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="-10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Preferences"
+        android:textSize="40sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:text="Allow Exchange "
+            android:id="@+id/exchangeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center"/>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:text="Allow Cash Transactions "
+            android:id="@+id/cashSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Price Maximum"
+        android:gravity="center"
+        android:textSize="10sp" />
+
+    <SeekBar
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Price Minimum"
+        android:gravity="center"
+        android:textSize="10sp" />
+
+    <SeekBar
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Item Categories"
+        android:gravity="center"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <CheckBox
+                android:id="@+id/furnitureCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Furniture"/>
+
+            <CheckBox
+                android:id="@+id/householdCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Household"/>
+
+            <CheckBox
+                android:id="@+id/apparelCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Apparel"/>
+
+        </LinearLayout>
+    </LinearLayout>
 
 
 </LinearLayout>
