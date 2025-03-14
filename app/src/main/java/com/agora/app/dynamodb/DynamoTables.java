@@ -4,7 +4,9 @@ public enum DynamoTables {
     USERS("agora_users","username"),
     PASSWORDS("agora_passwords","hash"),
     CHATS("agora_chats","uuid"),
-    PRODUCTS("agora_products","uuid");
+    PRODUCTS("agora_products","uuid"),
+    IMAGES("agora_images", "id"),
+    IMAGE_CHUNKS("agora_image_chunks", "id");
 
     public final String tableName;
     public final String partitionKeyName;
@@ -24,6 +26,10 @@ public enum DynamoTables {
                 return CHATS;
             case "agora_products":
                 return PRODUCTS;
+            case "agora_images":
+                return IMAGES;
+            case "agora_image_chunks":
+                return IMAGE_CHUNKS;
             default:
                 return null;
 

@@ -15,6 +15,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 public class Password implements Serializable {
+    private static final long serialVersionUID = 2042010294253052140L;
     public static final String hashAlgorithm = "SHA-256";
     private String hash;
     private String username;

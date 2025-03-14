@@ -13,6 +13,7 @@ import java.util.Date;
 import java.util.UUID;
 
 public class Product implements Serializable {
+    private static final long serialVersionUID = 2042010294253052140L;
 
     public static String productsTableName = "agora_products";
 
