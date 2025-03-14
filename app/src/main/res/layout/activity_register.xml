@@ -6,18 +6,18 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:gravity="center"
     android:padding="64dp"
     android:orientation="vertical"
     tools:context=".frontend.RegisterActivity">
 
-
-
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/ic_banner_foreground" />
+        android:layout_height="100dp"
+        android:src="@drawable/agora_header"
+        app:tint="#003071"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/blue_border"/>
 
     <EditText
         android:id="@+id/email_text_id"
@@ -25,23 +25,19 @@
         android:layout_width="match_parent"
         android:autofillHints="email"
         android:inputType="text"
-        android:hint="Enter Case Email..." />
+        android:hint="Enter Case Email" />
 
     <Button
         android:id="@+id/button_id"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="32dp"
-        android:text="Submit"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/teal_700"/>
+        android:text="Submit"/>
     <Button
         android:id="@+id/buttonLoginActivity"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="16dp"
-        android:text="Already have an account? Login"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/teal_700" />
+        android:text="Already have an account? Login" />
     
 </LinearLayout>

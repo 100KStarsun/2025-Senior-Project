@@ -21,15 +21,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="40sp"
             android:orientation="vertical">
+
+            <!-- Spacer to move page below phone's top information bar -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="#003071"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                android:elevation="4dp"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
@@ -53,13 +57,24 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"/>
 
-            <!--page title-->
-            <TextView
+            <!-- Page Title -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="User Information"
-                android:textSize="40sp" />
+                android:gravity="center_horizontal"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="User Information"
+                    android:textSize="40sp"
+                    android:textColor="#003071"
+                    android:gravity="center"
+                    android:background="@drawable/blue_border"
+                    />
+            </LinearLayout>
 
             <!--stack to display user information-->
             <LinearLayout
@@ -103,16 +118,17 @@
                 android:layout_height="0dp"
                 android:id="@+id/item_listings"
                 android:scrollbars="vertical"
-                android:layout_weight="1"/>
-
-
+                android:layout_weight="1"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <!--add listing button-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="8dp">
                     <com.google.android.material.button.MaterialButton
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -126,9 +142,9 @@
                 android:id="@+id/nav_bar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/windowBackground"
-                app:itemIconTint="@color/black"
-                app:itemTextColor="@color/black"
+                android:background="#003071"
+                app:itemIconTint="@color/white"
+                app:itemTextColor="@color/white"
                 app:menu="@menu/nav_bar" />
 
         </LinearLayout>
