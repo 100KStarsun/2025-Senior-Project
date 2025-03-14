@@ -13,22 +13,17 @@ import com.agora.app.lambda.LambdaHandler;
 import com.agora.app.lambda.Operations;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runner.OrderWith;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 
@@ -53,16 +48,15 @@ public class TestClass {
         imageIDs.put("big_image.jpg", "9f321ffc-8be4-4845-a3dd-a4e8a55d9555--06");
     }
 
-    //@Test
-    //@Order(1)
-    public void testBasicLoginStuff () throws JSONException, IOException, NoSuchAlgorithmException {
+    @Test
+    public void testBasicLoginStuff () throws IOException, NoSuchAlgorithmException {
         boolean puttingAndGetting = puttingAndGettingUserAndPassword();
         boolean correctLogin = testCorrectLogin();
         boolean wrongLogin = testWrongLogin();
         assert puttingAndGetting && correctLogin && wrongLogin;
     }
 
-    public boolean puttingAndGettingUserAndPassword () throws IOException, JSONException {
+    public boolean puttingAndGettingUserAndPassword () throws IOException {
         // logic for setting preferred name
         TestClass.preferredFirstName = TestClass.preferredFirstName.isEmpty() ? TestClass.legalFirstName : TestClass.preferredFirstName;
 
@@ -287,21 +281,29 @@ public class TestClass {
 
     @Test
     public void testBreakingAndReconstructingImages () throws IOException {
-        String imgName = "big_image.jpg";
-        Image img = new Image(new File(homeDir + agoraTempDir + imgName));
-        FileWriter fw = new FileWriter(homeDir + agoraTempDir + imgName + "_1toString.txt");
-        fw.write(img.toString());
-        fw.close();
-        ImageChunk[] chunkies = img.getChunks();
-        Image img2 = Image.fromChunks(chunkies);
-        fw = new FileWriter(homeDir + agoraTempDir + imgName + "_2toString.txt");
-        fw.write(img2.toString());
-        fw.close();
-        Files.write(Path.of(homeDir + agoraTempDir + imgName + "_remade.jpg"), img2.getData(), StandardOpenOption.CREATE);
-        assert img.equals(img2);
+        boolean extraDebugInfo = false;
+        ArrayList<String> imageEquals = new ArrayList<>();
+        for (String imgName : imageIDs.keySet()) {
+            Image img = new Image(new File(homeDir + agoraTempDir + imgName));
+            if (extraDebugInfo) {
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + imgName + "_1toString.txt");
+                fw.write(img.toString());
+                fw.close();
+            }
+            ImageChunk[] chunkies = img.getChunks();
+            Image img2 = Image.fromChunks(chunkies);
+            if (extraDebugInfo) {
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + imgName + "_2toString.txt");
+                fw.write(img2.toString());
+                fw.close();
+            }
+            Files.write(Path.of(homeDir + agoraTempDir + imgName + "_remade.jpg"), img2.getData(), StandardOpenOption.CREATE);
+            imageEquals.add(img.equals(img2) + "");
+        }
+        assert !imageEquals.contains("false");
     }
 
-    //@Test
+    @Test
     public void testSendingImageData () throws IOException {
         ArrayList<Image> images = new ArrayList<>();
         for (String imgName : imageIDs.keySet()) {
