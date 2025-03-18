@@ -1,4 +1,4 @@
-package com.agora.app.dynamodb;
+package com.agora.app.backend.lambda;
 
 public enum DynamoTables {
     USERS("agora_users","username"),
