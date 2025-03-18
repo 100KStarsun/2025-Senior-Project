@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,6 +25,8 @@ public class MarketplaceActivity extends AppCompatActivity {
 
     private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
+    private List<Listing> filteredListings;
+    private SearchView searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,7 @@ public class MarketplaceActivity extends AppCompatActivity {
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
+        filteredListings = new ArrayList<>(listings);
 
         // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
@@ -59,8 +64,25 @@ public class MarketplaceActivity extends AppCompatActivity {
         // finds and displays listing view on page
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        view = new ListingView(listings);
+        view = new ListingView(filteredListings);
         recyclerView.setAdapter(view);
+
+        searchBar = findViewById(R.id.search_bar);
+        searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String search) {
+                filterListings(search);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String change) {
+                filterListings(change);
+                return false;
+            }
+        });
+
+        refreshListings();
 
     }
 
@@ -76,6 +98,28 @@ public class MarketplaceActivity extends AppCompatActivity {
         }
         else {
             findViewById(R.id.no_listings).setVisibility(View.GONE);
+        }
+    }
+
+    private void filterListings(String search) {
+        filteredListings.clear();;
+        if (search.isEmpty()) {
+            filteredListings.addAll(listings);
+        }
+        else {
+            for (Listing listing : listings) {
+                if (listing.getTitle().toLowerCase().contains(search.toLowerCase())) {
+                    filteredListings.add(listing);
+                }
+            }
+        }
+        view.notifyDataSetChanged();
+        View noListings = findViewById(R.id.no_listings);
+        if (filteredListings.isEmpty()) {
+            noListings.setVisibility(View.VISIBLE);
+        }
+        else {
+            noListings.setVisibility(View.GONE);
         }
     }
 }
