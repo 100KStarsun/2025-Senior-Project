@@ -2,7 +2,6 @@ package com.agora.app.backend;
 
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.User;
-import com.agora.app.dynamodb.DynamoDBHandler;
 import com.agora.app.backend.lambda.KeyNotFoundException;
 import com.agora.app.backend.lambda.LambdaHandler;
 

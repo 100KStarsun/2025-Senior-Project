@@ -1,7 +1,6 @@
 package com.agora.app.backend.base;
 
 import com.agora.app.backend.lambda.LambdaHandler;
-import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,7 +11,6 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Base64;
 
 public class Password implements Serializable {
