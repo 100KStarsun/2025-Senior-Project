@@ -1,5 +1,7 @@
 package com.agora.app.backend.base;
 
+import android.graphics.drawable.Drawable;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,6 +13,7 @@ import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class Image implements Serializable {
@@ -75,6 +78,18 @@ public class Image implements Serializable {
         this.chunkIDs = chunkIDs;
         this.data = data;
         this.base64 = base64;
+    }
+
+    public Drawable getDrawable () {
+        return Drawable.createFromStream(new ByteArrayInputStream(this.data), this.id);
+    }
+
+    public static HashMap<String, Drawable> getDrawables (HashMap<String, Image> images) {
+        HashMap<String, Drawable> drawables = new HashMap<>(images.size());
+        for (String id : images.keySet()) {
+            drawables.put(id, images.get(id).getDrawable());
+        }
+        return drawables;
     }
 
     public ImageChunk[] getChunks () {

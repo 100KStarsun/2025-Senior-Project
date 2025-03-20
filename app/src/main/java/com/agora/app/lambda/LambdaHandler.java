@@ -20,13 +20,14 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Random;
 
 public class LambdaHandler {
 
     private static final String dynamoDBInteractionFunctionName = "dynamoInteractions";
     public static final String homeDir = System.getProperty("user.home");
     public static final String agoraTempDir = "\\.agora\\";
-    public static final boolean writeOutputs = true;
+    public static final boolean writeOutputs = false;
     private static final Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
     private static LambdaClient awsLambda = LambdaClient.builder()
                                                         .httpClient(UrlConnectionHttpClient.create())
@@ -429,18 +430,12 @@ public class LambdaHandler {
             JSONObject localResponse;
             try {
                 localResponse = new JSONObject(awsLambda.invoke(makeRequest(payload)).payload().asUtf8String());
-                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "initialResponse" + asdf++ + ".json");
-                fw.write(localResponse.toString(4));
-                fw.close();
-            } catch (JSONException | IOException ex) {
+            } catch (JSONException ex) {
                 throw new IllegalStateException("Didn't get valid JSON from AWS Lambda");
             }
             try {
                 localResponse = new JSONObject(localResponse.optString("body"));
-                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "localResponse" + asdf++ + ".json");
-                fw.write(localResponse.toString(4));
-                fw.close();
-            } catch (JSONException | IOException ex) {
+            } catch (JSONException ex) {
                 throw new IllegalStateException("body of response not formatted correctly");
             }
             localResponse.remove("ResponseMetadata");
@@ -484,7 +479,8 @@ public class LambdaHandler {
 
         if (writeOutputs) {
             try {
-                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "trueResponse.json");
+                Random randy = new Random();
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "trueResponse" + randy.nextInt() + ".json");
                 fw.write(response.toString(4));
                 fw.close();
             } catch (IOException | JSONException ex) {}
