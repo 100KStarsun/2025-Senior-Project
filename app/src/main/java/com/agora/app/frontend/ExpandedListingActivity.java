@@ -1,4 +1,5 @@
 package com.agora.app.frontend;
+import com.agora.app.backend.base.Listing;
 
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -40,15 +41,18 @@ public class ExpandedListingActivity extends AppCompatActivity {
         String description = getIntent().getStringExtra("description");
         float price = getIntent().getFloatExtra("price", 0.0f);
         int imageResource = getIntent().getIntExtra("image", R.drawable.ic_placeholder);
-        String tag1 = getIntent().getStringExtra("tag1");
-        String tag2 = getIntent().getStringExtra("tag2");
-        String tag3 = getIntent().getStringExtra("tag3");
+        //String[] tags = getIntent().getStringExtra("tags");
+        String tag1 = "tag1";
+        String tag2 = "tag2";
+        String tag3 = "tag3";
+
 
         // Set the values to the respective views
         titleTextView.setText(title);
         descriptionTextView.setText(description);
         priceTextView.setText("$" + String.format("%.2f", price));
         listingImageView.setImageResource(imageResource);
+
         tag1TextView.setText(tag1);
         tag2TextView.setText(tag2);
         tag3TextView.setText(tag3);
