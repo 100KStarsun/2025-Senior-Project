@@ -4,21 +4,21 @@
 <!--adds each main page to nav bar along with the page icon and page title-->
     <item
         android:id="@+id/nav_messaging"
-        android:icon="@drawable/icon_messaging"
+        android:icon="@drawable/ic_messaginglight"
         android:title="Messaging" />
 
     <item
         android:id="@+id/nav_marketplace"
-        android:icon="@drawable/icon_marketplace"
+        android:icon="@drawable/ic_marketplacelight"
         android:title="Marketplace" />
 
     <item
         android:id="@+id/nav_swiping"
-        android:icon="@drawable/icon_swiping"
+        android:icon="@drawable/ic_swipelight"
         android:title="Swiping" />
 
     <item
         android:id="@+id/nav_user_info"
-        android:icon="@drawable/icon_userinfo"
+        android:icon="@drawable/ic_profilepiclight"
         android:title="User Information" />
 </menu>
