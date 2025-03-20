@@ -49,9 +49,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             intent.putExtra("description", listing.getDescription());
             intent.putExtra("price", listing.getPrice());
             intent.putExtra("image", R.drawable.ic_placeholder); 
-            intent.putExtra("tag1", listing.getTag1());
-            intent.putExtra("tag2", listing.getTag2());
-            intent.putExtra("tag3", listing.getTag3());
+            intent.putExtra("tags", listing.getTags());
             v.getContext().startActivity(intent);
         });
     }

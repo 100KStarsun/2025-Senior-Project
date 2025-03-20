@@ -4,7 +4,7 @@ public enum DynamoTables {
     USERS("agora_users","username"),
     PASSWORDS("agora_passwords","hash"),
     CHATS("agora_chats","uuid"),
-    PRODUCTS("agora_products","uuid"),
+    LISTINGS("agora_listings","uuid"),
     IMAGES("agora_images", "id"),
     IMAGE_CHUNKS("agora_image_chunks", "id");
 
@@ -24,8 +24,8 @@ public enum DynamoTables {
                 return PASSWORDS;
             case "agora_chats":
                 return CHATS;
-            case "agora_products":
-                return PRODUCTS;
+            case "agora_listings":
+                return LISTINGS;
             case "agora_images":
                 return IMAGES;
             case "agora_image_chunks":

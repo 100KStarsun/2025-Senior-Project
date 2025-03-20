@@ -2,7 +2,7 @@ package com.agora.app.dynamodb;
 
 import com.agora.app.backend.base.Password;
 
-import com.agora.app.backend.base.Product;
+import com.agora.app.backend.base.Listing;
 import com.agora.app.backend.base.User;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
@@ -33,9 +33,9 @@ public class DynamoDBHandler {
      */
     public static String chatsTableName = "agora_chats";
     /**
-     * The DynamoDB table name for storing products
+     * The DynamoDB table name for storing Listings
      */
-    public static String productsTableName = "agora_products";
+    public static String listingsTableName = "agora_Listings";
     /**
      * The AWS Region where our DynamoDB instance is, also where our credentials are valid
      */
@@ -133,15 +133,15 @@ public class DynamoDBHandler {
     }
 
     /**
-     * Retrieves a product object from the database, given a specific productUUID
+     * Retrieves a listing object from the database, given a specific listingUUID
      *
-     * @param uuid The productUUID of the product
-     * @return The {@code Product} object (if it exists) that has the specified productUUID, {@code null} if there is no {@code Product} object in the database with that productUUID
+     * @param uuid The listingUUID of the listing
+     * @return The {@code Listing} object (if it exists) that has the specified listingUUID, {@code null} if there is no {@code Listing} object in the database with that listingUUID
      */
-    public static Product getProductItem (String uuid) {
+    public static Listing getListingItem (String uuid) {
         try {
-            DynamoDbTable<ProductWrapper> productTable = makeClient().table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
-            return Product.createFromBase64String(productTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(uuid)).getProductBase64());
+            DynamoDbTable<ListingWrapper> listingTable = makeClient().table(DynamoDBHandler.listingsTableName, TableSchema.fromBean(ListingWrapper.class));
+            return Listing.createFromBase64String(listingTable.getItem(DynamoDBHandler.makeRequestFromPartitionKey(uuid)).getListingBase64());
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();
@@ -150,14 +150,14 @@ public class DynamoDBHandler {
     }
 
     /**
-     * Puts a {@code Product} object into the database, overwriting the current {@code Product} object in the database if this {@code Product} and the remote {@code Product} object share the same productUUID
+     * Puts a {@code Listing} object into the database, overwriting the current {@code Listing} object in the database if this {@code Listing} and the remote {@code Listing} object share the same listingUUID
      *
-     * @param product The {@code Product} object to be placed into the database
+     * @param listing The {@code Listing} object to be placed into the database
      */
-    public static void putProductItem (Product product) {
+    public static void putListingItem (Listing listing) {
         try {
-            DynamoDbTable<ProductWrapper> productTable = makeClient().table(DynamoDBHandler.productsTableName, TableSchema.fromBean(ProductWrapper.class));
-            productTable.putItem(new ProductWrapper(product));
+            DynamoDbTable<ListingWrapper> listingTable = makeClient().table(DynamoDBHandler.listingsTableName, TableSchema.fromBean(ListingWrapper.class));
+            listingTable.putItem(new ListingWrapper(listing));
         } catch (DynamoDbException ex) {
             System.err.println(ex.getMessage());
             ex.printStackTrace();

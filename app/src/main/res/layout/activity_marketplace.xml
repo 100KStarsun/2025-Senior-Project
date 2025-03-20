@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@android:color/holo_blue_dark"
-        android:text="No product listings are currently available :("
+        android:text="No listings are currently available :("
         android:textSize="30sp"
         android:gravity="center"
         />
