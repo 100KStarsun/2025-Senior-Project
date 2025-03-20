@@ -177,11 +177,11 @@ public class UserInfoActivity extends AppCompatActivity {
             }    
 
             if(!title.isEmpty() && !description.isEmpty()) {
-                UUID uuid = UUID.randomUUID(); // Generate a new UUID for the listing
-                String displayName = "temp"; // Fetch the seller's display name
-                String username = "user"; // Fetch the seller's username
-                String type = "default"; // You may need to adjust this if type is required
-                String[] tags = tagsList.toArray(new String[0]); // Convert tags to an array if it's a list
+                UUID uuid = UUID.randomUUID();
+                String displayName = "temp"; 
+                String username = "user"; 
+                String type = "default"; 
+                String[] tags = tagsList.toArray(new String[0]); 
 
                 Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags);
     
