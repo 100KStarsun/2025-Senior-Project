@@ -4,19 +4,45 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonUserInfo"
-        android:text="User Info"
-        android:layout_marginTop="-10dp"/>
+    <!-- Spacer to move page below phone's top information bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#003071"/>
 
-    <TextView
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/agora_header"
+            android:layout_gravity="center"
+            android:contentDescription="Agora Header"
+            android:background="#003071"/>
+    </LinearLayout>
+
+    <!-- Page Title -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Preferences"
-        android:textSize="40sp" />
+        android:gravity="center_horizontal"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Preferences"
+            android:textSize="40sp"
+            android:textColor="#003071"
+            android:gravity="center"
+            android:background="@drawable/blue_border"
+            />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -109,5 +135,20 @@
         </LinearLayout>
     </LinearLayout>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right"
+        android:padding="16dp"
+        >
+
+        <Button
+            android:id="@+id/buttonUserInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Info"
+            android:layout_alignParentBottom="true"
+            />
+    </RelativeLayout>
 
 </LinearLayout>
