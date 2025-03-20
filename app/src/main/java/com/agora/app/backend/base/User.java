@@ -1,6 +1,5 @@
 package com.agora.app.backend.base;
 
-import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -79,18 +78,6 @@ public class User implements Serializable {
             paymentMethodsSetup.put(method, false);
         }
         return paymentMethodsSetup;
-    }
-
-    /**
-     * Uses {@code DynamoDBHandler} to query the database for this user
-     *
-     * @param username the caseID of the {@code User} to be retrieved from the database
-     * @return the {@code User} with the specified username, {@code null} if that user does not exist
-     *
-     * @see DynamoDBHandler#getUserItem(String)
-     */
-    public static User getUserFromUsername (String username) {
-        return DynamoDBHandler.getUserItem(username);
     }
 
     /**
