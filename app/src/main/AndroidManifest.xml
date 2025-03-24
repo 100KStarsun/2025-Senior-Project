@@ -25,6 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".frontend.RegistrationConfirmationActivity"/>
         <activity android:name=".frontend.MarketplaceActivity"/>
         <activity android:name=".frontend.SwipingActivity"/>
         <activity android:name=".frontend.UserInfoActivity"/>

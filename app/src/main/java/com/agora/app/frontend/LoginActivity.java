@@ -48,7 +48,6 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Password cannot be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 // Start background login task
                 new LoginTask().execute(username, password);
             }

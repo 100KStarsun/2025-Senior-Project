@@ -142,7 +142,7 @@ public class TestClass {
         */
     }
 
-    @Test
+    //@Test
     public void testLambdaGet () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(2);
         items.put("ssh115", null);

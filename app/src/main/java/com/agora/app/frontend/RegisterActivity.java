@@ -3,6 +3,7 @@ package com.agora.app.frontend;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,6 +11,8 @@ import android.widget.Toast;
 import com.agora.app.R;
 
 import java.util.Objects;
+import java.security.SecureRandom;
+import com.agora.app.backend.EmailSender;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -37,20 +40,23 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 CASE_ID_TEXT = caseid.getText().toString().trim();
-
-                // Check if email is empty or invalid
                 if (CASE_ID_TEXT.isEmpty()) {
                     Toast.makeText(RegisterActivity.this, "Please enter a valid case id!", Toast.LENGTH_SHORT).show();
-                } else if (!caseMailAuth(CASE_ID_TEXT)) {
-                    // Valid case email
-                    Toast.makeText(RegisterActivity.this, "Email verified!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(RegisterActivity.this, AccountCreatorActivity.class);
-                    //intent.putExtra("email", EMAIL_TEXT);
-                    startActivity(intent);
-                    //finish();
                 } else {
-                    // Invalid email
-                    Toast.makeText(RegisterActivity.this, "Invalid .edu email!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegisterActivity.this, "Please check your email for verification!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RegisterActivity.this, RegistrationConfirmationActivity.class);
+                    String email = CASE_ID_TEXT + "@case.edu";
+                    String userOTP = generateOTP();
+                    
+                    //Email sending must be done on background thread, cannot be done on UI thread
+                    new AsyncTask<Void, Void, Void>() {
+                        protected Void doInBackground (Void... voids) {
+                            new EmailSender().sendEmail(email, userOTP);
+                            return null;
+                        }
+                    }.execute();
+                    intent.putExtra("confirmOTP", userOTP);
+                    startActivity(intent);
                 }
             }
 
@@ -66,6 +72,21 @@ public class RegisterActivity extends AppCompatActivity {
             public boolean caseMailAuth(String email) {
                 String[] emailTokens = email.split("@");
                 return emailTokens.length == 2 && emailTokens[1].equals("case.edu");
+            }
+
+            /**
+             * Securely generates a random 6 digit number using the SecureRandom class
+             * 
+             * @return  String representation of the 6-digit OTP, used for authentication
+             */
+            public String generateOTP() {
+                int length = 6;
+                SecureRandom random = new SecureRandom();
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < length; i++) {
+                    sb.append(random.nextInt(10));
+                }
+                return sb.toString();
             }
         });
     }
