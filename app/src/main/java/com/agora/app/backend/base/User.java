@@ -36,12 +36,12 @@ public class User implements Serializable {
     private int numSwaps;
     private short rating;
     private EnumMap<PaymentMethods, Boolean> paymentMethodsSetup; // boolean is whether the user has this setup
-    private TreeMap<String, ArrayList<UUID>> chats; // key is the username of the other person, the ArrayList is a list of `chatUUID`s that are in the db
+    private TreeMap<String, ArrayList<String>> chats; // key is the username of the other person, the ArrayList is a list of `chatID`s that are in the db
     private ArrayList<UUID> draftedListings; // a list of UUIDs of listings the user has drafted
     private ArrayList<UUID> publishedListings; // a list of UUIDs of listings the user has published
     private ArrayList<UUID> likedListings; // a list of UUIDs of all listings the user has liked
-    private ArrayList<UUID> mutedUsers; // a list of UUIDs of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
-    private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
+    private ArrayList<String> mutedUsers; // a list of usernames of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
+    private ArrayList<String> blockedUsers; // a list of usernames of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
 
     public static final Locale locale = Locale.ENGLISH;
 
@@ -92,15 +92,6 @@ public class User implements Serializable {
         try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
             return (User) objectIn.readObject();
         } catch (IOException | ClassNotFoundException ex) {
-            try {
-                FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error.txt");
-                fw.write(ex.getMessage() + "\n");
-                fw.write(ex.getLocalizedMessage() + "\n");
-                for (StackTraceElement element : ex.getStackTrace()) {
-                    fw.write(element.toString() + "\n");
-                }
-                fw.close();
-            } catch (IOException e) {}
             ex.printStackTrace();
         }
         return null;
@@ -161,7 +152,7 @@ public class User implements Serializable {
 
     public String getSaltString () { return saltString; }
 
-    public TreeMap<String, ArrayList<UUID>> getChats () { return chats; }
+    public TreeMap<String, ArrayList<String>> getChats () { return chats; }
 
     public String getPreferredFirstName () { return this.preferredFirstName; }
 }
