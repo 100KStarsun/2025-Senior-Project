@@ -42,7 +42,7 @@ public class User implements Serializable {
     private ArrayList<UUID> likedListings; // a list of UUIDs of all listings the user has liked
     private ArrayList<UUID> mutedUsers; // a list of UUIDs of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
     private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
-
+    private ArrayList<Listing> transactionHistory;
     public static final Locale locale = Locale.ENGLISH;
 
     // this constructor is for when a new user registers
@@ -65,6 +65,7 @@ public class User implements Serializable {
         this.likedListings = new ArrayList<>();
         this.mutedUsers = new ArrayList<>();
         this.blockedUsers = new ArrayList<>();
+        this.transactionHistory = new ArrayList<>();
     }
 
     /**
@@ -164,4 +165,8 @@ public class User implements Serializable {
     public TreeMap<String, ArrayList<UUID>> getChats () { return chats; }
 
     public String getPreferredFirstName () { return this.preferredFirstName; }
+
+    public void completeTransaction(Listing sold) { transactionHistory.add(sold); }
+
+    public ArrayList<Listing> getTransactionHistory() { return transactionHistory; }
 }
