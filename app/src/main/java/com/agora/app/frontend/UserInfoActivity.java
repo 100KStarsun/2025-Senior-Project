@@ -1,12 +1,11 @@
 package com.agora.app.frontend;
+import com.agora.app.backend.base.Listing;
 
 import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -16,9 +15,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
-
 import com.google.android.material.navigation.NavigationView;
-
 import com.agora.app.backend.base.Listing;
 import com.agora.app.frontend.ListingView;
 import androidx.appcompat.app.AlertDialog;
@@ -30,7 +27,12 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
+/**
+ * @class UserInfoActivity
+ * @brief Activity for the user information page.
+ */
 public class UserInfoActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
@@ -38,7 +40,7 @@ public class UserInfoActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     // variables for the list of listing and the view in which to see listings on page
-    private List<Listing> listings = new ArrayList<>();
+    private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
 
     @Override
@@ -138,6 +140,10 @@ public class UserInfoActivity extends AppCompatActivity {
         builder.setView(dialogView);
         EditText titleInput = dialogView.findViewById(R.id.input_listing_title);
         EditText descriptionInput = dialogView.findViewById(R.id.input_listing_description);
+        EditText priceInput = dialogView.findViewById(R.id.input_listing_price);
+        EditText tag1Input = dialogView.findViewById(R.id.input_listing_tag1);
+        EditText tag2Input = dialogView.findViewById(R.id.input_listing_tag2);
+        EditText tag3Input = dialogView.findViewById(R.id.input_listing_tag3);
         Button saveButton = dialogView.findViewById(R.id.save_listing);
         AlertDialog dialog = builder.create();
 
@@ -145,9 +151,41 @@ public class UserInfoActivity extends AppCompatActivity {
         saveButton.setOnClickListener(v -> {
             String title = titleInput.getText().toString();
             String description = descriptionInput.getText().toString();
+            
+            
+            String tag1 = tag1Input.getText().toString();
+            String tag2 = tag2Input.getText().toString();
+            String tag3 = tag3Input.getText().toString();
+
+            List<String> tagsList = new ArrayList<>();
+            if (!tag1.isEmpty()) tagsList.add(tag1);
+            if (!tag2.isEmpty()) tagsList.add(tag2);
+            if (!tag3.isEmpty()) tagsList.add(tag3);
+
+            
+
+            float price = 0.0f;
+            String priceString = priceInput.getText().toString();
+ 
+            if (!priceString.isEmpty()) {
+                try {
+                    price = Float.parseFloat(priceString); // Parse to float
+                } catch (NumberFormatException e) {
+                    price = 0.0f;  //default price if not entered
+                    // Add toast error message later
+                }
+            }    
 
             if(!title.isEmpty() && !description.isEmpty()) {
-                listings.add(new Listing(title, description));
+                UUID uuid = UUID.randomUUID();
+                String displayName = "temp"; 
+                String username = "user"; 
+                String type = "default"; 
+                String[] tags = tagsList.toArray(new String[0]); 
+
+                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags);
+    
+                ListingManager.getInstance().addListing(newListing);
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();
             }

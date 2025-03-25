@@ -26,7 +26,6 @@ public class RegistrationConfirmationActivity extends AppCompatActivity{
 
         EditText otp_field = findViewById(R.id.user_otp);
         Button verify = findViewById(R.id.verify_button);
-        Toast.makeText(RegistrationConfirmationActivity.this, confirmOTP, Toast.LENGTH_SHORT).show();
 
         verify.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

@@ -18,6 +18,10 @@ import java.security.NoSuchAlgorithmException;
 import java.io.IOException;
 import org.json.JSONException;
 
+/**
+ * @class LoginActivity
+ * @brief Activity that allows the user to login to the app with their saved credentials.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     @Override

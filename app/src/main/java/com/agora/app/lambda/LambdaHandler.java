@@ -24,9 +24,9 @@ public class LambdaHandler {
     public static String homeDir = System.getProperty("user.home");
     public static String agoraTempDir = "\\.agora\\";
     private static Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
-    //BE SURE TO ENTER AWS CREDS HERE!!!
+    //ENTER AWS CREDS HERE!!!
     private static LambdaClient awsLambda = LambdaClient.builder()
-                                                        .credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                                                        //.credentialsProvider(StaticCredentialsProvider.create(awsCreds))
                                                         .httpClient(UrlConnectionHttpClient.create())
                                                         .region(awsRegion)
                                                         .build();

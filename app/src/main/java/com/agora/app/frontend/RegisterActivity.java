@@ -9,11 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import com.agora.app.R;
-
 import java.util.Objects;
 import java.security.SecureRandom;
 import com.agora.app.backend.EmailSender;
 
+/**
+ * @class RegisterActivity
+ * @brief Activity for entering case email to register for the app initially.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     public static String CASE_ID_TEXT;

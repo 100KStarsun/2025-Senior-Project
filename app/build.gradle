@@ -25,14 +25,17 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-
     packagingOptions {
-        exclude 'META-INF/INDEX.LIST'
-        exclude 'META-INF/LICENSE.md'
-        exclude 'META-INF/NOTICE.md'
-        exclude 'META-INF/DEPENDENCIES'
-        exclude 'META-INF/io.netty.versions.properties'
+        resources {
+            excludes += ['META-INF/INDEX.LIST', 'META-INF/LICENSE.md', 'META-INF/DEPENDENCIES', 
+                         'META-INF/NOTICE.md',
+                         'META-INF/io.netty.versions.properties',
+                         'META-INF/androidx.localbroadcastmanager_localbroadcastmanager.version',
+                         'META-INF/androidx.customview_customview.version',
+                         'META-INF/androidx.drawerlayout_drawerlayout.version']
+        }
     }
+
 
     compileOptions {
         sourceCompatibility(JavaVersion.VERSION_21)
@@ -40,6 +43,11 @@ android {
     }
     buildFeatures {
         compose = 'false'
+        viewBinding true
+    }
+    lint {
+        checkReleaseBuilds false
+        abortOnError false
     }
 }
 
@@ -48,22 +56,28 @@ configurations {
         exclude group: 'io.netty', module: 'netty-handler'
         exclude group: 'io.netty', module: 'netty-codec-http2'
         exclude group: 'io.netty', module: 'netty-transport'
+        exclude group: 'com.android.support'
     }
 }
 
 dependencies {
-    implementation('androidx.core:core:1.12.0')
+    implementation('androidx.core:core:1.12.0') {
+        exclude group: 'com.android.support', module: 'support-compat'
+    }
+    implementation ('androidx.versionedparcelable:versionedparcelable:1.1.1') {
+        exclude group: 'com.android.support', module: 'versionedparcelable'
+    }
     implementation('androidx.lifecycle:lifecycle-runtime:2.7.0')
     implementation('androidx.appcompat:appcompat:1.6.1')
+    implementation ("com.github.yuyakaido:CardStackView:2.3.4")
     testImplementation('junit:junit:4.13.2')
     androidTestImplementation('androidx.test.ext:junit:1.1.5')
     androidTestImplementation('androidx.test.espresso:espresso-core:3.5.1')
     implementation('com.google.android.material:material:1.11.0')
 
-    platform(implementation('software.amazon.awssdk:bom:2.30.21'))
+    platform(implementation('software.amazon.awssdk:bom:2.30.31'))
     implementation('software.amazon.awssdk:sso')
     implementation('software.amazon.awssdk:ssooidc')
-    implementation('software.amazon.awssdk:dynamodb-enhanced')
     implementation('software.amazon.awssdk:lambda')
     implementation('software.amazon.awssdk:url-connection-client:2.13.49')
     implementation('org.json:json:20250107')

@@ -3,13 +3,14 @@ package com.agora.app.frontend;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
-
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.agora.app.R;
-
 import java.util.Objects;
 
+/**
+ * @class TransactionHistoryActivity
+ * @brief Activity for a user's transaction history
+ */
 public class TransactionHistoryActivity extends AppCompatActivity {
 
     @Override

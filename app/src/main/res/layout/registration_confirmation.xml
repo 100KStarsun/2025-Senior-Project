@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="64dp">
 
     <EditText
         android:id="@+id/user_otp"
@@ -10,7 +12,8 @@
         android:layout_width="match_parent"
         android:autofillHints="otp"
         android:inputType="text"
-        android:hint="Enter your OTP..." />
+        android:hint="Enter your OTP..."
+        android:layout_marginTop="32dp" />
 
     <Button
         android:id="@+id/verify_button"
@@ -18,7 +21,6 @@
         android:layout_height="56dp"
         android:layout_marginTop="32dp"
         android:text="Verify"
-        android:textColor="@color/white"
-        android:backgroundTint="@color/light_green"/>
+        android:textColor="@color/white"/>
 
 </LinearLayout>
