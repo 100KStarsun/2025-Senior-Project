@@ -3,12 +3,12 @@
 
     <style name="Theme.Agora" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary colors -->
-        <item name="colorPrimary">#003071</item>
+        <item name="colorPrimary">#1F1F1F</item>
         <item name="colorAccent">#A6D2E6</item>
-        <item name="colorOnBackground">#000000</item>
+        <item name="colorOnBackground">#FFFFFF</item>
 
         <!-- Background color -->
-        <item name="android:windowBackground">#A6D2E6</item>
+        <item name="android:windowBackground">#121212</item>
 
         <!-- Button Styling -->
         <item name="android:buttonStyle">@style/CustomButtonStyle</item>
@@ -16,8 +16,8 @@
 
     <!-- Define global button style -->
     <style name="CustomButtonStyle">
-        <item name="android:backgroundTint">#003071</item>
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:backgroundTint">#A6D2E6</item>
+        <item name="android:textColor">#121212</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
     </style>

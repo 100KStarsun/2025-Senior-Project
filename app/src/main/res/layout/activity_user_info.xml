@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#A6D2E6"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
@@ -13,7 +12,6 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#168BC34A"
         tools:context=".frontend.UserInfoActivity"
         tools:openDrawer="start">
 
@@ -86,7 +84,8 @@
                 <ImageView
                     android:layout_width="96dp"
                     android:layout_height="96dp"
-                    android:src="@drawable/icon_userinfo"/>
+                    android:src="@drawable/icon_userinfo"
+                    app:tint="?attr/colorOnBackground"/>
 
                 <!--stack to display text information next to icon-->
                 <LinearLayout
@@ -98,17 +97,20 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="User Name"
-                        android:textSize="15dp" />
+                        android:textSize="15dp"
+                        android:textColor="?attr/colorOnBackground"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Case ID"
-                        android:textSize="15dp" />
+                        android:textSize="15dp"
+                        android:textColor="?attr/colorOnBackground"/>
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Transactions to Date: #"
-                        android:textSize="15dp"/>
+                        android:textSize="15dp"
+                        android:textColor="?attr/colorOnBackground"/>
                 </LinearLayout>
             </LinearLayout>
 
