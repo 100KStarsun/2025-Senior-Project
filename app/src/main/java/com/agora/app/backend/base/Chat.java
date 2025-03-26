@@ -40,7 +40,7 @@ public class Chat implements Serializable {
             return null;
         }
         this.isFull = true;
-        Chat newChat =
+        return null;
     }
 
     public static Chat createFromBase64String (String encodedChat) {
