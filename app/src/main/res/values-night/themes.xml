@@ -3,7 +3,7 @@
 
     <style name="Theme.Agora" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary colors -->
-        <item name="colorPrimary">#1F1F1F</item>
+        <item name="colorPrimary">#003071</item>
         <item name="colorAccent">#A6D2E6</item>
         <item name="colorOnBackground">#FFFFFF</item>
 

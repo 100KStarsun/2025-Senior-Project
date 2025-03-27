@@ -6,8 +6,7 @@
     android:paddingTop="100dp"
     android:paddingLeft="50dp"
     android:paddingRight="50dp"
-    android:paddingBottom="100dp"
-    android:background="#A6D2E6">
+    android:paddingBottom="100dp">
 
     <!-- Wrapper LinearLayout for Box -->
     <LinearLayout
