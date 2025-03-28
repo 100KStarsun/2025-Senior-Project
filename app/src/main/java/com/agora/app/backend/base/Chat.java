@@ -32,6 +32,10 @@ public class Chat implements Serializable {
         return this.username1.equals(currentUser.getUsername()) ? this.username2 : this.username1;
     }
 
+    private String getSendChatMessage (String toUsername, String message) {
+        return "{\"action\":\"sendmessage\",\"to\":\"" + toUsername + "\",\"message\":\"" + message + "\"}";
+    }
+
     private Chat addMessage (String messageText, User currentUser, boolean fromUser1) {
         Message message = new Message(messageText, new Date(), fromUser1);
 

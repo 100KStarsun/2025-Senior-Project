@@ -11,6 +11,9 @@ import com.agora.app.backend.lambda.DynamoTables;
 import com.agora.app.backend.lambda.KeyNotFoundException;
 import com.agora.app.backend.lambda.LambdaHandler;
 import com.agora.app.backend.lambda.Operations;
+import com.agora.app.backend.Session;
+import com.neovisionaries.ws.client.WebSocket;
+import com.neovisionaries.ws.client.WebSocketException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -324,5 +327,15 @@ public class TestClass {
             equalImages.add(testImg.equals(baseCase) + "");
         }
         assert !equalImages.contains("false");
+    }
+
+    @Test
+    public void testWebSockets () throws IOException, WebSocketException {
+        User noah = LambdaHandler.getUsers(new String[]{"nrm98"}).get("nrm98");
+        Session session = new Session(noah);
+        WebSocket ws = session.getWs();
+        ws.connect();
+        ws.sendText("{\"action\":\"sendmessage\",\"to\":\"lrl47\",\"message\":\"hi levi! From noah :)\"}");
+        ws.disconnect();
     }
 }
