@@ -17,6 +17,7 @@ import java.util.EnumMap;
 import java.util.Locale;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.Collections;
 import java.security.SecureRandom;
 
 
@@ -42,7 +43,7 @@ public class User implements Serializable {
     private ArrayList<UUID> likedListings; // a list of UUIDs of all listings the user has liked
     private ArrayList<UUID> mutedUsers; // a list of UUIDs of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
     private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
-    private ArrayList<Boolean> userPreferences; //list of preferences, all false by default
+    private Object[] userPreferences; //list of preferences, all false by default
 
     public static final Locale locale = Locale.ENGLISH;
 
@@ -66,8 +67,14 @@ public class User implements Serializable {
         this.likedListings = new ArrayList<>();
         this.mutedUsers = new ArrayList<>();
         this.blockedUsers = new ArrayList<>();
-        this.userPreferences = new ArrayList<>();
-        Collections.fill(userPreferences, false);
+        userPreferences = new Object[7];
+        userPreferences[0] = false; 
+        userPreferences[1] = false;
+        userPreferences[2] = 0;
+        userPreferences[3] = 0;
+        userPreferences[4] = false;
+        userPreferences[5] = false;
+        userPreferences[6] = false;
     }
 
     /**
@@ -168,7 +175,7 @@ public class User implements Serializable {
 
     public String getPreferredFirstName () { return this.preferredFirstName; }
 
-    public ArrayList<UUID> getUserPreferences () { return userPreferences; }
+    public ArrayList<Boolean> getUserPreferences () { return userPreferences; }
 
-    public void setUserPreferences (ArrayList<UUID> userPreferences) { this.userPreferences = userPreferences; }
+    public void setUserPreferences (ArrayList<Boolean> userPreferences) { this.userPreferences = userPreferences; }
 }
