@@ -20,7 +20,7 @@ public class Listing implements Serializable {
     private UUID listingUUID;
     private String title;
     private Date listingTime;
-    private double price;
+    private float price;
     private String description;
     private String sellerDisplayName;
     private String sellerUsername;
@@ -31,10 +31,10 @@ public class Listing implements Serializable {
     private boolean isAcceptingCash;
     private boolean isTradable;
     private ArrayList<UUID> previousBuyers;
-    private String[] tags;
+    private ArrayList<String> tags;
 
     //Every field provided
-    public Listing(UUID uuid, String title, Date listingTime, double price, String desc, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, String[] tags) {
+    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, ArrayList<String> tags) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = listingTime;
@@ -52,7 +52,7 @@ public class Listing implements Serializable {
         this.tags = tags;
     }
     //Defaults where applicable
-    public Listing(UUID uuid, String title, double price, String desc, String displayName, String username, String type, String[] tags) {
+    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, ArrayList<String> tags) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = Date.from(Instant.now());
@@ -70,7 +70,7 @@ public class Listing implements Serializable {
         this.tags = tags;
     }
     //Defaults for most things, but allows quantity and infiniteavailabilty
-    public Listing(UUID uuid, String title, double price, String desc, String displayName, String username, String type, int quantity, boolean infiniteAvailable, String[] tags) {
+    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, int quantity, boolean infiniteAvailable, ArrayList<String> tags) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = Date.from(Instant.now());
@@ -88,7 +88,7 @@ public class Listing implements Serializable {
         this.tags = tags;
     }
     //Seller information comes from a User object
-    public Listing(UUID uuid, String title, Date listingTime, double price, String desc, User user, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, String[] tags) {
+    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, User user, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, ArrayList<String> tags) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = listingTime;
@@ -142,7 +142,7 @@ public class Listing implements Serializable {
     public UUID getUUID () { return this.listingUUID; }
     public String getTitle () { return this.title; }
     public Date getListingTime () { return this.listingTime; }
-    public double getPrice () { return this.price; }
+    public float getPrice () { return this.price; }
     public String getDescription () { return this.description; }
     public String getSellerDisplayName() { return this.sellerDisplayName; }
     public String getSellerUsername() { return this.sellerUsername; }
@@ -153,9 +153,9 @@ public class Listing implements Serializable {
     public boolean getIsAcceptingCash() { return this.isAcceptingCash; }
     public boolean getIsTradable() { return this.isTradable; }
     public ArrayList<UUID> getPreviousBuyers() { return this.previousBuyers; }
-    public String[] getTags() { return this.tags; }
+    public ArrayList<String> getTags() { return this.tags; }
     public void setTitle (String title) { this.title = title; }
-    public void setPrice (double price) { this.price = price; }
+    public void setPrice (float price) { this.price = price; }
     public void setDescription (String description) { this.description = description; }
     public void setSellerDisplayName (String sellerDisplayName) { this.sellerDisplayName = sellerDisplayName; }
     public void setTypeOfListing (String typeOfListing) { this.typeOfListing = typeOfListing; }
@@ -165,5 +165,5 @@ public class Listing implements Serializable {
     public void toggleIsAcceptingCash() { this.isAcceptingCash = !this.isAcceptingCash; }
     public void toggleIsTradable() { this.isTradable = !this.isTradable; }
     public void addPreviousBuyer (UUID previousBuyer) { this.previousBuyers.add(previousBuyer); }
-    public void setTags (String[] tags) { this.tags = tags; }
+    public void setTags (ArrayList<String> tags) { this.tags = tags; }
 }

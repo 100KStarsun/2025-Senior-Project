@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import java.util.List;
 import android.content.Intent;
+import java.util.ArrayList;
 
 /**
  * @class ListingView
@@ -36,22 +37,22 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final Listing listing = listings.get(position);
-    
-        // Set data to views
-        holder.title.setText(listing.getTitle());
-        holder.description.setText(listing.getDescription());
-        holder.price.setText("$" + String.format("%.2f", listing.getPrice()));
-    
-        // Set click listener for each listing card
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), ExpandedListingActivity.class);
-            intent.putExtra("title", listing.getTitle());
-            intent.putExtra("description", listing.getDescription());
-            intent.putExtra("price", listing.getPrice());
-            intent.putExtra("image", R.drawable.ic_placeholder); 
-            intent.putExtra("tags", listing.getTags());
-            v.getContext().startActivity(intent);
-        });
+
+    // Set data to views
+    holder.title.setText(listing.getTitle());
+    holder.description.setText(listing.getDescription());
+    holder.price.setText("$" + String.format("%.2f", listing.getPrice()));
+
+    // Set click listener for each listing card
+    holder.itemView.setOnClickListener(v -> {
+        Intent intent = new Intent(v.getContext(), ExpandedListingActivity.class);
+        intent.putExtra("title", listing.getTitle());
+        intent.putExtra("description", listing.getDescription());
+        intent.putExtra("price", listing.getPrice());
+        intent.putExtra("image", R.drawable.ic_placeholder); 
+        intent.putStringArrayListExtra("tags", new ArrayList<String>(listing.getTags())); // pass tags as ArrayList
+        v.getContext().startActivity(intent);
+    });
     }
     
 
@@ -71,11 +72,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             title = itemView.findViewById(R.id.listing_title);
             description = itemView.findViewById(R.id.listing_description);
             price = itemView.findViewById(R.id.listing_price);
-            //tag = itemView.findViewById(R.id.listing_)
-            //expandedView = itemView.findViewById(R.id.expanded_view); // Reference to expanded view
-
-            // Initially hide the expanded view
-            //expandedView.setVisibility(View.GONE);
+   
         }
     }
 }
