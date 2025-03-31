@@ -65,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private class LoginTask extends AsyncTask<String, Void, Boolean> {
         private String errorMessage = "";
-
+        private String username;
         /**
          * Carries out the login operation on a background thread
          * Method from the AsyncTask superclass (abstract)
@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
          */
         @Override
         protected Boolean doInBackground(String... params) {
-            String username = params[0];
+            username = params[0];
             String password = params[1];
             try {
                 return LoginHandler.login(username, password);
@@ -95,6 +95,7 @@ public class LoginActivity extends AppCompatActivity {
             super.onPostExecute(result);
             if (result) {
                 Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
                 Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
             } else {

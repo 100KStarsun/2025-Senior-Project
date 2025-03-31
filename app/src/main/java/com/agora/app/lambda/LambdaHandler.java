@@ -1,6 +1,6 @@
 package com.agora.app.lambda;
 
-
+import com.agora.app.backend.lambda.CognitoAuth;
 import com.agora.app.dynamodb.DynamoTables;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,7 +10,7 @@ import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.InvokeRequest;
-import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
 import java.io.FileWriter;
@@ -24,9 +24,9 @@ public class LambdaHandler {
     public static String homeDir = System.getProperty("user.home");
     public static String agoraTempDir = "\\.agora\\";
     private static Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
-    //ENTER AWS CREDS HERE!!!
+    private static final AwsCredentials tempCreds = CognitoAuth.getTemporaryCredentials();
     private static LambdaClient awsLambda = LambdaClient.builder()
-                                                        //.credentialsProvider(StaticCredentialsProvider.create(awsCreds))
+                                                        .credentialsProvider(StaticCredentialsProvider.create(tempCreds))
                                                         .httpClient(UrlConnectionHttpClient.create())
                                                         .region(awsRegion)
                                                         .build();
