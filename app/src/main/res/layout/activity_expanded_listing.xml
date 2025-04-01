@@ -1,91 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   android:layout_width="match_parent"
-   android:layout_height="match_parent"
-   android:orientation="vertical"
-   android:padding="16dp"
-   android:background="#A6D2E6">
+              
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingTop="100dp"
+    android:paddingLeft="50dp"
+    android:paddingRight="50dp"
+    android:paddingBottom="100dp"
+    android:background="#A6D2E6">
 
-   <!-- Listing Title -->
-   <TextView
-       android:id="@+id/expanded_listing_title"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:text="Title"
-       android:textSize="40sp"
-       android:layout_marginTop="10dp"/>
+    <!-- Wrapper LinearLayout for Box -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/blue_border_rounded"
+        android:elevation="4dp"
+        android:layout_gravity="center">
 
-   <!-- Listing Image -->
-   <ImageView
-       android:id="@+id/expanded_listing_image"
-       android:layout_width="match_parent"
-       android:layout_height="200dp"
-       android:scaleType="centerCrop"
-       android:contentDescription="Listing Image"
-       android:src="@drawable/ic_placeholder"/>
+    <!-- Listing Title -->
+    <TextView
+        android:id="@+id/expanded_listing_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Title"
+        android:padding="10dp"
+        android:textSize="40sp"
+        android:textColor="#003071"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/blue_border"/>
 
-   <!-- Listing Price -->
-   <TextView
-       android:id="@+id/expanded_listing_price"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:text="$0.00"
-       android:textSize="18sp"
-       android:textColor="@android:color/holo_green_dark"
-       android:layout_marginTop="10dp"/>
-    
-   <!-- Listing Tags -->
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="horizontal"
-       android:layout_marginTop="10dp">
+    <!-- Listing Image -->
+    <ImageView
+        android:id="@+id/expanded_listing_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="Listing Image"
+        android:src="@drawable/ic_placeholder"/>
 
-       <TextView
-           android:id="@+id/expanded_listing_tag1"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Tag 1"
-           android:textSize="18sp"/>
+    <!-- Listing Price -->
+    <TextView
+        android:id="@+id/expanded_listing_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="$0.00"
+        android:textSize="18sp"
+        android:textColor="@android:color/holo_green_dark"
+        android:layout_marginTop="10dp"/>
 
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text=", "
-           android:textSize="18sp"
-           android:layout_marginStart="8dp"
-           android:layout_marginEnd="8dp"/>
+    <!-- Listing Tags -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
 
-       <TextView
-           android:id="@+id/expanded_listing_tag2"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Tag 2"
-           android:textSize="18sp"/>
+        <TextView
+            android:id="@+id/expanded_listing_tag1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tag 1"
+            android:textSize="18sp"/>
 
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text=", "
-           android:textSize="18sp"
-           android:layout_marginStart="8dp"
-           android:layout_marginEnd="8dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=", "
+            android:textSize="18sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
 
-       <TextView
-           android:id="@+id/expanded_listing_tag3"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="Tag 3"
-           android:textSize="18sp"/>
-   </LinearLayout>
+        <TextView
+            android:id="@+id/expanded_listing_tag2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tag 2"
+            android:textSize="18sp"/>
 
-   <!-- Listing Description -->
-   <TextView
-       android:id="@+id/expanded_listing_description"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:text="Description"
-       android:textSize="16sp"
-       android:layout_marginTop="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=", "
+            android:textSize="18sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <TextView
+            android:id="@+id/expanded_listing_tag3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tag 3"
+            android:textSize="18sp"/>
+    </LinearLayout>
+
+    <!-- Listing Description -->
+    <TextView
+        android:id="@+id/expanded_listing_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Description"
+        android:textSize="16sp"
+        android:layout_marginTop="10dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right">
+
+        <!-- First Button (Back) aligned to bottom-right -->
+        <Button
+            android:id="@+id/buttonMarketplace"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Back"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true" />
+
+        <!-- Second Button (Save) positioned to the left of buttonMarketplace -->
+        <Button
+            android:id="@+id/buttonSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@id/buttonMarketplace"
+            android:layout_marginEnd="16dp"/>
+
+    </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
