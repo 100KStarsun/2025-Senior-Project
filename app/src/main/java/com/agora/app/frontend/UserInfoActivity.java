@@ -28,6 +28,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import java.io.IOException;
+import android.database.Cursor;
+import android.widget.ImageView;
+
 
 /**
  * @class UserInfoActivity
@@ -42,6 +52,21 @@ public class UserInfoActivity extends AppCompatActivity {
     // variables for the list of listing and the view in which to see listings on page
     private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
+    private EditText imagePathInput;
+    private ImageView imagePreview;
+
+    private final ActivityResultLauncher<Intent> imagePickerLauncher =
+        registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                Uri selectedImageUri = result.getData().getData();
+                if (selectedImageUri != null) {
+                    String imagePath = getRealPathFromUri(selectedImageUri);
+                    imagePathInput.setText(imagePath);
+                    imagePreview.setImageURI(selectedImageUri);
+                    imagePreview.setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,14 +163,22 @@ public class UserInfoActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_listing, null);
         builder.setView(dialogView);
+
         EditText titleInput = dialogView.findViewById(R.id.input_listing_title);
         EditText descriptionInput = dialogView.findViewById(R.id.input_listing_description);
         EditText priceInput = dialogView.findViewById(R.id.input_listing_price);
         EditText tag1Input = dialogView.findViewById(R.id.input_listing_tag1);
         EditText tag2Input = dialogView.findViewById(R.id.input_listing_tag2);
         EditText tag3Input = dialogView.findViewById(R.id.input_listing_tag3);
+        Button addImageButton = dialogView.findViewById(R.id.button_select_image);
         Button saveButton = dialogView.findViewById(R.id.save_listing);
+        ImageView imagePreview = dialogView.findViewById(R.id.image_preview);
+        //EditText imagePathInput = dialogView.findViewById(R.id.input_image_filename);
+
+    
         AlertDialog dialog = builder.create();
+
+        addImageButton.setOnClickListener(v -> openGallery());
 
         // save button on popup to pass through listing information
         saveButton.setOnClickListener(v -> {
@@ -191,5 +224,23 @@ public class UserInfoActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    } 
+        private void openGallery() {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            imagePickerLauncher.launch(intent);
+        }
+    
+        private String getRealPathFromUri(Uri uri) {
+            String filePath = "";
+            Cursor cursor = getContentResolver().query(uri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                    filePath = cursor.getString(columnIndex);
+                }
+                cursor.close();
+            }
+            return filePath;
+        }
     }
-}
+
