@@ -4,23 +4,49 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="40dp"
-    android:background="@drawable/box_border"
     android:layout_marginBottom="10dp">
 
-    <TextView
-        android:id="@+id/listing_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="40sp"
-        android:text="Listing Title"
-        android:layout_gravity="center"
-        android:layout_weight="1" />
-    <ImageView
-        android:id="@+id/listing_image"
+    <!-- Wrapper LinearLayout for Box -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/ic_placeholder"
-        android:scaleType="centerCrop"
-        android:contentDescription="Listing Image"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/blue_border_rounded"
+        android:elevation="4dp"
+        android:layout_gravity="center">
+
+        <!-- Listing Title -->
+        <TextView
+            android:id="@+id/listing_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Listing Title"
+            android:padding="10dp"
+            android:textSize="40sp"
+            android:textColor="#003071"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/blue_border"/>
+
+        <!-- Listing Image -->
+        <ImageView
+            android:id="@+id/expanded_listing_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="Listing Image"
+            android:src="@drawable/ic_placeholder"/>
+
+        <!-- Listing Price -->
+        <TextView
+            android:id="@+id/expanded_listing_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="$0.00"
+            android:textSize="18sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:layout_marginTop="10dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>

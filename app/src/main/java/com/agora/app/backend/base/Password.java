@@ -1,6 +1,6 @@
 package com.agora.app.backend.base;
 
-import com.agora.app.dynamodb.DynamoDBHandler;
+import com.agora.app.backend.lambda.LambdaHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Base64;
 
 public class Password implements Serializable {
@@ -20,10 +19,16 @@ public class Password implements Serializable {
     private String hash;
     private String username;
 
+    /**
+     * This way works, but makes an extra call to Lambda. Try and use the other password constructor if possible.
+     *
+     * @param password the unhashed, unencoded password string
+     * @param username the username of the user the password is associated with
+     */
     public Password (String password, String username) {
         try {
             final MessageDigest digest = MessageDigest.getInstance(hashAlgorithm);
-            User user = DynamoDBHandler.getUserItem(username);
+            User user = LambdaHandler.getUsers(new String[]{username}).get(username);
             password = password.concat(user.getSaltString());
             final byte[] hashbytes = digest.digest(password.getBytes(StandardCharsets.UTF_8));
             this.hash = Password.bytesToHex(hashbytes);
@@ -31,6 +36,12 @@ public class Password implements Serializable {
         this.username = username;
     }
 
+    /**
+     * Preferred way to create a password object as this does not make a call to lambda. Requires a user object, though.
+     *
+     * @param password the unhashed, unencoded password string
+     * @param user the User object that this password should get the salt string from
+     */
     public Password (String password, User user) {
         try {
             final MessageDigest digest = MessageDigest.getInstance(hashAlgorithm);

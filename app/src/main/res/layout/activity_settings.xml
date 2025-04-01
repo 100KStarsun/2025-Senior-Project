@@ -4,19 +4,46 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/buttonUserInfo"
-            android:text="User Info"
-            android:layout_marginTop="-10dp"/>
+    <!-- Spacer to move page below phone's top information bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#003071"/>
+
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/agora_header"
+            android:layout_gravity="center"
+            android:contentDescription="Agora Header"
+            android:background="#003071"/>
+    </LinearLayout>
+
+    <!-- Page Title -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:padding="10dp"
             android:text="Settings"
-            android:textSize="40sp" />
+            android:textSize="40sp"
+            android:textColor="#003071"
+            android:gravity="center"
+            android:background="@drawable/blue_border"
+            />
+    </LinearLayout>
+
 
     <!--stack to display user information-->
     <LinearLayout
@@ -72,35 +99,35 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/paypalCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="PayPal"/>
+            <CheckBox
+                android:id="@+id/paypalCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="PayPal"/>
 
-        <CheckBox
-            android:id="@+id/zelleCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Zelle"/>
+            <CheckBox
+                android:id="@+id/zelleCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Zelle"/>
 
-        <CheckBox
-            android:id="@+id/cashappCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Cash App"/>
+            <CheckBox
+                android:id="@+id/cashappCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Cash App"/>
 
-        <CheckBox
-            android:id="@+id/venmoCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Venmo"/>
+            <CheckBox
+                android:id="@+id/venmoCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Venmo"/>
 
-        <CheckBox
-            android:id="@+id/applepayCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Apple Pay"/>
+            <CheckBox
+                android:id="@+id/applepayCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Apple Pay"/>
 
         </LinearLayout>
 
@@ -109,29 +136,29 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/samsungpayCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Samsung Pay"/>
+            <CheckBox
+                android:id="@+id/samsungpayCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Samsung Pay"/>
 
-        <CheckBox
-            android:id="@+id/googlepayCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Google Pay"/>
+            <CheckBox
+                android:id="@+id/googlepayCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Google Pay"/>
 
-        <CheckBox
-            android:id="@+id/cashCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Cash"/>
+            <CheckBox
+                android:id="@+id/cashCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Cash"/>
 
-        <CheckBox
-            android:id="@+id/checkCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:text="Check"/>
+            <CheckBox
+                android:id="@+id/checkCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Check"/>
 
         </LinearLayout>
 
@@ -150,34 +177,51 @@
         android:orientation="vertical"
         android:gravity="center">
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:text="Toggle Notifications for Chat Messages "
-        android:id="@+id/chatnotifSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"/>
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:text="Toggle Notifications for Chat Messages "
+            android:id="@+id/chatnotifSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:text="Toggle Notifications for New Posts"
-        android:id="@+id/postnotifSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"/>
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:text="Toggle Notifications for New Posts"
+            android:id="@+id/postnotifSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:text="Toggle Push Notifications "
-        android:id="@+id/pushnotifSwitch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"/>
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:text="Toggle Push Notifications "
+            android:id="@+id/pushnotifSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/buttonDeleteAccount"
-        android:text="Delete Account "
-        android:layout_marginTop="10dp"
-        android:gravity="center"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:layout_marginBottom="16dp">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonUserInfo"
+                android:text="User Info"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginRight="16dp"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonDeleteAccount"
+                android:text="Delete Account "
+                android:layout_alignParentBottom="true"
+                android:layout_toStartOf="@id/buttonUserInfo"
+                android:layout_marginEnd="16dp"/>
+        </RelativeLayout>
 
     </LinearLayout>
 
