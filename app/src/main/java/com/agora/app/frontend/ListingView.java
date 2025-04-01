@@ -3,6 +3,7 @@ package com.agora.app.frontend;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -21,9 +22,11 @@ import android.content.Intent;
 public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
     private List<Listing> listings;
+    private boolean useSaveButton;
 
-    public ListingView(List<Listing> listings) {
+    public ListingView(List<Listing> listings, boolean useSaveButton) {
         this.listings = listings;
+        this.useSaveButton = useSaveButton;
     }
 
     @Override
@@ -54,6 +57,26 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             intent.putExtra("tag3", listing.getTag3());
             v.getContext().startActivity(intent);
         });
+
+        boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
+        holder.saveButton.setText(isSaved ? "Unsave" : "Save");
+
+        if (useSaveButton) {
+            holder.saveButton.setVisibility(View.VISIBLE);
+            holder.saveButton.setOnClickListener(v -> {
+                if (isSaved) {
+                    SavedListingsManager.getInstance().removeSavedListing(listing);
+                    holder.saveButton.setText("Save");
+                }
+                else {
+                    SavedListingsManager.getInstance().addSavedListing(listing);
+                    holder.saveButton.setText("Unsave");
+                }
+            });
+        }
+        else {
+            holder.saveButton.setVisibility(View.GONE);
+        }
     }
     
 
@@ -67,6 +90,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         TextView description;
         TextView price;
         //LinearLayout expandedView; // The expanded view to show more details
+        Button saveButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -78,6 +102,8 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
             // Initially hide the expanded view
             //expandedView.setVisibility(View.GONE);
+
+            saveButton = itemView.findViewById(R.id.save_button);
         }
     }
 }

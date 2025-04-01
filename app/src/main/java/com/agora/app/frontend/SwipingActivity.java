@@ -35,7 +35,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     private CardStackLayoutManager layoutManager;
     private SwipingView swipingView;
     private List<Listing> listings;
-    private List<Listing> savedListings;
+    //private List<Listing> savedListings;
     private Set<String> swipedCards;
 
     @Override
@@ -72,7 +72,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
 
         cardStackView = findViewById(R.id.listing_card_stack);
         listings = new ArrayList<>(ListingManager.getInstance().getListings());
-        savedListings = new ArrayList<>();
+        //savedListings = new ArrayList<>();
         swipedCards = new HashSet<>();
         layoutManager = new CardStackLayoutManager(this, this);
         cardStackView.setLayoutManager(layoutManager);
@@ -88,7 +88,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
             Listing currentListing = listings.get(i);
             swipedCards.add(currentListing.getTitle());
             if (direction == Direction.Right) {
-                savedListings.add(currentListing);
+                SavedListingsManager.getInstance().addSavedListing(currentListing);
                 Toast.makeText(this, currentListing.getTitle() + " has been saved.", Toast.LENGTH_SHORT).show();
             }
             else if (direction == Direction.Left) {
@@ -131,10 +131,13 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         swipingView.notifyDataSetChanged();
         refreshCards();
     }
+
+    /*
     public List<Listing> getSavedListings() {
 
         return savedListings;
     }
+     */
     private void updateListings() {
         List<Listing> newListings = new ArrayList<>();
         for (Listing listing : ListingManager.getInstance().getListings()) {

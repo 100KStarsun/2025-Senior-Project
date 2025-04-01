@@ -52,6 +52,12 @@
             android:ellipsize="end"
             android:layout_marginTop="5dp"
             android:text="Listing Description"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/save_button"/>
         
 
 

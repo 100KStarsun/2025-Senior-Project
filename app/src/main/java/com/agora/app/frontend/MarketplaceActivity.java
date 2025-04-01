@@ -72,7 +72,7 @@ public class MarketplaceActivity extends AppCompatActivity {
         // finds and displays listing view on page
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        view = new ListingView(filteredListings);
+        view = new ListingView(filteredListings, true);
         recyclerView.setAdapter(view);
 
         searchBar = findViewById(R.id.search_bar);
