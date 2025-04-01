@@ -1,10 +1,10 @@
-package com.agora.app.backend.lambda;
+package com.agora.app.dynamodb;
 
 public enum DynamoTables {
     USERS("agora_users","username"),
     PASSWORDS("agora_passwords","hash"),
     CHATS("agora_chats","uuid"),
-    LISTINGS("agora_listings","id"),
+    PRODUCTS("agora_products","uuid"),
     IMAGES("agora_images", "id"),
     IMAGE_CHUNKS("agora_image_chunks", "id");
 
@@ -24,8 +24,8 @@ public enum DynamoTables {
                 return PASSWORDS;
             case "agora_chats":
                 return CHATS;
-            case "agora_listings":
-                return LISTINGS;
+            case "agora_products":
+                return PRODUCTS;
             case "agora_images":
                 return IMAGES;
             case "agora_image_chunks":

@@ -1,5 +1,6 @@
 package com.agora.app.backend.base;
 
+import com.agora.app.dynamodb.DynamoDBHandler;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -37,9 +38,9 @@ public class User implements Serializable {
     private short rating;
     private EnumMap<PaymentMethods, Boolean> paymentMethodsSetup; // boolean is whether the user has this setup
     private TreeMap<String, ArrayList<UUID>> chats; // key is the username of the other person, the ArrayList is a list of `chatUUID`s that are in the db
-    private ArrayList<UUID> draftedListings; // a list of UUIDs of listings the user has drafted
-    private ArrayList<UUID> publishedListings; // a list of UUIDs of listings the user has published
-    private ArrayList<UUID> likedListings; // a list of UUIDs of all listings the user has liked
+    private ArrayList<UUID> draftedProducts; // a list of UUIDs of products the user has drafted
+    private ArrayList<UUID> publishedProducts; // a list of UUIDs of products the user has published
+    private ArrayList<UUID> likedProducts; // a list of UUIDs of all products the user has liked
     private ArrayList<UUID> mutedUsers; // a list of UUIDs of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
     private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
 
@@ -60,9 +61,9 @@ public class User implements Serializable {
         rating = 0;
         this.paymentMethodsSetup = paymentMethodsSetup;
         this.chats = new TreeMap<>();
-        this.draftedListings = new ArrayList<>();
-        this.publishedListings = new ArrayList<>();
-        this.likedListings = new ArrayList<>();
+        this.draftedProducts = new ArrayList<>();
+        this.publishedProducts = new ArrayList<>();
+        this.likedProducts = new ArrayList<>();
         this.mutedUsers = new ArrayList<>();
         this.blockedUsers = new ArrayList<>();
     }
@@ -78,6 +79,18 @@ public class User implements Serializable {
             paymentMethodsSetup.put(method, false);
         }
         return paymentMethodsSetup;
+    }
+
+    /**
+     * Uses {@code DynamoDBHandler} to query the database for this user
+     *
+     * @param username the caseID of the {@code User} to be retrieved from the database
+     * @return the {@code User} with the specified username, {@code null} if that user does not exist
+     *
+     * @see DynamoDBHandler#getUserItem(String)
+     */
+    public static User getUserFromUsername (String username) {
+        return DynamoDBHandler.getUserItem(username);
     }
 
     /**

@@ -1,10 +1,11 @@
-package com.agora.app.backend.lambda;
+package com.agora.app.lambda;
 
 import com.agora.app.backend.base.Image;
 import com.agora.app.backend.base.ImageChunk;
 import com.agora.app.backend.base.Password;
-import com.agora.app.backend.base.Listing;
+import com.agora.app.backend.base.Product;
 import com.agora.app.backend.base.User;
+import com.agora.app.dynamodb.DynamoTables;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -138,24 +139,24 @@ public class LambdaHandler {
         invoke(payload, Operations.BATCH_DELETE);
     }
 
-    public static HashMap<String, Listing> getListings (String[] listings) {
-        if (listings.length == 0) throw new IllegalArgumentException("listings cannot be empty");
-        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, listings, new String[0]);
+    public static HashMap<String, Product> getProducts (String[] products) {
+        if (products.length == 0) throw new IllegalArgumentException("products cannot be empty");
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, products, new String[0]);
         JSONObject response = invoke(payload, Operations.BATCH_GET);
-        return getListingsFromStruct(jsonToBase64(response));
+        return getProductsFromStruct(jsonToBase64(response));
     }
 
-    public static void putListings (String[] listings, String[] base64s) {
-        if (listings.length != base64s.length) throw new IllegalArgumentException("listings and base64s are not the same length");
-        if (listings.length == 0) throw new IllegalArgumentException("listings cannot be empty");
+    public static void putProducts (String[] products, String[] base64s) {
+        if (products.length != base64s.length) throw new IllegalArgumentException("products and base64s are not the same length");
+        if (products.length == 0) throw new IllegalArgumentException("products cannot be empty");
         if (base64s.length == 0) throw new IllegalArgumentException("base64s cannot be empty");
-        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.LISTINGS, listings, base64s);
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PRODUCTS, products, base64s);
         invoke(payload, Operations.BATCH_PUT);
     }
 
-    public static void deleteListings (String[] listings) {
-        if (listings.length == 0) throw new IllegalArgumentException("listings cannot be empty");
-        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.LISTINGS, listings, new String[0]);
+    public static void deleteProducts (String[] products) {
+        if (products.length == 0) throw new IllegalArgumentException("products cannot be empty");
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PRODUCTS, products, new String[0]);
         invoke(payload, Operations.BATCH_DELETE);
     }
 
@@ -285,16 +286,16 @@ public class LambdaHandler {
         return passwords;
     }
 
-    public static HashMap<String, Listing> getListingsFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {
-        HashMap<String, String> data = struct.get(DynamoTables.LISTINGS);
+    public static HashMap<String, Product> getProductsFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {
+        HashMap<String, String> data = struct.get(DynamoTables.PRODUCTS);
         if (data.keySet().isEmpty()) {
             return null;
         }
-        HashMap<String, Listing> listings = new HashMap<>();
+        HashMap<String, Product> products = new HashMap<>();
         for (String key : data.keySet()) {
-            listings.put(key, Listing.createFromBase64String(data.get(key)));
+            products.put(key, Product.createFromBase64String(data.get(key)));
         }
-        return listings;
+        return products;
     }
 
     public static HashMap<String, Image> getImagesFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {

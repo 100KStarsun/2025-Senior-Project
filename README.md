@@ -116,9 +116,9 @@ This table's key is the user's username. This field is unique to each user and n
     - `{key_x}payment_method_name: {value_x}(Boolean)`: the key is the name of the payment method and the value is true or false depending on if the user has set it up
 - `chats(Map)`: List of usernames and chat_ids associated with the username
     - `{key_n}username: {value_n}(List)`: the key for each Map entry is the username that's part of the chat and the value is a list containing all of the `chat_UUID`s that make up the chat history of the two users
-- `published_listings(List)`: List of all UUIDs of listings that the user has published on their page
-- `drafted_listings(List)`: List of all UUIDs of listings that the user has drafts for
-- `liked_listings(List)`: List of all UUIDs of listings that the user has "liked"/"favorited"
+- `published_products(List)`: List of all UUIDs of products that the user has published on their page
+- `drafted_products(List)`: List of all UUIDs of products that the user has drafts for
+- `liked_products(List)`: List of all UUIDs of products that the user has "liked"/"favorited"
 - `blocked_users(List)`: List of all UUIDs of users that have been blocked by this user
 - `muted_users(List)`: List of all UUIDs of users that have been muted by this user
 
@@ -142,23 +142,23 @@ This table's key is the chat_id. Chat_ids are generated sequentially. I don't th
         - `{key_n}timestamp: {value_n}(Number)`: the unix timestamp of the message
         - `{key_n}from_first: {value_n}(Boolean)`: whether or not the message is from the person who sent the first message in this chat
 
-#### agora_listings
+#### agora_products
 
-This table's key is the UUID field of an item or service. The sort key is the name of the listing (this way multiple users can name their stuff the same thing). This table will have the following fields:
+This table's key is the UUID field of an item or service. The sort key is the name of the product (this way multiple users can name their stuff the same thing). This table will have the following fields:
 
-- `listing_UUID(String){Partition_key}`: the UUID of the particular item
+- `product_UUID(String){Partition_key}`: the UUID of the particular item
 - `title(String){Sort_key}`: the name of the agora listing
-- `listing_time(Number)`: the unix timestamp of when this listing was posted
-- `price(Number)`: the price of the listing, in USD
-- `description(String)`: the seller's description of the listing
+- `listing_time(Number)`: the unix timestamp of when this product was posted
+- `price(Number)`: the price of the product, in USD
+- `description(String)`: the seller's description of the product
 - `seller_UUID(String)`: the seller's UUID
 - `seller_name(String)`: the seller's display name
 - `seller_username(String)`: the seller's username
-- `type(String)`: the type of listing (good/service) (left as a string so we could add more later)
+- `type(String)`: the type of product (good/service) (left as a string so we could add more later)
 - `quantity(Number)`: the number of this product/service available (only used if `infinite_available` is set to false)
 - `infinite_available(Boolean)`: whether or not there are unlimited times this service can be redeemed (option is only available for services, not for goods, default: false)
-- `is_published(Boolean)`: whether or not this listing has been published to the Agora
-- `is_accepting_cash(Boolean)`: whether or not the user will accept cash for this listing
+- `is_published(Boolean)`: whether or not this product has been published to the Agora
+- `is_accepting_cash(Boolean)`: whether or not the user will accept cash for this product
 - `is_tradable(Boolean)`: whether or not the user is willing to trade for another item
 - `past_buyers(List)`: A list of UUIDs of previous buyers
 

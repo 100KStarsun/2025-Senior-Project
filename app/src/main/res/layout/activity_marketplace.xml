@@ -3,47 +3,22 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Spacer to move page below phone's top information bar -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#003071"/>
-
-    <!-- Header -->
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:gravity="center_horizontal">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/agora_header"
-                android:layout_gravity="center"
-                android:contentDescription="Agora Header"
-                android:background="#003071"/>
-    </LinearLayout>
-
-    <!-- Page Title -->
-    <LinearLayout
+    <!--page title-->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="16dp">
+        android:text="Marketplace"
+        android:textSize="40sp"
+        android:gravity="center"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Marketplace"
-            android:textSize="40sp"
-            android:textColor="#003071"
-            android:gravity="center"
-            android:background="@drawable/blue_border"
-            />
+    <!--page buffer-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".075"
+        android:orientation="vertical">
     </LinearLayout>
 
     <!--search bar-->
@@ -56,10 +31,7 @@
         app:queryHint="Search"
         android:focusable="false"
         app:searchIcon="@drawable/icon_search"
-        android:background="@drawable/search_bar"
-        android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:background="@drawable/search_bar"/>
 
     <Button
         android:layout_width="match_parent"
@@ -122,7 +94,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@android:color/holo_blue_dark"
-        android:text="No listings are currently available :("
+        android:text="No product listings are currently available :("
         android:textSize="30sp"
         android:gravity="center"
         />
@@ -133,18 +105,24 @@
         android:layout_height="0dp"
         android:id="@+id/item_listings"
         android:scrollbars="vertical"
-        android:layout_weight="1"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_weight="1"/>
+
+    <!--page buffer-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".1"
+        android:orientation="vertical">
+    </LinearLayout>
 
     <!--nav bar-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#003071"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        android:background="?android:attr/windowBackground"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         app:menu="@menu/nav_bar" />
 
 </LinearLayout>

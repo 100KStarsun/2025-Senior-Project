@@ -77,6 +77,7 @@ dependencies {
     platform(implementation('software.amazon.awssdk:bom:2.30.31'))
     implementation('software.amazon.awssdk:sso')
     implementation('software.amazon.awssdk:ssooidc')
+    implementation('software.amazon.awssdk:dynamodb-enhanced')
     implementation('software.amazon.awssdk:lambda')
     implementation('software.amazon.awssdk:url-connection-client:2.13.49')
     implementation('org.json:json:20250107')

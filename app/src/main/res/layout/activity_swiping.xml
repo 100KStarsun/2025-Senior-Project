@@ -5,44 +5,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Spacer to move page below phone's top information bar -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="#003071"/>
-
-    <!-- Header -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:gravity="center_horizontal">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/agora_header"
-            android:layout_gravity="center"
-            android:contentDescription="Agora Header"
-            android:background="#003071"/>
-    </LinearLayout>
-
-    <!-- Page Title -->
-    <LinearLayout
+    <!--page title-->
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:padding="16dp">
+        android:gravity="center"
+        android:text="Swiping"
+        android:textSize="40sp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:text="Swiping"
-            android:textSize="40sp"
-            android:textColor="#003071"
-            android:gravity="center"
-            android:background="@drawable/blue_border"
-            />
+    <!--page buffer-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:orientation="vertical">
     </LinearLayout>
 
     <TextView
@@ -51,17 +27,15 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:background="@android:color/holo_blue_dark"
-        android:text="No more listings available :("
+        android:text="No more product listings available :("
         android:textSize="30sp"
         android:gravity="center"
         />
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:layout_width="match_parent"
-        android:layout_height="500dp"
-        android:id="@+id/listing_card_stack"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_height="400dp"
+        android:id="@+id/listing_card_stack"/>
 
     <!--page buffer-->
     <LinearLayout
@@ -77,9 +51,9 @@
         android:id="@+id/nav_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#003071"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        android:background="?android:attr/windowBackground"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         app:menu="@menu/nav_bar" />
 
 </LinearLayout>

@@ -1,4 +1,4 @@
-package com.agora.app.backend.lambda;
+package com.agora.app.lambda;
 
 public enum Operations {
     PUT(true, true),

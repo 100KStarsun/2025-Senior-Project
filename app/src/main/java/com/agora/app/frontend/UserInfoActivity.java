@@ -1,5 +1,4 @@
 package com.agora.app.frontend;
-import com.agora.app.backend.base.Listing;
 
 import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,7 +26,6 @@ import android.widget.EditText;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
 /**
  * @class UserInfoActivity
@@ -152,17 +150,9 @@ public class UserInfoActivity extends AppCompatActivity {
             String title = titleInput.getText().toString();
             String description = descriptionInput.getText().toString();
             
-            
             String tag1 = tag1Input.getText().toString();
             String tag2 = tag2Input.getText().toString();
             String tag3 = tag3Input.getText().toString();
-
-            ArrayList<String> tags = new ArrayList<>();
-            if (!tag1.isEmpty()) tags.add(tag1);
-            if (!tag2.isEmpty()) tags.add(tag2);
-            if (!tag3.isEmpty()) tags.add(tag3);
-
-            
 
             float price = 0.0f;
             String priceString = priceInput.getText().toString();
@@ -177,13 +167,7 @@ public class UserInfoActivity extends AppCompatActivity {
             }    
 
             if(!title.isEmpty() && !description.isEmpty()) {
-                UUID uuid = UUID.randomUUID();
-                String displayName = "temp"; 
-                String username = "user"; 
-                String type = "default"; 
-
-                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags);
-    
+                Listing newListing = new Listing(title, description, price, tag1, tag2, tag3);
                 ListingManager.getInstance().addListing(newListing);
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();

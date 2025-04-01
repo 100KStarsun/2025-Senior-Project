@@ -2,9 +2,12 @@ package com.agora.app.backend;
 
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.User;
-import com.agora.app.backend.lambda.KeyNotFoundException;
-import com.agora.app.backend.lambda.LambdaHandler;
+import com.agora.app.dynamodb.DynamoDBHandler;
+import com.agora.app.lambda.KeyNotFoundException;
+import com.agora.app.lambda.LambdaHandler;
+import org.json.JSONException;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
