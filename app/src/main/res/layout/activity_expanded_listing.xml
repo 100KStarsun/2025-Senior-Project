@@ -128,6 +128,16 @@
             android:layout_toStartOf="@id/buttonMarketplace"
             android:layout_marginEnd="16dp"/>
 
+        <Button
+            android:id="@+id/buttonDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@id/buttonDelete"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:layout_marginStart="16dp"/>
+
     </RelativeLayout>
 
     </LinearLayout>

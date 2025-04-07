@@ -57,7 +57,12 @@ public class ExpandedListingActivity extends AppCompatActivity {
         tag2TextView.setText(tag2);
         tag3TextView.setText(tag3);
 
-
-
+        //Button and logic for deleting a posting
+        Button deleteButton = findViewById(R.id.buttonDelete);
+        deleteButton.setOnClickListener(v -> {
+            ListingManager.getInstance().deleteListing(this);
+            Intent intent = new Intent(ExpandedListingActivity.this, UserInfoActivity.class);
+            startActivity(intent);
+        });
     }
 }

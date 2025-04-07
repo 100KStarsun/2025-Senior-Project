@@ -62,6 +62,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 new PreferencesSaveTask().execute(preferencesList);
             }
         });
+    }
 
         /**
          * Handles background process of passing user preferences to the backend
@@ -95,5 +96,4 @@ public class PreferencesActivity extends AppCompatActivity {
             }
         }
     }
-}
 
