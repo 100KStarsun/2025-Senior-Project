@@ -24,7 +24,9 @@
         android:layout_width="match_parent"
         android:autofillHints="username"
         android:inputType="text"
-        android:hint="Username" />
+        android:hint="Username"
+        android:textColorHint="?attr/colorOnBackground"
+        android:textColor="?attr/colorOnBackground"/>
 
     <EditText
         android:id="@+id/password_id"
@@ -32,7 +34,9 @@
         android:layout_width="match_parent"
         android:autofillHints="password"
         android:inputType="textPassword"
-        android:hint="Password" />
+        android:hint="Password"
+        android:textColorHint="?attr/colorOnBackground"
+        android:textColor="?attr/colorOnBackground"/>
 
     <EditText
         android:id="@+id/confirm_pass_id"
@@ -40,7 +44,9 @@
         android:layout_width="match_parent"
         android:autofillHints="password"
         android:inputType="textPassword"
-        android:hint="Confirm Password" />
+        android:hint="Confirm Password"
+        android:textColorHint="?attr/colorOnBackground"
+        android:textColor="?attr/colorOnBackground"/>
 
     <Button
         android:id="@+id/button_id"

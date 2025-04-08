@@ -46,6 +46,20 @@
     </LinearLayout>
 
     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/no_chats"
+        android:text="You don't have any active chats!"
+        android:gravity="center"
+        android:visibility="visible"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/user_chats"
+        android:layout_weight="1"/>
+
+    <TextView
         android:id="@+id/messaging_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

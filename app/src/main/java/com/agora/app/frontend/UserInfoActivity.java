@@ -150,7 +150,7 @@ public class UserInfoActivity extends AppCompatActivity {
         // finds and displays listing view on page
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        view = new ListingView(listings);
+        view = new ListingView(listings, false);
         recyclerView.setAdapter(view);
 
         // creates button for ability to add listing
@@ -184,10 +184,10 @@ public class UserInfoActivity extends AppCompatActivity {
             String tag2 = tag2Input.getText().toString();
             String tag3 = tag3Input.getText().toString();
 
-            List<String> tagsList = new ArrayList<>();
-            if (!tag1.isEmpty()) tagsList.add(tag1);
-            if (!tag2.isEmpty()) tagsList.add(tag2);
-            if (!tag3.isEmpty()) tagsList.add(tag3);
+            ArrayList<String> tags = new ArrayList<>();
+            if (!tag1.isEmpty()) tags.add(tag1);
+            if (!tag2.isEmpty()) tags.add(tag2);
+            if (!tag3.isEmpty()) tags.add(tag3);
 
             
 
@@ -208,7 +208,6 @@ public class UserInfoActivity extends AppCompatActivity {
                 String displayName = "temp"; 
                 String username = "user"; 
                 String type = "default"; 
-                String[] tags = tagsList.toArray(new String[0]); 
 
                 Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags);
     

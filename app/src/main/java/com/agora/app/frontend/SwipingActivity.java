@@ -80,10 +80,9 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
             return false;
         });
 
-
         cardStackView = findViewById(R.id.listing_card_stack);
         listings = new ArrayList<>(ListingManager.getInstance().getListings());
-        savedListings = new ArrayList<>();
+        //savedListings = new ArrayList<>();
         swipedCards = new HashSet<>();
         layoutManager = new CardStackLayoutManager(this, this);
         cardStackView.setLayoutManager(layoutManager);
@@ -99,16 +98,43 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
             Listing currentListing = listings.get(i);
             swipedCards.add(currentListing.getTitle());
             if (direction == Direction.Right) {
-                savedListings.add(currentListing);
-                Toast.makeText(this, currentListing.getTitle() + " has been saved.", Toast.LENGTH_SHORT).show();
+                SavedListingsManager.getInstance().addSavedListing(currentListing);
+                //savedListings.add(currentListing);
+                Toast.makeText(this, currentListing.getTitle() + " is saved.", Toast.LENGTH_SHORT).show();
+
+                // Flash a green overlay effect
+                flashColor("#A5D6A7"); // light green
             }
             else if (direction == Direction.Left) {
-                Toast.makeText(this, "X", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, currentListing.getTitle() + " is skipped.", Toast.LENGTH_SHORT).show();
+
+                // Flash a red overlay effect
+                flashColor("#EF9A9A"); // light red
+
             }
             listings.remove(i);
             swipingView.notifyItemRemoved(i);
         }
         refreshCards();
+    }
+
+    // Helper method to flash a color overlay on the screen
+    private void flashColor(String hexColor) {
+        // Get the root view of the activity
+        final View rootView = findViewById(android.R.id.content);
+
+        // Set the initial background color to the desired color
+        rootView.setBackgroundColor(android.graphics.Color.parseColor(hexColor));
+
+        // Animate fading the color out over 500ms, then reset the background to transparent
+        rootView.animate().alpha(0f).setDuration(700).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                // Reset alpha and background
+                rootView.setAlpha(1f);
+                rootView.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+            }
+        });
     }
 
     @Override
@@ -142,10 +168,13 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         swipingView.notifyDataSetChanged();
         refreshCards();
     }
+
+    /*
     public List<Listing> getSavedListings() {
 
         return savedListings;
     }
+     */
     private void updateListings() {
         List<Listing> newListings = new ArrayList<>();
         for (Listing listing : ListingManager.getInstance().getListings()) {

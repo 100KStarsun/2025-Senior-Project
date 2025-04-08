@@ -205,7 +205,7 @@ public class TestClass {
 
     public boolean testLambdaDelete () throws IOException, JSONException {
         HashMap<String, String> items = new HashMap<>(2);
-        items.put("ssh115", null);
+        items.put("abc123", null);
 
         HashMap<DynamoTables, HashMap<String, String>> data = new HashMap<>(2);
         data.put(DynamoTables.USERS, items);

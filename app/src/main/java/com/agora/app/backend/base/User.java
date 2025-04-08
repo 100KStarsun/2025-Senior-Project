@@ -92,15 +92,8 @@ public class User implements Serializable {
         try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
             return (User) objectIn.readObject();
         } catch (IOException | ClassNotFoundException ex) {
-            try {
-                FileWriter fw = new FileWriter("C:\\Users\\100ks\\steph\\error.txt");
-                fw.write(ex.getMessage() + "\n");
-                fw.write(ex.getLocalizedMessage() + "\n");
-                for (StackTraceElement element : ex.getStackTrace()) {
-                    fw.write(element.toString() + "\n");
-                }
-                fw.close();
-            } catch (IOException e) {}
+            System.err.println("Exception Decoding User");
+            System.err.println(ex.getMessage());
             ex.printStackTrace();
         }
         return null;
