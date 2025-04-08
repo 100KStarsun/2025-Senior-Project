@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Saved Posts"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        android:textColor="?attr/colorOnBackground"/>
 
 
 

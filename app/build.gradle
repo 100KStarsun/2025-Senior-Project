@@ -81,4 +81,5 @@ dependencies {
     implementation('software.amazon.awssdk:url-connection-client:2.13.49')
     implementation('org.json:json:20250107')
     implementation('org.slf4j:slf4j-simple:1.7.36')
+
 }
