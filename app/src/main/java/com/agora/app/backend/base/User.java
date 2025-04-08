@@ -93,7 +93,7 @@ public class User implements Serializable {
             return (User) objectIn.readObject();
         } catch (IOException | ClassNotFoundException ex) {
             try {
-                FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error.txt");
+                FileWriter fw = new FileWriter("C:\\Users\\100ks\\steph\\error.txt");
                 fw.write(ex.getMessage() + "\n");
                 fw.write(ex.getLocalizedMessage() + "\n");
                 for (StackTraceElement element : ex.getStackTrace()) {

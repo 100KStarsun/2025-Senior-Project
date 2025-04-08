@@ -10,14 +10,18 @@ import software.amazon.awssdk.services.cognitoidentity.model.GetIdRequest;
 import software.amazon.awssdk.services.cognitoidentity.model.GetIdResponse;
 import software.amazon.awssdk.services.cognitoidentity.model.GetCredentialsForIdentityRequest;
 import software.amazon.awssdk.services.cognitoidentity.model.GetCredentialsForIdentityResponse;
+import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 
 public class CognitoAuth {
     
-    private static final String identity_pool = "us-east-2:0d67b00b-c37e-4db9-9a4f-5daca8747ded";
+    private static final String identity_pool = "us-east-2:16a37b80-20f5-4c52-865e-790b5c80dc2d";
     private static final Region region = Region.US_EAST_2;
 
     public static AwsCredentials getTemporaryCredentials() {
-        CognitoIdentityClient cognitoClient = CognitoIdentityClient.builder().region(region).build();
+        CognitoIdentityClient cognitoClient = CognitoIdentityClient.builder()
+                                                                    .region(region)
+                                                                    .httpClientBuilder(UrlConnectionHttpClient.builder())
+                                                                    .build();
        
         GetIdResponse idResponse = cognitoClient.getId(GetIdRequest.builder()
                                                 .identityPoolId(identity_pool)

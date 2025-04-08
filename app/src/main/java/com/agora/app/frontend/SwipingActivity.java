@@ -40,12 +40,14 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     private List<Listing> listings;
     private List<Listing> savedListings;
     private Set<String> swipedCards;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swiping);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        username = getIntent().getStringExtra("username");
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
@@ -55,18 +57,24 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_messaging) {
-                startActivity(new Intent(this, MessagingActivity.class));
+                Intent intent = new Intent(this, MessagingActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
-                startActivity(new Intent(this, MarketplaceActivity.class));
+                Intent intent = new Intent(this, MarketplaceActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_swiping) {
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
-                startActivity(new Intent(this, UserInfoActivity.class));
+                Intent intent = new Intent(this, UserInfoActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             return false;

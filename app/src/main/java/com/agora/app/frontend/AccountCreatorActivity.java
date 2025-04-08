@@ -95,6 +95,7 @@ public class AccountCreatorActivity extends AppCompatActivity {
      */
     private class AccountCreationTask extends AsyncTask<String, Void, Boolean> {
         private String errorMessage = "";
+        private String username;
 
         /**
          * Carries out the background operation of creating an account
@@ -124,6 +125,7 @@ public class AccountCreatorActivity extends AppCompatActivity {
             super.onPostExecute(result);
             if (result) {
                 Intent intent = new Intent(AccountCreatorActivity.this, UserInfoActivity.class);
+                intent.putExtra("username", username);
                 startActivity(intent);
             } else {
                 Log.d("Account creation", "Account creation failed: " + errorMessage);

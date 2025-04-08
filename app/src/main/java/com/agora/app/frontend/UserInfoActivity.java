@@ -2,6 +2,7 @@ package com.agora.app.frontend;
 import com.agora.app.backend.base.Listing;
 
 import com.agora.app.R;
+import com.agora.app.backend.lambda.LambdaHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.navigation.NavigationView;
 import com.agora.app.backend.base.Listing;
+import com.agora.app.backend.base.User;
 import com.agora.app.frontend.ListingView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +26,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.os.AsyncTask;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,18 +42,26 @@ public class UserInfoActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private User currentUser; //Global user for this instance
 
     // variables for the list of listing and the view in which to see listings on page
     private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
+    private String username;
+    private TextView textUsername;
+    private TextView textCaseId;
+    private TextView textTransactions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
-        String username = getIntent().getStringExtra("username");
+        username = getIntent().getStringExtra("username");
         Objects.requireNonNull(getSupportActionBar()).hide();
-
+        textUsername = findViewById(R.id.textUsername);
+        textCaseId = findViewById(R.id.textCaseId);
+        textTransactions = findViewById(R.id.textTransactions);
+        new UserInfoTask().execute(username);
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
@@ -58,13 +70,19 @@ public class UserInfoActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_messaging) {
-                startActivity(new Intent(this, MessagingActivity.class));
+                Intent intent = new Intent(this, MessagingActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_marketplace) {
-                startActivity(new Intent(this, MarketplaceActivity.class));
+                Intent intent = new Intent(this, MarketplaceActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_swiping) {
-                startActivity(new Intent(this, SwipingActivity.class));
+                Intent intent = new Intent(this, SwipingActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_user_info) {
                 return true;
@@ -98,19 +116,27 @@ public class UserInfoActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 // Handle the selected item based on its ID
                 if (item.getItemId() == R.id.nav_preferences) {
-                    startActivity(new Intent(UserInfoActivity.this, PreferencesActivity.class));
+                    Intent intent = new Intent(UserInfoActivity.this, PreferencesActivity.class);
+                    intent.putExtra("userobject", currentUser);
+                    startActivity(intent);
                 }
 
                 if (item.getItemId() == R.id.nav_transaction_history) {
-                    startActivity(new Intent(UserInfoActivity.this, TransactionHistoryActivity.class));
+                    Intent intent = new Intent(UserInfoActivity.this, TransactionHistoryActivity.class);
+                    intent.putExtra("userobject", currentUser);
+                    startActivity(intent);
                 }
 
                 if (item.getItemId() == R.id.nav_saved_posts) {
-                    startActivity(new Intent(UserInfoActivity.this, SavedPostsActivity.class));
+                    Intent intent = new Intent(UserInfoActivity.this, SavedPostsActivity.class);
+                    intent.putExtra("userobject", currentUser);
+                    startActivity(intent);
                 }
 
                 if (item.getItemId() == R.id.nav_settings) {
-                    startActivity(new Intent(UserInfoActivity.this, SettingsActivity.class));
+                    Intent intent = new Intent(UserInfoActivity.this, SettingsActivity.class);
+                    intent.putExtra("userobject", currentUser);
+                    startActivity(intent);
                 }
 
                 // Close the drawer after selection
@@ -193,5 +219,28 @@ public class UserInfoActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    }
+
+    private class UserInfoTask extends AsyncTask<String, Void, User> {
+        private String errorMessage = "";
+        private String username;
+        @Override
+        protected User doInBackground(String... params) {
+            username = params[0];
+            try {
+                return LambdaHandler.getUsers(new String[]{username}).get(username);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        protected void onPostExecute(User user) {
+            if (user != null) {
+                currentUser = user;
+                textUsername.setText(user.getUsername());
+            } else {
+                Toast.makeText(UserInfoActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }
