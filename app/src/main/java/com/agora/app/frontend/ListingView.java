@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 import android.content.Intent;
 import java.util.ArrayList;
+import android.widget.Button;
 
 /**
  * @class ListingView
@@ -22,9 +23,11 @@ import java.util.ArrayList;
 public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
     private List<Listing> listings;
+    private boolean useSaveButton;
 
-    public ListingView(List<Listing> listings) {
+    public ListingView(List<Listing> listings, boolean useSaveButton) {
         this.listings = listings;
+        this.useSaveButton = useSaveButton;
     }
 
     @Override
@@ -53,6 +56,27 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         intent.putStringArrayListExtra("tags", new ArrayList<String>(listing.getTags())); // pass tags as ArrayList
         v.getContext().startActivity(intent);
     });
+        boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
+
+        holder.saveButton.setText(isSaved ? "Unsave" : "Save");
+
+        if (useSaveButton) {
+            holder.saveButton.setVisibility(View.VISIBLE);
+            holder.saveButton.setOnClickListener(v -> {
+                if (isSaved) {
+                    SavedListingsManager.getInstance().removeSavedListing(listing);
+                    holder.saveButton.setText("Save");
+                }
+                else {
+                    SavedListingsManager.getInstance().addSavedListing(listing);
+                    holder.saveButton.setText("Unsave");
+                }
+            });
+        }
+        else {
+            holder.saveButton.setVisibility(View.GONE);
+        }
+
     }
     
 
@@ -66,12 +90,14 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         TextView description;
         TextView price;
         //LinearLayout expandedView; // The expanded view to show more details
+        Button saveButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.listing_title);
             description = itemView.findViewById(R.id.listing_description);
             price = itemView.findViewById(R.id.listing_price);
+            saveButton = itemView.findViewById(R.id.save_button);
    
         }
     }

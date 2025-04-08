@@ -87,8 +87,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
             Listing currentListing = listings.get(i);
             swipedCards.add(currentListing.getTitle());
             if (direction == Direction.Right) {
-                //SavedListingsManager.getInstance().addSavedListing(currentListing);
-                //Toast.makeText(this, currentListing.getTitle() + " has been saved.", Toast.LENGTH_SHORT).show();
+                SavedListingsManager.getInstance().addSavedListing(currentListing);
                 //savedListings.add(currentListing);
                 Toast.makeText(this, currentListing.getTitle() + " is saved.", Toast.LENGTH_SHORT).show();
 
