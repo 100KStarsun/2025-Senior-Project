@@ -246,6 +246,9 @@ public class UserInfoActivity extends AppCompatActivity {
             imagePickerLauncher.launch(intent);
         }
     
+        /**
+         * adapted from https://nobanhasan.medium.com/get-picked-image-actual-path-android-11-12-180d1fa12692
+         */
         private String getRealPathFromURI(Uri uri, Context context) {
             Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
