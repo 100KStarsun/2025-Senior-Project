@@ -1,71 +1,74 @@
 package com.agora.app.backend.base;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import com.agora.app.backend.Session;
+
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 
-public class Chat implements Serializable {
-    private static final long serialVersionUID = 2042010294253052140L;
-    private static final int maxChatSize = 200000;
+public class Chat implements Serializable, Comparable<Chat> {
+    private static final int maxMessageLength = 6500; // 7000 generally seems fine but 6500 gives us some extra padding, with pure base64 encoding
 
     private String id;
     private String username1;
     private String username2;
-    private ArrayList<Message> messages;
-    private boolean isFull;
+    private ArrayList<MessageBlock> messageBlocks;
+
 
     public Chat (String username1, String username2, int index) {
-        this.id = username1 + "_" + username2 + "_" + index;
+        this.id = username1 + "_" + username2 + "_" + new DecimalFormat("0000").format(index);
         this.username1 = username1;
         this.username2 = username2;
-        this.messages = new ArrayList<>(20);
-        this.isFull = false;
+        this.messageBlocks = new ArrayList<>(20);
+        this.messageBlocks.add(new MessageBlock());
     }
 
     private String getOtherUsername (User currentUser) {
         return this.username1.equals(currentUser.getUsername()) ? this.username2 : this.username1;
     }
 
-    private String getSendChatMessage (String toUsername, String message) {
+    private String getFirstUsername () {
+        return this.id.split("_")[0];
+    }
+
+    private static String getSendChatMessage (String toUsername, String message) {
         return "{\"action\":\"sendmessage\",\"to\":\"" + toUsername + "\",\"message\":\"" + message + "\"}";
     }
 
-    private Chat addMessage (String messageText, User currentUser, boolean fromUser1) {
-        Message message = new Message(messageText, new Date(), fromUser1);
-
-        if (this.toBase64String().length() < maxChatSize) {
-            this.messages.add(this.messages.size(), message);
-            return null;
+    // if this returns true then a new message block was created
+    private boolean addMessage (String messageText, User currentUser) {
+        if (messageText.length() > maxMessageLength) {
+            throw new MessageTooLongException("Message of " + messageText.length() + " characters is too long to send. The max message length is " + maxMessageLength + " characters.");
         }
-        this.isFull = true;
-        return null;
+        Message newMessage = new Message(messageText, new Date(), this.username1.equals(currentUser.getUsername()));
+        MessageBlock currentBlock = messageBlocks.get(messageBlocks.size()-1);
+        MessageBlock newBlock = currentBlock.addMessage(newMessage);
+        if (currentBlock != newBlock) {
+            // *should* be safe to use != because MessageBlock.addMessage() returns the same block passed if we don't need a new block
+            messageBlocks.add(newBlock);
+            return true;
+        }
+        return false;
     }
 
-    public static Chat createFromBase64String (String encodedChat) {
-        Base64.Decoder decoder = Base64.getDecoder();
-        byte[] decodedBytes = decoder.decode(encodedChat);
-        try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
-            return (Chat) objectIn.readObject();
-        } catch (IOException | ClassNotFoundException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    // Chat.sendMessage("abc123", "hi Alice, it's Bob!");
+    public static boolean sendMessage (String toUsername, String message) {
+        Chat currentChat = Session.currentUser.getChatObject(toUsername);
+        return currentChat.safeSendMessage(toUsername, message);
     }
 
-    public String toBase64String () {
-        Base64.Encoder encoder = Base64.getEncoder();
-        try (ByteArrayOutputStream bytesOut = new ByteArrayOutputStream(); ObjectOutputStream objectOut = new ObjectOutputStream(bytesOut)) {
-            objectOut.writeObject(this);
-            return encoder.encodeToString(bytesOut.toByteArray());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        return null;
+    private boolean safeSendMessage (String toUsername, String message) {
+        Session.ws.sendText(getSendChatMessage(toUsername, message));
+        return this.addMessage(message, Session.currentUser);
+    }
+
+    public MessageBlock getLastMessageBlock () {
+        return this.messageBlocks.get(messageBlocks.size()-1);
+    }
+
+    @Override
+    public int compareTo (Chat otherChat) {
+        return this.getLastMessageBlock().getLastMessageTime().compareTo(otherChat.getLastMessageBlock().getLastMessageTime());
     }
 }

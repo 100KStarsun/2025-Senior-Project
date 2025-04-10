@@ -1,6 +1,8 @@
 package com.agora.app.backend.base;
 
 
+import kotlin.jvm.Transient;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
@@ -29,19 +31,20 @@ public class User implements Serializable {
     private String legalFirstName;
     private String lastName;
     private String email;
-    private SecureRandom rng = new SecureRandom();
     private byte[] salt;
     private String saltString;
     private final Date timeCreated;
     private int numSwaps;
     private short rating;
     private EnumMap<PaymentMethods, Boolean> paymentMethodsSetup; // boolean is whether the user has this setup
-    private TreeMap<String, ArrayList<String>> chats; // key is the username of the other person, the ArrayList is a list of `chatID`s that are in the db
+    private TreeMap<String, String> chats; // key is the username of the other person, the ArrayList is a list of `chatID`s that are in the db
     private ArrayList<UUID> draftedListings; // a list of UUIDs of listings the user has drafted
     private ArrayList<UUID> publishedListings; // a list of UUIDs of listings the user has published
     private ArrayList<UUID> likedListings; // a list of UUIDs of all listings the user has liked
     private ArrayList<String> mutedUsers; // a list of usernames of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
     private ArrayList<String> blockedUsers; // a list of usernames of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
+    private transient TreeMap<String, Chat> chatObjects; // this is not going to be fully loaded when a User is grabbed, also transient so not stored in db
+    private transient SecureRandom rng = new SecureRandom(); // transient so not stored in the db
 
     public static final Locale locale = Locale.ENGLISH;
 
@@ -152,7 +155,16 @@ public class User implements Serializable {
 
     public String getSaltString () { return saltString; }
 
-    public TreeMap<String, ArrayList<String>> getChats () { return chats; }
+    public TreeMap<String, String> getChats () { return chats; }
 
     public String getPreferredFirstName () { return this.preferredFirstName; }
+
+    public Chat getChatObject (String username) {
+        if (this.chatObjects.containsKey(username)) {
+            return this.chatObjects.get(username);
+        }
+        // TODO: request this chat from the database
+        // TODO: create this chat if it does not exist in the database
+        return null;
+    }
 }

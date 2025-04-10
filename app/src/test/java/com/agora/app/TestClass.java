@@ -4,6 +4,7 @@ import com.agora.app.backend.LoginHandler;
 import com.agora.app.backend.LoginException;
 import com.agora.app.backend.base.Image;
 import com.agora.app.backend.base.ImageChunk;
+import com.agora.app.backend.base.Message;
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.PaymentMethods;
 import com.agora.app.backend.base.User;
@@ -27,6 +28,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 
@@ -333,7 +335,7 @@ public class TestClass {
     public void testWebSockets () throws IOException, WebSocketException {
         User noah = LambdaHandler.getUsers(new String[]{"nrm98"}).get("nrm98");
         Session session = new Session(noah);
-        WebSocket ws = session.getWs();
+        WebSocket ws = Session.ws;
         ws.connect();
         ws.sendText("{\"action\":\"sendmessage\",\"to\":\"lrl47\",\"message\":\"hi levi! From noah :)\"}");
         ws.disconnect();
