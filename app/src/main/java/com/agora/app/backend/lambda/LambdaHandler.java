@@ -145,7 +145,7 @@ public class LambdaHandler {
 
     public static HashMap<String, Listing> getListings (String[] listings) {
         if (listings.length == 0) throw new IllegalArgumentException("listings cannot be empty");
-        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, listings, new String[0]);
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.LISTINGS, listings, new String[0]);
         JSONObject response = invoke(payload, Operations.BATCH_GET);
         return getListingsFromStruct(jsonToBase64(response));
     }

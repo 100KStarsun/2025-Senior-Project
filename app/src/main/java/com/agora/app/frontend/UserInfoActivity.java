@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @class UserInfoActivity
@@ -46,6 +48,7 @@ public class UserInfoActivity extends AppCompatActivity {
 
     // variables for the list of listing and the view in which to see listings on page
     private List<Listing> listings = ListingManager.getInstance().getListings();
+    private HashMap<String, Listing> retrievedListings;
     private ListingView view;
     private String username;
     private TextView textUsername;
@@ -62,6 +65,12 @@ public class UserInfoActivity extends AppCompatActivity {
         textCaseId = findViewById(R.id.textCaseId);
         textTransactions = findViewById(R.id.textTransactions);
         new UserInfoTask().execute(username);
+        new ListingRetrievalTask().execute();
+        for (Map.Entry<String, Listing> entry : listings.entrySet()) {
+            Listing listing = entry.getValue();
+            ListingManager.addListing(listing);
+        }
+
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
@@ -262,6 +271,23 @@ public class UserInfoActivity extends AppCompatActivity {
             } else {
                 Toast.makeText(UserInfoActivity.this, "Error saving listing...", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    private class ListingRetrievalTask extends AsyncTask<Void, Void, HashMap<String, Listing>> {
+        @Override
+        protected HashMap<String, Listing> doInBackground(Void... params) {
+            try {
+                return LambdaHandler.getAllListings();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        protected void onPostExecute(HashMap<String, Listing> listings) {
+            if (listings == null) {
+                Toast.makeText(UserInfoActivity.this, "Error obtaining all listings", Toast.LENGTH_SHORT).show();
+            }
+            retrievedListings = listings;
         }
     }
 }
