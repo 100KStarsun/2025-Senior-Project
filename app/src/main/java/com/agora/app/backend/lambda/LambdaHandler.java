@@ -140,8 +140,14 @@ public class LambdaHandler {
 
     public static HashMap<String, Listing> getListings (String[] listings) {
         if (listings.length == 0) throw new IllegalArgumentException("listings cannot be empty");
-        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.PASSWORDS, listings, new String[0]);
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.LISTINGS, listings, new String[0]);
         JSONObject response = invoke(payload, Operations.BATCH_GET);
+        return getListingsFromStruct(jsonToBase64(response));
+    }
+
+    public static HashMap<String, Listing> scanListings () {
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.LISTINGS, new String[0], new String[0]);
+        JSONObject response = invoke(payload, Operations.SCAN);
         return getListingsFromStruct(jsonToBase64(response));
     }
 
@@ -237,6 +243,12 @@ public class LambdaHandler {
         invoke(payload, Operations.BATCH_PUT);
     }
 
+    public static HashMap<String, ImageChunk> scanImageChunks () {
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.IMAGE_CHUNKS, new String[0], new String[0]);
+        JSONObject response = invoke(payload, Operations.SCAN);
+        return getImageChunksFromStruct(jsonToBase64(response));
+    }
+
     public static void deleteImages (String[] imageIDs) {
         if (imageIDs.length == 0) throw new IllegalArgumentException("imageIDs cannot be empty");
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.IMAGES, imageIDs, new String[0]);
@@ -297,6 +309,18 @@ public class LambdaHandler {
         return listings;
     }
 
+    public static HashMap<String, ImageChunk> getImageChunksFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {
+        HashMap<String, String> data = struct.get(DynamoTables.IMAGE_CHUNKS);
+        if (data.keySet().isEmpty()) {
+            return null;
+        }
+        HashMap<String, ImageChunk> imageChunks = new HashMap<>();
+        for (String key : data.keySet()) {
+            imageChunks.put(key, new ImageChunk(key, data.get(key)));
+        }
+        return imageChunks;
+    }
+
     public static HashMap<String, Image> getImagesFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {
         HashMap<String, String> metaData = struct.get(DynamoTables.IMAGES);
         HashMap<String, String> chunkData = struct.get(DynamoTables.IMAGE_CHUNKS);
@@ -341,6 +365,19 @@ public class LambdaHandler {
                 } else {
                     jsonObj.put("Key", buildSingleKeyJSON(table.partitionKeyName, key));
                 }
+            } catch (JSONException ex) {
+                throw new IllegalStateException();
+            }
+        } else if (operation == Operations.SCAN) {
+            if (data.size() > 1) {
+                throw new IllegalArgumentException("Scanning is only allowed for one table at a time, too many tables specified");
+            }
+            if (data.size() < 1) {
+                throw new IllegalArgumentException("Table name is required for scan operation. Please specify exactly one table to scan");
+            }
+            DynamoTables table = data.keySet().iterator().next();
+            try {
+                jsonObj.put("TableName", table.tableName);
             } catch (JSONException ex) {
                 throw new IllegalStateException();
             }
@@ -423,9 +460,18 @@ public class LambdaHandler {
 
         boolean requestAgain;
         JSONObject response = new JSONObject();
-        SdkBytes payload = SdkBytes.fromUtf8String(jsonString);
-        int asdf = 0;
         do {
+            if (writeOutputs) {
+                try {
+                    FileWriter fw = new FileWriter(homeDir + agoraTempDir + "requestJSON" + System.currentTimeMillis() + ".json");
+                    JSONObject tempRequestObj = new JSONObject(jsonString);
+                    fw.write(tempRequestObj.toString(4));
+                    fw.close();
+                } catch (IOException | JSONException ex) {
+                    throw new IllegalStateException("Uh oh.");
+                }
+            }
+            SdkBytes payload = SdkBytes.fromUtf8String(jsonString);
             JSONObject localResponse;
             try {
                 localResponse = new JSONObject(awsLambda.invoke(makeRequest(payload)).payload().asUtf8String());
@@ -438,7 +484,7 @@ public class LambdaHandler {
                 throw new IllegalStateException("body of response not formatted correctly");
             }
             localResponse.remove("ResponseMetadata");
-            String unprocessed = operation.isDataCarryingOp ? "UnprocessedItems" : "UnprocessedKeys";
+            String unprocessed = operation.isDataCarryingOp ? "UnprocessedItems" : (operation == Operations.SCAN ? "LastEvaluatedKey" : "UnprocessedKeys");
             if (localResponse.has(unprocessed)) {
                 requestAgain = localResponse.optJSONObject(unprocessed).length() != 0;
             } else {
@@ -446,50 +492,62 @@ public class LambdaHandler {
             }
             JSONObject newRequest = new JSONObject();
             try {
-                newRequest.put("RequestItems", localResponse.optJSONObject(unprocessed));
+                String requestKeyword = operation == Operations.SCAN ? "ExclusiveStartKey" : "RequestItems";
+                newRequest.put(requestKeyword, localResponse.optJSONObject(unprocessed));
                 newRequest.put("Operation", operation);
+                if (operation == Operations.SCAN) {
+                    newRequest.put("TableName", data.keySet().iterator().next().tableName);
+                }
             } catch (JSONException ex) {
                 throw new IllegalStateException(unprocessed + " was supposed to have items in it, and yet, it doesn't.");
             }
-            if (operation == Operations.BATCH_GET) {
+            if (operation == Operations.BATCH_GET || operation == Operations.SCAN) {
+                if (operation == Operations.SCAN) {
+                    JSONObject tableData = new JSONObject();
+                    try {
+                        tableData.put(data.keySet().iterator().next().tableName, localResponse.optJSONArray("Items"));
+                        localResponse.put("Responses", tableData);
+                    } catch (JSONException ex) {}
+                }
                 localResponse = localResponse.optJSONObject("Responses");
-                Iterator<String> keyIter = localResponse.keys();
-                while (keyIter.hasNext()) {
-                    String key = keyIter.next();
-                    JSONArray values = localResponse.optJSONArray(key);
+                Iterator<String> tableIter = localResponse.keys();
+                while (tableIter.hasNext()) {
+                    String tableName = tableIter.next();
+                    JSONArray values = localResponse.optJSONArray(tableName);
                     for (int i = 0; i < values.length(); i++) {
                         try {
-                            response.accumulate(key, localResponse.optJSONArray(key).opt(i));
+                            response.accumulate(tableName, values.opt(i));
                         } catch (JSONException ex) {
                             throw new IllegalArgumentException("JSONException: " + ex.getMessage());
                         }
                     }
                     try {
-                        JSONObject singleton = response.getJSONObject(key);
-                        response.remove(key);
+                        JSONObject singleton = response.getJSONObject(tableName);
+                        response.remove(tableName);
                         JSONArray tempArr = new JSONArray();
-                        response.put(key, tempArr.put(singleton));
+                        response.put(tableName, tempArr.put(singleton));
                     } catch (JSONException ex) {}
                 }
             }
 
-            payload = SdkBytes.fromUtf8String(newRequest.toString());
+            jsonString = newRequest.toString();
         } while (requestAgain);
 
-        if (writeOutputs) {
-            try {
-                Random randy = new Random();
-                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "trueResponse" + randy.nextInt() + ".json");
-                fw.write(response.toString(4));
-                fw.close();
-            } catch (IOException | JSONException ex) {}
-        }
         // check if keys passed match up with keys received
         if (operation == Operations.BATCH_GET) {
             JSONObject missingKeys = extractKeysMissingFromResponse(data, response);
             if (missingKeys.length() != 0) {
                 throw new KeyNotFoundException(missingKeys.toString());
             }
+        }
+
+        if (writeOutputs) {
+            try {
+                Random randy = new Random();
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "trueResponse" + System.currentTimeMillis() + ".json");
+                fw.write(response.toString(4));
+                fw.close();
+            } catch (IOException | JSONException ex) {}
         }
 
         return response;
