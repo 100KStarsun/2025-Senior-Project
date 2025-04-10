@@ -62,9 +62,9 @@ public class ExpandedListingActivity extends AppCompatActivity {
         // Dynamically set the tags (check if tags are not null)
         if (tags != null) {
             // Make sure to handle cases where the tag list may be smaller than 3
-            tag1TextView.setText(tags.size() > 0 ? tags.get(0) : "No Tag");
-            tag2TextView.setText(tags.size() > 1 ? tags.get(1) : "No Tag");
-            tag3TextView.setText(tags.size() > 2 ? tags.get(2) : "No Tag");
+            tag1TextView.setText(tags.size() > 0 ? tags.get(0) : "");
+            tag2TextView.setText(tags.size() > 1 ? tags.get(1) : "");
+            tag3TextView.setText(tags.size() > 2 ? tags.get(2) : "");
         }
     }
 }
