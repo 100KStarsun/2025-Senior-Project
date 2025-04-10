@@ -38,6 +38,19 @@ import java.io.IOException;
 import android.database.Cursor;
 import android.widget.ImageView;
 
+import android.content.Context;
+import android.net.Uri;
+import android.provider.OpenableColumns;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+
+
 
 /**
  * @class UserInfoActivity
@@ -53,17 +66,21 @@ public class UserInfoActivity extends AppCompatActivity {
     private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
     private EditText imagePathInput;
-    private ImageView imagePreview;
+    private ImageView image = null;
+    private String imagePath = null;  // Add this line at the top of your activity class
+
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
         registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 Uri selectedImageUri = result.getData().getData();
                 if (selectedImageUri != null) {
-                    String imagePath = getRealPathFromUri(selectedImageUri);
-                    imagePathInput.setText(imagePath);
-                    imagePreview.setImageURI(selectedImageUri);
-                    imagePreview.setVisibility(View.VISIBLE);
+                    imagePath = getRealPathFromURI(selectedImageUri, this);
+                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+                    Log.d("MyApp", "imageView is null? " + (image == null));
+                    if (image != null) {
+                        image.setImageBitmap(bitmap);  
+                    }
                 }
             }
         });
@@ -172,7 +189,11 @@ public class UserInfoActivity extends AppCompatActivity {
         EditText tag3Input = dialogView.findViewById(R.id.input_listing_tag3);
         Button addImageButton = dialogView.findViewById(R.id.button_select_image);
         Button saveButton = dialogView.findViewById(R.id.save_listing);
-        ImageView imagePreview = dialogView.findViewById(R.id.image_preview);
+        
+
+
+
+        
         //EditText imagePathInput = dialogView.findViewById(R.id.input_image_filename);
 
     
@@ -230,17 +251,33 @@ public class UserInfoActivity extends AppCompatActivity {
             imagePickerLauncher.launch(intent);
         }
     
-        private String getRealPathFromUri(Uri uri) {
-            String filePath = "";
-            Cursor cursor = getContentResolver().query(uri, new String[]{MediaStore.Images.Media.DATA}, null, null, null);
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                    filePath = cursor.getString(columnIndex);
+        private String getRealPathFromURI(Uri uri, Context context) {
+            Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+            returnCursor.moveToFirst();
+            String name = returnCursor.getString(nameIndex);
+            long size = returnCursor.getLong(sizeIndex);
+            File file = new File(context.getFilesDir(), name);
+            try {
+                InputStream inputStream = context.getContentResolver().openInputStream(uri);
+                FileOutputStream outputStream = new FileOutputStream(file);
+                int read;
+                int maxBufferSize = 1 * 1024 * 1024;
+                int bytesAvailable = inputStream.available();
+                int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                byte[] buffers = new byte[bufferSize];
+                while ((read = inputStream.read(buffers)) != -1) {
+                    outputStream.write(buffers, 0, read);
                 }
-                cursor.close();
+                inputStream.close();
+                outputStream.close();
+                Log.e("File Path", "Path: " + file.getPath());
+            } catch (Exception e) {
+                Log.e("Exception", e.getMessage());
             }
-            return filePath;
+            return file.getPath();
         }
+        
     }
 

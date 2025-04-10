@@ -30,12 +30,11 @@
 
         <!-- Listing Image -->
         <ImageView
-            android:id="@+id/expanded_listing_image"
+            android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:contentDescription="Listing Image"
-            android:src="@drawable/ic_placeholder"/>
+            android:contentDescription="Listing Image"/>
 
         <!-- Listing Price -->
         <TextView
