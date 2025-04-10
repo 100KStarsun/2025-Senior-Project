@@ -55,14 +55,16 @@
             android:id="@+id/exchangeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="?attr/colorOnBackground"/>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:text="Allow Cash Transactions "
             android:id="@+id/cashSwitch"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="?attr/colorOnBackground"/>
 
     </LinearLayout>
 
@@ -77,22 +79,26 @@
         android:layout_height="wrap_content"
         android:text="Price Maximum"
         android:gravity="center"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:textColor="?attr/colorOnBackground"/>
 
     <SeekBar
         android:layout_width="100dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:progressTint="?attr/colorOnBackground"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Price Minimum"
         android:gravity="center"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:textColor="?attr/colorOnBackground"/>
 
     <SeekBar
         android:layout_width="100dp"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:progressTint="?attr/colorOnBackground"/>
 
     </LinearLayout>
 
@@ -101,7 +107,8 @@
         android:layout_height="wrap_content"
         android:text="Item Categories"
         android:gravity="center"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textColor="?attr/colorOnBackground"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -118,19 +125,22 @@
                 android:id="@+id/furnitureCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Furniture"/>
+                android:text="Furniture"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/householdCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Household"/>
+                android:text="Household"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/apparelCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Apparel"/>
+                android:text="Apparel"
+                android:textColor="?attr/colorOnBackground"/>
 
         </LinearLayout>
     </LinearLayout>
