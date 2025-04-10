@@ -54,8 +54,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
     Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         if (bitmap != null) {
-            // Set the decoded image to the ImageView (optional: use it in the item view if needed)
-            holder.imageView.setImageBitmap(bitmap); // Assuming there's an ImageView in the ViewHolder to show the image
+            holder.imageView.setImageBitmap(bitmap); 
         } else {
             // Fallback to a placeholder image if decoding failed
             holder.imageView.setImageResource(R.drawable.ic_placeholder);

@@ -7,6 +7,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import com.agora.app.R;
 import java.util.ArrayList;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.content.Intent;
+import android.view.LayoutInflater;
+
 
 public class ExpandedListingActivity extends AppCompatActivity {
 
@@ -39,14 +44,20 @@ public class ExpandedListingActivity extends AppCompatActivity {
         String title = getIntent().getStringExtra("title");
         String description = getIntent().getStringExtra("description");
         float price = getIntent().getFloatExtra("price", 0.0f); 
-        int imageResource = getIntent().getIntExtra("image", R.drawable.ic_placeholder);
+        String imagePath = getIntent().getStringExtra("image");
         ArrayList<String> tags = getIntent().getStringArrayListExtra("tags"); 
 
         // Set the values to the respective views
         titleTextView.setText(title);
         descriptionTextView.setText(description);
         priceTextView.setText("$" + String.format("%.2f", price)); // Set price
-        listingImageView.setImageResource(imageResource);
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            if (bitmap != null) {
+                listingImageView.setImageBitmap(bitmap);
+            } else {
+                // Fallback to a placeholder image if decoding fails
+                listingImageView.setImageResource(R.drawable.ic_placeholder);
+            }
 
         // Dynamically set the tags (check if tags are not null)
         if (tags != null) {
