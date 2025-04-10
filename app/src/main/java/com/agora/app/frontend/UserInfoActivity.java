@@ -160,7 +160,6 @@ public class UserInfoActivity extends AppCompatActivity {
 
     // method to open up popup to for user to enter listing information
     private void addListingDialog() {
-
         // builds dialogue popup with input fields
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_listing, null);
@@ -206,14 +205,15 @@ public class UserInfoActivity extends AppCompatActivity {
             if(!title.isEmpty() && !description.isEmpty()) {
                 UUID uuid = UUID.randomUUID();
                 String displayName = "temp"; 
-                String username = "user"; 
+                String listingUsername = username; 
                 String type = "default"; 
 
-                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags);
+                Listing newListing = new Listing(uuid, title, price, description, displayName, listingUsername, type, tags);
     
                 ListingManager.getInstance().addListing(newListing);
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();
+                new ListingSaveTask().execute(newListing.getUUID().toString(), newListing.toBase64String());
             }
         });
 
@@ -239,6 +239,28 @@ public class UserInfoActivity extends AppCompatActivity {
                 textUsername.setText(user.getUsername());
             } else {
                 Toast.makeText(UserInfoActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class ListingSaveTask extends AsyncTask<String, Void, Boolean> {
+        private String errorMessage = "";
+        @Override
+        protected Boolean doInBackground(String... params) {
+            String listingUUID = params[0];
+            String listingBase64 = params[1];
+            try {
+                LambdaHandler.putListings(new String[]{listingUUID}, new String[]{listingBase64});
+            } catch (Exception e) {
+                return false;
+            }
+            return true;
+        }
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                Toast.makeText(UserInfoActivity.this, "Listing Saved!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(UserInfoActivity.this, "Error saving listing...", Toast.LENGTH_SHORT).show();
             }
         }
     }
