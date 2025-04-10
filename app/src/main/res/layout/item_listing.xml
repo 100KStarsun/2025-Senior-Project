@@ -39,6 +39,8 @@
             android:layout_gravity="end"
             android:textColor="@android:color/holo_green_dark"
             android:layout_marginLeft="10dp"/>
+        
+        
 
     </LinearLayout>
         <TextView

@@ -76,11 +76,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 Uri selectedImageUri = result.getData().getData();
                 if (selectedImageUri != null) {
                     imagePath = getRealPathFromURI(selectedImageUri, this);
-                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-                    Log.d("MyApp", "imageView is null? " + (image == null));
-                    if (image != null) {
-                        image.setImageBitmap(bitmap);  
-                    }
+                    
                 }
             }
         });
@@ -236,8 +232,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 String username = "user"; 
                 String type = "default"; 
 
-                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags);
-    
+                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
                 ListingManager.getInstance().addListing(newListing);
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();
