@@ -65,11 +65,12 @@ public class UserInfoActivity extends AppCompatActivity {
         textCaseId = findViewById(R.id.textCaseId);
         textTransactions = findViewById(R.id.textTransactions);
         new UserInfoTask().execute(username);
+        /*
         new ListingRetrievalTask().execute();
         for (Map.Entry<String, Listing> entry : listings.entrySet()) {
             Listing listing = entry.getValue();
             ListingManager.addListing(listing);
-        }
+        }*/
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
@@ -274,6 +275,7 @@ public class UserInfoActivity extends AppCompatActivity {
         }
     }
 
+    /*
     private class ListingRetrievalTask extends AsyncTask<Void, Void, HashMap<String, Listing>> {
         @Override
         protected HashMap<String, Listing> doInBackground(Void... params) {
@@ -289,5 +291,5 @@ public class UserInfoActivity extends AppCompatActivity {
             }
             retrievedListings = listings;
         }
-    }
+    } */
 }

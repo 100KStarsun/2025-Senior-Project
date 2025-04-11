@@ -68,40 +68,6 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Price Maximum"
-        android:gravity="center"
-        android:textSize="10sp"
-        android:textColor="?attr/colorOnBackground"/>
-
-    <SeekBar
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:progressTint="?attr/colorOnBackground"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Price Minimum"
-        android:gravity="center"
-        android:textSize="10sp"
-        android:textColor="?attr/colorOnBackground"/>
-
-    <SeekBar
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:progressTint="?attr/colorOnBackground"/>
-
-    </LinearLayout>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -144,6 +110,19 @@
 
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:padding="16dp">
+ 
+         <Button
+             android:id="@+id/savePreferencesButton"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Save Preferences" />
+     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
