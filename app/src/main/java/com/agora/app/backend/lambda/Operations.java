@@ -5,7 +5,8 @@ public enum Operations {
     DELETE(true, false),
     BATCH_GET(false, false),
     BATCH_PUT(false, true),
-    BATCH_DELETE(false, false);
+    BATCH_DELETE(false, false),
+    SCAN(true, false);
 
     public final boolean isSingleOp;
     public final boolean isDataCarryingOp;
