@@ -28,6 +28,29 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import java.io.IOException;
+import android.database.Cursor;
+import android.widget.ImageView;
+
+import android.content.Context;
+import android.net.Uri;
+import android.provider.OpenableColumns;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.IOException;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+
+
 
 /**
  * @class UserInfoActivity
@@ -42,6 +65,21 @@ public class UserInfoActivity extends AppCompatActivity {
     // variables for the list of listing and the view in which to see listings on page
     private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
+    private EditText imagePathInput;
+    private ImageView image = null;
+    private String imagePath = null;  // Add this line at the top of your activity class
+
+
+    private final ActivityResultLauncher<Intent> imagePickerLauncher =
+        registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                Uri selectedImageUri = result.getData().getData();
+                if (selectedImageUri != null) {
+                    imagePath = getRealPathFromURI(selectedImageUri, this);
+                    
+                }
+            }
+        });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,14 +176,26 @@ public class UserInfoActivity extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View dialogView = getLayoutInflater().inflate(R.layout.dialog_add_listing, null);
         builder.setView(dialogView);
+
         EditText titleInput = dialogView.findViewById(R.id.input_listing_title);
         EditText descriptionInput = dialogView.findViewById(R.id.input_listing_description);
         EditText priceInput = dialogView.findViewById(R.id.input_listing_price);
         EditText tag1Input = dialogView.findViewById(R.id.input_listing_tag1);
         EditText tag2Input = dialogView.findViewById(R.id.input_listing_tag2);
         EditText tag3Input = dialogView.findViewById(R.id.input_listing_tag3);
+        Button addImageButton = dialogView.findViewById(R.id.button_select_image);
         Button saveButton = dialogView.findViewById(R.id.save_listing);
+        
+
+
+
+        
+        //EditText imagePathInput = dialogView.findViewById(R.id.input_image_filename);
+
+    
         AlertDialog dialog = builder.create();
+
+        addImageButton.setOnClickListener(v -> openGallery());
 
         // save button on popup to pass through listing information
         saveButton.setOnClickListener(v -> {
@@ -182,8 +232,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 String username = "user"; 
                 String type = "default"; 
 
-                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags);
-    
+                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
                 ListingManager.getInstance().addListing(newListing);
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();
@@ -191,5 +240,42 @@ public class UserInfoActivity extends AppCompatActivity {
         });
 
         dialog.show();
+    } 
+        private void openGallery() {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            imagePickerLauncher.launch(intent);
+        }
+    
+        /**
+         * adapted from https://nobanhasan.medium.com/get-picked-image-actual-path-android-11-12-180d1fa12692
+         */
+        private String getRealPathFromURI(Uri uri, Context context) {
+            Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
+            int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
+            returnCursor.moveToFirst();
+            String name = returnCursor.getString(nameIndex);
+            long size = returnCursor.getLong(sizeIndex);
+            File file = new File(context.getFilesDir(), name);
+            try {
+                InputStream inputStream = context.getContentResolver().openInputStream(uri);
+                FileOutputStream outputStream = new FileOutputStream(file);
+                int read;
+                int maxBufferSize = 1 * 1024 * 1024;
+                int bytesAvailable = inputStream.available();
+                int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                byte[] buffers = new byte[bufferSize];
+                while ((read = inputStream.read(buffers)) != -1) {
+                    outputStream.write(buffers, 0, read);
+                }
+                inputStream.close();
+                outputStream.close();
+                Log.e("File Path", "Path: " + file.getPath());
+            } catch (Exception e) {
+                Log.e("Exception", e.getMessage());
+            }
+            return file.getPath();
+        }
+        
     }
-}
+
