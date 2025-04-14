@@ -29,9 +29,10 @@ public class PreferencesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preferences);
+        ActivityPreferencesBinding binding = ActivityPreferencesBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         Objects.requireNonNull(getSupportActionBar()).hide();
-        Button buttonUserInfo = findViewById(R.id.buttonUserInfo);
+        Button buttonUserInfo = binding.buttonUserInfo;
         currentUser = getIntent().getSerializableExtra("userobject", User.class);
         buttonUserInfo.setOnClickListener(v -> {
             Intent intent = new Intent(PreferencesActivity.this, UserInfoActivity.class);
@@ -39,37 +40,33 @@ public class PreferencesActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        Boolean[] savedPrefs = currentUser.getPreferences().toArray();
+        ArrayList<Boolean> prefs = currentUser.getPreferences();
+        if (prefs == null || prefs.isEmpty() || prefs.size() < 5) {
+            prefs = new ArrayList<>();
+            prefs.add(false);
+            prefs.add(false); 
+            prefs.add(false); 
+            prefs.add(false); 
+            prefs.add(false); 
+            currentUser.setPreferences(prefs);
+        }
+        Boolean[] savedPrefs = prefs.toArray(new Boolean[0]);
 
-        SwitchMaterial exchangeSwitch = (SwitchMaterial) findViewById(R.id.exchanceSwitch);
-        SwitchMaterial cashSwitch = (SwitchMaterial) findViewById(R.id.cashSwitch);
-        CheckBox furnitureCheckBox = (CheckBox) findViewById(R.id.furnitureCheckBox);
-        CheckBox householdCheckBox = (CheckBox) findViewById(R.id.householdCheckBox);
-        CheckBox apparelCheckBox = (CheckBox) findViewById(R.id.apparelCheckBox);
-
-        exchangeSwitch = savedPrefs[0];
-        cashSwitch = savedPrefs[1];
-        furnitureCheckBox = savedPrefs[2];
-        householdCheckBox = savedPrefs[3];
-        apparelCheckBox = savedPrefs[4];
-
-        ActivityPreferencesBinding binding = ActivityPreferencesBinding.inflate(getLayoutInflater());
-
-        Button savePreferences = findViewById(R.id.savePreferencesButton); //Note that this button isn't real right now, needs to be created in xml
+        binding.exchangeSwitch.setChecked(savedPrefs[0]);
+        binding.cashSwitch.setChecked(savedPrefs[1]);
+        binding.furnitureCheckBox.setChecked(savedPrefs[2]);
+        binding.householdCheckBox.setChecked(savedPrefs[3]);
+        binding.apparelCheckBox.setChecked(savedPrefs[4]);
  
-        savePreferences.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<Boolean> preferencesList = new ArrayList<>();
-                preferencesList.add(binding.exchangeSwitch.isChecked());
-                preferencesList.add(binding.cashSwitch.isChecked());
-                preferencesList.add(binding.furnitureCheckBox.isChecked());
-                preferencesList.add(binding.householdCheckBox.isChecked());
-                preferencesList.add(binding.apparelCheckBox.isChecked());
-                currentUser.setPreferences(preferencesList);
-
-                new SavePreferencesTask().execute(currentUser.getUsername(), currentUser.toBase64String());
-            }
+        binding.savePreferencesButton.setOnClickListener(v -> {
+            ArrayList<Boolean> preferencesList = new ArrayList<>();
+            preferencesList.add(binding.exchangeSwitch.isChecked());
+            preferencesList.add(binding.cashSwitch.isChecked());
+            preferencesList.add(binding.furnitureCheckBox.isChecked());
+            preferencesList.add(binding.householdCheckBox.isChecked());
+            preferencesList.add(binding.apparelCheckBox.isChecked());
+            currentUser.setPreferences(preferencesList);
+            new SavePreferencesTask().execute(currentUser.getUsername(), currentUser.toBase64String());
         });
     }
 
@@ -88,7 +85,7 @@ public class PreferencesActivity extends AppCompatActivity {
         }
         protected void onPostExecute(Boolean result) {
             if (result) {
-                Toast.makeText(PreferencesActivity.this, "Preferences Saved to the Backend!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PreferencesActivity.this, "Preferences Saved!", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(PreferencesActivity.this, "Failed to save preferences to the backend...", Toast.LENGTH_SHORT).show();
             }

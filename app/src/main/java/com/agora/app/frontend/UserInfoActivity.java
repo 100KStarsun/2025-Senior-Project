@@ -48,7 +48,6 @@ public class UserInfoActivity extends AppCompatActivity {
 
     // variables for the list of listing and the view in which to see listings on page
     private List<Listing> listings = ListingManager.getInstance().getListings();
-    private HashMap<String, Listing> retrievedListings;
     private ListingView view;
     private String username;
     private TextView textUsername;
@@ -65,12 +64,7 @@ public class UserInfoActivity extends AppCompatActivity {
         textCaseId = findViewById(R.id.textCaseId);
         textTransactions = findViewById(R.id.textTransactions);
         new UserInfoTask().execute(username);
-        /*
         new ListingRetrievalTask().execute();
-        for (Map.Entry<String, Listing> entry : listings.entrySet()) {
-            Listing listing = entry.getValue();
-            ListingManager.addListing(listing);
-        }*/
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
@@ -275,21 +269,29 @@ public class UserInfoActivity extends AppCompatActivity {
         }
     }
 
-    /*
     private class ListingRetrievalTask extends AsyncTask<Void, Void, HashMap<String, Listing>> {
         @Override
         protected HashMap<String, Listing> doInBackground(Void... params) {
             try {
-                return LambdaHandler.getAllListings();
+                return LambdaHandler.scanListings();
             } catch (Exception e) {
                 return null;
             }
         }
-        protected void onPostExecute(HashMap<String, Listing> listings) {
-            if (listings == null) {
+        protected void onPostExecute(HashMap<String, Listing> dblistings) {
+            if (dblistings == null) {
                 Toast.makeText(UserInfoActivity.this, "Error obtaining all listings", Toast.LENGTH_SHORT).show();
+                return;
             }
-            retrievedListings = listings;
+            ListingManager.getInstance().getListings().clear();
+            HashMap<String, Listing> retrievedListings = dblistings;
+            if (retrievedListings != null) {
+                for (Map.Entry<String, Listing> entry : retrievedListings.entrySet()) {
+                    Listing listing = entry.getValue();
+                    ListingManager.getInstance().addListing(listing);
+                }
+            }
+            view.notifyDataSetChanged();
         }
-    } */
+    }
 }
