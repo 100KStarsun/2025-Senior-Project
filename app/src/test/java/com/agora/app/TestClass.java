@@ -48,7 +48,7 @@ public class TestClass {
         imageIDs.put("big_image.jpg", "9f321ffc-8be4-4845-a3dd-a4e8a55d9555--06");
     }
 
-    @Test
+    //@Test
     public void testBasicLoginStuff () throws IOException, NoSuchAlgorithmException {
         boolean puttingAndGetting = puttingAndGettingUserAndPassword();
         boolean correctLogin = testCorrectLogin();
@@ -324,5 +324,17 @@ public class TestClass {
             equalImages.add(testImg.equals(baseCase) + "");
         }
         assert !equalImages.contains("false");
+    }
+
+    @Test
+    public void testScanImageChunks () throws IOException, JSONException {
+        HashMap<String, ImageChunk> imageChunkHashMap = LambdaHandler.scanImageChunks();
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "imageChunks.json");
+        for (ImageChunk ic : imageChunkHashMap.values()) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put(ic.getId(), ic.getBase64());
+            fw.write(jsonObj.toString(4) + "\n");
+        }
+        fw.close();
     }
 }

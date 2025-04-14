@@ -161,7 +161,7 @@ public class UserInfoActivity extends AppCompatActivity {
         // finds and displays listing view on page
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        view = new ListingView(listings);
+        view = new ListingView(listings, false);
         recyclerView.setAdapter(view);
 
         // creates button for ability to add listing

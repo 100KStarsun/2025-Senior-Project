@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import java.util.List;
 import android.content.Intent;
 import java.util.ArrayList;
+import android.widget.Button;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,9 +30,11 @@ import android.widget.ImageView;
 public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
     private List<Listing> listings;
+    private boolean useSaveButton;
 
-    public ListingView(List<Listing> listings) {
+    public ListingView(List<Listing> listings, boolean useSaveButton) {
         this.listings = listings;
+        this.useSaveButton = useSaveButton;
     }
 
     @Override
@@ -70,6 +73,27 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         intent.putStringArrayListExtra("tags", new ArrayList<String>(listing.getTags())); // pass tags as ArrayList
         v.getContext().startActivity(intent);
     });
+        boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
+
+        holder.saveButton.setText(isSaved ? "Unsave" : "Save");
+
+        if (useSaveButton) {
+            holder.saveButton.setVisibility(View.VISIBLE);
+            holder.saveButton.setOnClickListener(v -> {
+                if (isSaved) {
+                    SavedListingsManager.getInstance().removeSavedListing(listing);
+                    holder.saveButton.setText("Save");
+                }
+                else {
+                    SavedListingsManager.getInstance().addSavedListing(listing);
+                    holder.saveButton.setText("Unsave");
+                }
+            });
+        }
+        else {
+            holder.saveButton.setVisibility(View.GONE);
+        }
+
     }
     
 
@@ -82,8 +106,9 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         TextView title;
         TextView description;
         TextView price;
+
+        Button saveButton;
         ImageView imageView;
-  
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -91,6 +116,8 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             description = itemView.findViewById(R.id.listing_description);
             price = itemView.findViewById(R.id.listing_price);
             imageView = itemView.findViewById(R.id.image);
+            saveButton = itemView.findViewById(R.id.save_button);
+
    
         }
     }

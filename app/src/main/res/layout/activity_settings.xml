@@ -55,7 +55,9 @@
         <ImageView
             android:layout_width="96dp"
             android:layout_height="96dp"
-            android:src="@drawable/icon_userinfo"/>
+            android:src="@drawable/icon_userinfo"
+            android:tint="?attr/colorOnBackground"
+            android:tintMode="src_in"/>
 
         <!--stack to display text information next to icon-->
         <LinearLayout
@@ -67,17 +69,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="User Name"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:textColor="?attr/colorOnBackground"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Case ID"
-                android:textSize="15dp" />
+                android:textSize="15dp"
+                android:textColor="?attr/colorOnBackground"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Transactions to Date: #"
-                android:textSize="15dp"/>
+                android:textSize="15dp"
+                android:textColor="?attr/colorOnBackground"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -86,7 +91,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Payment Preferences"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textColor="?attr/colorOnBackground"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -103,31 +109,36 @@
                 android:id="@+id/paypalCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="PayPal"/>
+                android:text="PayPal"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/zelleCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Zelle"/>
+                android:text="Zelle"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/cashappCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Cash App"/>
+                android:text="Cash App"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/venmoCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Venmo"/>
+                android:text="Venmo"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/applepayCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Apple Pay"/>
+                android:text="Apple Pay"
+                android:textColor="?attr/colorOnBackground"/>
 
         </LinearLayout>
 
@@ -140,25 +151,29 @@
                 android:id="@+id/samsungpayCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Samsung Pay"/>
+                android:text="Samsung Pay"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/googlepayCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Google Pay"/>
+                android:text="Google Pay"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/cashCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Cash"/>
+                android:text="Cash"
+                android:textColor="?attr/colorOnBackground"/>
 
             <CheckBox
                 android:id="@+id/checkCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Check"/>
+                android:text="Check"
+                android:textColor="?attr/colorOnBackground"/>
 
         </LinearLayout>
 
@@ -169,7 +184,8 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Notifications"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textColor="?attr/colorOnBackground"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -182,21 +198,24 @@
             android:id="@+id/chatnotifSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="?attr/colorOnBackground"/>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:text="Toggle Notifications for New Posts"
             android:id="@+id/postnotifSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="?attr/colorOnBackground"/>
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:text="Toggle Push Notifications "
             android:id="@+id/pushnotifSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="?attr/colorOnBackground"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
