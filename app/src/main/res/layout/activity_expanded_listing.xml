@@ -64,6 +64,7 @@
             android:textSize="18sp"/>
 
         <TextView
+            android:id="@+id/comma1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=", "
@@ -79,6 +80,7 @@
             android:textSize="18sp"/>
 
         <TextView
+            android:id="@+id/comma2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=", "
