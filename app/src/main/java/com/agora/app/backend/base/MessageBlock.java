@@ -19,6 +19,19 @@ public class MessageBlock {
         this.numMessages = 1;
     }
 
+    public MessageBlock (String[] messageBase64s) {
+        this.messages = new ArrayList<>(35);
+        this.numMessages = 0;
+        for (String base64 : messageBase64s) {
+            Message msg = Message.createFromBase64String(base64);
+            if (msg == null) {
+                throw new IllegalArgumentException("Message received is not in proper format");
+            }
+            this.messages.add(msg);
+            this.numMessages++;
+        }
+    }
+
     public MessageBlock addMessage (Message newMessage) {
         if (this.numMessages == maxMessagesPerBlock) {
             return new MessageBlock(newMessage);

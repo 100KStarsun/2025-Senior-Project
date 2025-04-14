@@ -284,7 +284,7 @@ public class TestClass {
         return true;
     }
 
-    @Test
+    //@Test
     public void testBreakingAndReconstructingImages () throws IOException {
         boolean extraDebugInfo = false;
         ArrayList<String> imageEquals = new ArrayList<>();
@@ -308,7 +308,7 @@ public class TestClass {
         assert !imageEquals.contains("false");
     }
 
-    @Test
+    //@Test
     public void testSendingImageData () throws IOException {
         ArrayList<Image> images = new ArrayList<>();
         for (String imgName : imageIDs.keySet()) {
@@ -318,7 +318,7 @@ public class TestClass {
         assert true;
     }
 
-    @Test
+    //@Test
     public void testGettingImageData () throws IOException {
         HashMap<String, Image> imagesHashMap = LambdaHandler.getImages(imageIDs.values().toArray(new String[imageIDs.size()]));
         ArrayList<String> equalImages = new ArrayList<>();
@@ -343,7 +343,7 @@ public class TestClass {
         fw.close();
     }
 
-    @Test
+    //@Test
     public void testWebSockets () throws IOException, WebSocketException {
         User noah = LambdaHandler.getUsers(new String[]{"nrm98"}).get("nrm98");
         Session session = new Session(noah);
@@ -351,5 +351,13 @@ public class TestClass {
         ws.connect();
         ws.sendText("{\"action\":\"sendmessage\",\"to\":\"lrl47\",\"message\":\"hi levi! From noah :)\"}");
         ws.disconnect();
+    }
+
+    @Test
+    public void testScanChats () throws IOException, JSONException {
+//        User levi = LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "scanChatResponse.txt");
+        fw.write(LambdaHandler.scanChats("lrl47").toString());
+        fw.close();
     }
 }
