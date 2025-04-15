@@ -303,6 +303,16 @@ public class UserInfoActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerLauncher.launch(intent);
         }
+
+        void refreshListings() {
+            List<Listing> activeListings = new ArrayList<>();
+            for (Listing listing : listings) {
+                if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                    activeListings.add(listing);
+                }
+            }
+            view.updateListings(activeListings);
+        }
     
         /**
          * adapted from https://nobanhasan.medium.com/get-picked-image-actual-path-android-11-12-180d1fa12692
@@ -405,16 +415,6 @@ public class UserInfoActivity extends AppCompatActivity {
                 }
             }
             view.notifyDataSetChanged();
-        }
-
-        void refreshListings() {
-            List<Listing> activeListings = new ArrayList<>();
-            for (Listing listing : listings) {
-                if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
-                    activeListings.add(listing);
-                }
-            }
-            view.updateListings(activeListings);
         }
 
     }
