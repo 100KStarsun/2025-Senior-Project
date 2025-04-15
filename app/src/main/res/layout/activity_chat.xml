@@ -1,26 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chat Page"
-        android:textSize="40sp"
-        android:layout_marginBottom="20dp"/>
+    <!-- Spacer to move page below phone's top information bar -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#003071" />
 
+    <!-- Header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/agora_header"
+            android:layout_gravity="center"
+            android:contentDescription="Agora Header"
+            android:background="#003071" />
+    </LinearLayout>
+
+    <!-- Page Title -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="Chat"
+            android:textSize="40sp"
+            android:textColor="#003071"
+            android:gravity="center"
+            android:background="@drawable/blue_border" />
+    </LinearLayout>
+
+    <!--stack to display user information-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp" >
+
+        <!--MAKE USER ICON FOR CHAT USER-->
+        <ImageView
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:src="@drawable/icon_userinfo"
+            app:tint="?attr/colorOnBackground" />
+
+        <!--stack to display text information next to icon-->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <!--MAKE USER NAME FOR CHAT USER-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="User Name"
+                android:textColor="?attr/colorOnBackground"
+                android:textSize="15dp" />
+
+            <!--MAKE USER ID FOR CHAT USER-->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Case ID"
+                android:textColor="?attr/colorOnBackground"
+                android:textSize="15dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Chat log with user -->
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/chat_log"/>
+        android:id="@+id/chat_log"
+        android:layout_weight="1"/>
 
-    <EditText
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/message_input"
-        android:hint="Start typing..."
-        android:background="@android:color/white"/>
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center_vertical"
+        android:background="@drawable/curvedbox">
+
+        <!-- EditText with custom background -->
+        <EditText
+            android:id="@+id/message_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/send_button"
+            android:hint="Start typing..."
+            android:padding="10dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- Image next to EditText -->
+        <ImageView
+            android:id="@+id/send_button"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/send"
+            android:padding="2dp"
+            android:layout_marginEnd="8dp"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <!--spacer-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp" />
+
+    <!--nav bar-->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/nav_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#003071"
+        app:itemIconTint="@color/white"
+        app:itemTextColor="@color/white"
+        app:menu="@menu/nav_bar" />
 
 </LinearLayout>
