@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 /**
@@ -29,6 +30,7 @@ public class MarketplaceActivity extends AppCompatActivity {
 
     private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
+    private String username;
     private List<Listing> filteredListings;
     private SearchView searchBar;
     EditText minPriceInput;
@@ -41,6 +43,7 @@ public class MarketplaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marketplace);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        username = getIntent().getStringExtra("username");
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
@@ -51,18 +54,24 @@ public class MarketplaceActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_messaging) {
-                startActivity(new Intent(this, MessagingActivity.class));
+                Intent intent = new Intent(this, MessagingActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
                 return true;
             }
             else if (itemId == R.id.nav_swiping) {
-                startActivity(new Intent(this, SwipingActivity.class));
+                Intent intent = new Intent(this, SwipingActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
-                startActivity(new Intent(this, UserInfoActivity.class));
+                Intent intent = new Intent(this, UserInfoActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             return false;

@@ -17,6 +17,7 @@ import java.util.EnumMap;
 import java.util.Locale;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.Collections;
 import java.security.SecureRandom;
 
 
@@ -41,7 +42,8 @@ public class User implements Serializable {
     private ArrayList<UUID> publishedListings; // a list of UUIDs of listings the user has published
     private ArrayList<UUID> likedListings; // a list of UUIDs of all listings the user has liked
     private ArrayList<UUID> mutedUsers; // a list of UUIDs of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
-    private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
+    private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)4
+    private ArrayList<Boolean> userPreferences;
 
     public static final Locale locale = Locale.ENGLISH;
 
@@ -65,6 +67,8 @@ public class User implements Serializable {
         this.likedListings = new ArrayList<>();
         this.mutedUsers = new ArrayList<>();
         this.blockedUsers = new ArrayList<>();
+        this.userPreferences = new ArrayList<>();
+        Collections.fill(userPreferences, false);
     }
 
     /**
@@ -92,15 +96,8 @@ public class User implements Serializable {
         try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
             return (User) objectIn.readObject();
         } catch (IOException | ClassNotFoundException ex) {
-            try {
-                FileWriter fw = new FileWriter("C:\\Users\\100ks\\.agora\\error.txt");
-                fw.write(ex.getMessage() + "\n");
-                fw.write(ex.getLocalizedMessage() + "\n");
-                for (StackTraceElement element : ex.getStackTrace()) {
-                    fw.write(element.toString() + "\n");
-                }
-                fw.close();
-            } catch (IOException e) {}
+            System.err.println("Exception Decoding User");
+            System.err.println(ex.getMessage());
             ex.printStackTrace();
         }
         return null;
@@ -164,4 +161,8 @@ public class User implements Serializable {
     public TreeMap<String, ArrayList<UUID>> getChats () { return chats; }
 
     public String getPreferredFirstName () { return this.preferredFirstName; }
+
+    public void setPreferences (ArrayList<Boolean> preferences) { this.userPreferences = preferences;}
+
+    public ArrayList<Boolean> getPreferences() { return this.userPreferences; }
 }

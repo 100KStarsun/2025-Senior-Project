@@ -8,6 +8,7 @@ import com.agora.app.backend.lambda.LambdaHandler;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import org.json.JSONException;
 
 public class LoginHandler {
 

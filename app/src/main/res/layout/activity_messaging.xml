@@ -59,6 +59,18 @@
         android:id="@+id/user_chats"
         android:layout_weight="1"/>
 
+    <TextView
+        android:id="@+id/messaging_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@android:color/holo_blue_dark"
+        android:text="Implementation coming soon!"
+        android:textSize="30sp"
+        android:gravity="center"
+        android:layout_weight="1"
+        />
+
     <!--nav bar-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_bar"
