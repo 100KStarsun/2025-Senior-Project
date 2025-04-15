@@ -47,6 +47,8 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
+        navBar.setSelectedItemId(R.id.nav_swiping);
+
         // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
