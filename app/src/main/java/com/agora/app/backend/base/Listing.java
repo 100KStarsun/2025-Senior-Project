@@ -30,11 +30,13 @@ public class Listing implements Serializable {
     private boolean isPublished;
     private boolean isAcceptingCash;
     private boolean isTradable;
+    private boolean isArchived;
     private ArrayList<UUID> previousBuyers;
     private ArrayList<String> tags;
+    private String imagePath;
 
     //Every field provided
-    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, ArrayList<String> tags) {
+    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, boolean archived, ArrayList<UUID> previousBuyers, ArrayList<String> tags, String imagePath) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = listingTime;
@@ -48,11 +50,13 @@ public class Listing implements Serializable {
         this.isPublished = published;
         this.isAcceptingCash = acceptingCash;
         this.isTradable = tradable;
+        this.isArchived = archived;
         this.previousBuyers = previousBuyers;
         this.tags = tags;
+        this.imagePath = imagePath;
     }
     //Defaults where applicable
-    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, ArrayList<String> tags) {
+    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, ArrayList<String> tags, String imagePath) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = Date.from(Instant.now());
@@ -66,11 +70,13 @@ public class Listing implements Serializable {
         this.isPublished = true;
         this.isAcceptingCash = true;
         this.isTradable = false;
+        this.isArchived = false;
         this.previousBuyers = new ArrayList<>();
         this.tags = tags;
+        this.imagePath = imagePath;
     }
     //Defaults for most things, but allows quantity and infiniteavailabilty
-    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, int quantity, boolean infiniteAvailable, ArrayList<String> tags) {
+    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, int quantity, boolean infiniteAvailable, ArrayList<String> tags, String imagePath) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = Date.from(Instant.now());
@@ -84,11 +90,13 @@ public class Listing implements Serializable {
         this.isPublished = true;
         this.isAcceptingCash = true;
         this.isTradable = false;
+        this.isArchived = false;
         this.previousBuyers = new ArrayList<>();
         this.tags = tags;
+        this.imagePath = imagePath;
     }
     //Seller information comes from a User object
-    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, User user, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, ArrayList<UUID> previousBuyers, ArrayList<String> tags) {
+    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, User user, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, boolean archived, ArrayList<UUID> previousBuyers, ArrayList<String> tags, String imagePath) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = listingTime;
@@ -102,8 +110,10 @@ public class Listing implements Serializable {
         this.isPublished = published;
         this.isAcceptingCash = acceptingCash;
         this.isTradable = tradable;
+        this.isArchived = archived;
         this.previousBuyers = previousBuyers;
         this.tags = tags;
+        this.imagePath = imagePath;
     }
     /**
      * Used by the {@code ListingWrapper} class to turn the base64-encoded string back into a {@code Listing}, using an {@code ObjectInputStream}, {@code ByteArrayInputStream}, and the {@code Base64.Decoder} class.
@@ -152,6 +162,7 @@ public class Listing implements Serializable {
     public boolean getIsPublished() { return this.isPublished; }
     public boolean getIsAcceptingCash() { return this.isAcceptingCash; }
     public boolean getIsTradable() { return this.isTradable; }
+    public boolean getIsArchived() { return this.isArchived; }
     public ArrayList<UUID> getPreviousBuyers() { return this.previousBuyers; }
     public ArrayList<String> getTags() { return this.tags; }
     public void setTitle (String title) { this.title = title; }
@@ -164,6 +175,8 @@ public class Listing implements Serializable {
     public void toggleIsPublished() { this.isPublished = !this.isPublished; }
     public void toggleIsAcceptingCash() { this.isAcceptingCash = !this.isAcceptingCash; }
     public void toggleIsTradable() { this.isTradable = !this.isTradable; }
+    public void toggleIsArchived() { this.isArchived = !this.isArchived; }
     public void addPreviousBuyer (UUID previousBuyer) { this.previousBuyers.add(previousBuyer); }
     public void setTags (ArrayList<String> tags) { this.tags = tags; }
+    public String getImagePath(){return imagePath;}
 }

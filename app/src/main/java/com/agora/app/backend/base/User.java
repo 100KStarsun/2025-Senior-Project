@@ -2,7 +2,6 @@ package com.agora.app.backend.base;
 
 
 import com.agora.app.backend.lambda.LambdaHandler;
-import kotlin.jvm.Transient;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,7 +11,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.EnumMap;
+import java.util.Locale;
+import java.util.TreeMap;
+import java.util.UUID;
+import java.util.HashMap;
+import java.util.Collections;
 import java.security.SecureRandom;
 
 
@@ -39,6 +47,7 @@ public class User implements Serializable {
     private transient HashMap<String, String> chats; // key is the username of the other person, the ArrayList is a list of `chatID`s that are in the db, transient so not in db
     private transient HashMap<String, Chat> chatObjects; // this is not going to be fully loaded when a User is grabbed, also transient so not stored in db - {otherUsername: ChatObject}
     private transient SecureRandom rng = new SecureRandom(); // transient so not stored in the db
+    private ArrayList<Boolean> userPreferences;
 
     public static final Locale locale = Locale.ENGLISH;
 
@@ -63,6 +72,8 @@ public class User implements Serializable {
         this.mutedUsers = new ArrayList<>();
         this.blockedUsers = new ArrayList<>();
         this.chatObjects = new HashMap<>();
+        this.userPreferences = new ArrayList<>();
+        Collections.fill(userPreferences, false);
     }
 
     /**
@@ -90,6 +101,8 @@ public class User implements Serializable {
         try (ByteArrayInputStream bytesIn = new ByteArrayInputStream(decodedBytes); ObjectInputStream objectIn = new ObjectInputStream(bytesIn)) {
             return (User) objectIn.readObject();
         } catch (IOException | ClassNotFoundException ex) {
+            System.err.println("Exception Decoding User");
+            System.err.println(ex.getMessage());
             ex.printStackTrace();
         }
         return null;
@@ -193,4 +206,8 @@ public class User implements Serializable {
     public HashMap<String, Chat> getChatObjects () {
         return this.chatObjects;
     }
+
+    public void setPreferences (ArrayList<Boolean> preferences) { this.userPreferences = preferences;}
+
+    public ArrayList<Boolean> getPreferences() { return this.userPreferences; }
 }

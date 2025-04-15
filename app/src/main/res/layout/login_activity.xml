@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:autofillHints="password"
-        android:inputType="text"
+        android:inputType="textPassword"
         android:hint="Password"
         android:textColorHint="?attr/colorOnBackground"
         android:textColor="?attr/colorOnBackground"/>

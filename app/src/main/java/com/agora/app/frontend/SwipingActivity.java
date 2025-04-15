@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Button;
+import com.agora.app.R;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -35,35 +38,45 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     private CardStackLayoutManager layoutManager;
     private SwipingView swipingView;
     private List<Listing> listings;
-    //private List<Listing> savedListings;
+    private List<Listing> savedListings;
     private Set<String> swipedCards;
+    private String username;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swiping);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        username = getIntent().getStringExtra("username");
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
+
+        navBar.setSelectedItemId(R.id.nav_swiping);
 
         // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_messaging) {
-                startActivity(new Intent(this, MessagingActivity.class));
+                Intent intent = new Intent(this, MessagingActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
-                startActivity(new Intent(this, MarketplaceActivity.class));
+                Intent intent = new Intent(this, MarketplaceActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_swiping) {
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
-                startActivity(new Intent(this, UserInfoActivity.class));
+                Intent intent = new Intent(this, UserInfoActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             return false;

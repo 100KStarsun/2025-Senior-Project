@@ -1,6 +1,7 @@
 package com.agora.app;
 
 import com.agora.app.backend.LoginHandler;
+import com.agora.app.backend.RegistrationHandler;
 import com.agora.app.backend.LoginException;
 import com.agora.app.backend.base.Chat;
 import com.agora.app.backend.base.Image;
