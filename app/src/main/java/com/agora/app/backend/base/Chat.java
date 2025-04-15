@@ -1,12 +1,7 @@
 package com.agora.app.backend.base;
 
-import androidx.annotation.NonNull;
-import com.agora.app.backend.Session;
-import com.agora.app.backend.lambda.LambdaHandler;
-import org.jetbrains.annotations.NotNull;
+import com.agora.app.backend.AppSession;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -81,13 +76,13 @@ public class Chat implements Serializable, Comparable<Chat> {
 
     // Chat.sendMessage("abc123", "hi Alice, it's Bob!");
     public static boolean sendMessage (String toUsername, String message) {
-        Chat currentChat = Session.currentUser.getChatObject(toUsername);
+        Chat currentChat = AppSession.currentUser.getChatObject(toUsername);
         return currentChat.safeSendMessage(toUsername, message);
     }
 
     private boolean safeSendMessage (String toUsername, String message) {
-        boolean didAddMessage = this.addMessage(message, Session.currentUser);
-        Session.ws.sendText(getSendChatMessage(toUsername, this.getLatestMessage().toBase64String()));
+        boolean didAddMessage = this.addMessage(message, AppSession.currentUser);
+        AppSession.ws.sendText(getSendChatMessage(toUsername, this.getLatestMessage().toBase64String()));
         return didAddMessage;
 
     }

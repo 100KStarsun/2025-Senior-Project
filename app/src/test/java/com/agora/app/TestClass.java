@@ -1,12 +1,9 @@
 package com.agora.app;
 
 import com.agora.app.backend.LoginHandler;
-import com.agora.app.backend.RegistrationHandler;
 import com.agora.app.backend.LoginException;
-import com.agora.app.backend.base.Chat;
 import com.agora.app.backend.base.Image;
 import com.agora.app.backend.base.ImageChunk;
-import com.agora.app.backend.base.Message;
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.PaymentMethods;
 import com.agora.app.backend.base.User;
@@ -14,9 +11,7 @@ import com.agora.app.backend.lambda.DynamoTables;
 import com.agora.app.backend.lambda.KeyNotFoundException;
 import com.agora.app.backend.lambda.LambdaHandler;
 import com.agora.app.backend.lambda.Operations;
-import com.agora.app.backend.Session;
-import com.neovisionaries.ws.client.WebSocket;
-import com.neovisionaries.ws.client.WebSocketException;
+import com.agora.app.backend.AppSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -30,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
 
@@ -286,7 +280,7 @@ public class TestClass {
         return true;
     }
 
-    //@Test
+    @Test
     public void testBreakingAndReconstructingImages () throws IOException {
         boolean extraDebugInfo = false;
         ArrayList<String> imageEquals = new ArrayList<>();
@@ -310,7 +304,7 @@ public class TestClass {
         assert !imageEquals.contains("false");
     }
 
-    //@Test
+    @Test
     public void testSendingImageData () throws IOException {
         ArrayList<Image> images = new ArrayList<>();
         for (String imgName : imageIDs.keySet()) {
@@ -320,7 +314,7 @@ public class TestClass {
         assert true;
     }
 
-    //@Test
+    @Test
     public void testGettingImageData () throws IOException {
         HashMap<String, Image> imagesHashMap = LambdaHandler.getImages(imageIDs.values().toArray(new String[imageIDs.size()]));
         ArrayList<String> equalImages = new ArrayList<>();
@@ -333,7 +327,7 @@ public class TestClass {
         assert !equalImages.contains("false");
     }
 
-    //@Test
+    @Test
     public void testScanImageChunks () throws IOException, JSONException {
         HashMap<String, ImageChunk> imageChunkHashMap = LambdaHandler.scanImageChunks();
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "imageChunks.json");
@@ -345,17 +339,7 @@ public class TestClass {
         fw.close();
     }
 
-    //@Test
-    public void testWebSockets () throws IOException, WebSocketException {
-        User noah = LambdaHandler.getUsers(new String[]{"nrm98"}).get("nrm98");
-        Session session = new Session(noah);
-        WebSocket ws = Session.ws;
-        ws.connect();
-        ws.sendText("{\"action\":\"sendmessage\",\"to\":\"lrl47\",\"message\":\"hi levi! From noah :)\"}");
-        ws.disconnect();
-    }
-
-    //@Test
+    @Test
     public void testScanChats () throws IOException, JSONException {
 //        User levi = LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47");
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "scanChatResponse.txt");
@@ -364,18 +348,18 @@ public class TestClass {
     }
     @Test
     public void testChats () throws IOException {
-        Session session = new Session(LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47"));
+        AppSession appSession = new AppSession(LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47"));
 //        Chat.sendMessage("nrm98","message 01/02 " + System.currentTimeMillis());
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lrl47-nrm98-chat.txt");
-        fw.write(Session.currentUser.getChatObject("nrm98").toString());
+        fw.write(AppSession.currentUser.getChatObject("nrm98").toString());
         fw.close();
     }
 
     @Test
     public void testOfflineMessages () throws IOException {
-        Session session = new Session(LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47"));
+        AppSession appSession = new AppSession(LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47"));
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lrl47-msc135-chat.txt");
-        fw.write(Session.currentUser.getChatObject("msc135").toString());
+        fw.write(AppSession.currentUser.getChatObject("msc135").toString());
         fw.close();
 
     }

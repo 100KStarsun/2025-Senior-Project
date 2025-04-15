@@ -1,8 +1,7 @@
 package com.agora.app.backend.lambda;
 
-import com.agora.app.backend.Session;
+import com.agora.app.backend.AppSession;
 import com.agora.app.backend.base.Chat;
-import com.agora.app.backend.lambda.CognitoAuth;
 import com.agora.app.backend.base.Image;
 import com.agora.app.backend.base.ImageChunk;
 import com.agora.app.backend.base.Message;
@@ -21,13 +20,11 @@ import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.TreeMap;
 
 public class LambdaHandler {
@@ -214,7 +211,7 @@ public class LambdaHandler {
                 fw.close();
             } catch (IOException ex) {}
         }
-        HashMap<String, Chat> chats = Chat.makeChatsFromMessageBlocks(map, Session.currentUser.getUsername());
+        HashMap<String, Chat> chats = Chat.makeChatsFromMessageBlocks(map, AppSession.currentUser.getUsername());
         if (writeOutputs) {
             try {
                 FileWriter fw = new FileWriter(homeDir + agoraTempDir + "chatsBuilt.txt");
@@ -446,10 +443,10 @@ public class LambdaHandler {
                     String containsKey = data.get(table).keySet().iterator().next();
                     String filterExpression = "contains(" + table.partitionKeyName + ",:key)";
                     JSONObject expressionAttributeValues = buildSingleKeyJSON(":key", containsKey);
-                    jsonObj.put("TableName", table.tableName);
                     jsonObj.put("FilterExpression", filterExpression);
                     jsonObj.put("ExpressionAttributeValues", expressionAttributeValues);
                 }
+                jsonObj.put("TableName", table.tableName);
                 jsonObj.put("ConsistentRead", true);
 
             } catch (JSONException ex) {
