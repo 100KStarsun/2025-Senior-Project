@@ -43,12 +43,16 @@
         android:id="@+id/button_select_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Select Image"/>
+        android:text="Select Image"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/save_listing"
-        android:text="Save"/>
+        android:text="Save"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 </LinearLayout>

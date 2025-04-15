@@ -38,7 +38,8 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="#003071">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -100,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:text="User Name"
                         android:textColor="?attr/colorOnBackground"
-                        android:textSize="15dp" />
+                        android:textSize="20dp" />
 
                     <TextView
                         android:id="@+id/textCaseId"

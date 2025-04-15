@@ -6,6 +6,7 @@ import com.agora.app.R;
 import com.agora.app.backend.lambda.LambdaHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.OnBackPressedCallback;
@@ -122,6 +123,8 @@ public class UserInfoActivity extends AppCompatActivity {
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
+        navBar.setSelectedItemId(R.id.nav_user_info);
+
         // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -164,6 +167,10 @@ public class UserInfoActivity extends AppCompatActivity {
 
         // Synchronize the toggle's state with the linked DrawerLayout
         toggle.syncState();
+
+        toggle.getDrawerArrowDrawable().setColor(Color.parseColor("#003071"));
+        toolbar.setBackgroundColor(Color.parseColor("#FFFFFF")); // white
+
 
         // Set a listener for when an item in the NavigationView is selected
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
