@@ -100,7 +100,7 @@
                         android:layout_height="wrap_content"
                         android:text="User Name"
                         android:textColor="?attr/colorOnBackground"
-                        android:textSize="15dp" />
+                        android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="match_parent"
