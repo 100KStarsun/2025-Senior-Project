@@ -2,6 +2,7 @@ package com.agora.app.frontend;
 import com.agora.app.backend.base.Listing;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,13 +45,14 @@ public class ExpandedListingActivity extends AppCompatActivity {
         tag3TextView = findViewById(R.id.expanded_listing_tag3);
         comma1 = findViewById(R.id.comma1); 
         comma2 = findViewById(R.id.comma2);
+        Button backButton = findViewById(R.id.buttonMarketplace);
 
         // Get the data passed from the previous activity
         String title = getIntent().getStringExtra("title");
         String description = getIntent().getStringExtra("description");
         float price = getIntent().getFloatExtra("price", 0.0f); 
         String imagePath = getIntent().getStringExtra("image");
-        ArrayList<String> tags = getIntent().getStringArrayListExtra("tags"); 
+        ArrayList<String> tags = getIntent().getStringArrayListExtra("tags");
 
         // Set the values to the respective views
         titleTextView.setText(title);
@@ -73,5 +75,9 @@ public class ExpandedListingActivity extends AppCompatActivity {
             comma1.setVisibility(tags.size() == 2 ? View.VISIBLE : View.GONE);
             comma2.setVisibility(tags.size() == 3 ? View.VISIBLE : View.GONE);
         }
+
+        backButton.setOnClickListener(v -> {
+            finish();
+        });
     }
 }

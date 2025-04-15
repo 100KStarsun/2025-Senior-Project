@@ -81,8 +81,8 @@ public class UserInfoActivity extends AppCompatActivity {
     private EditText imagePathInput;
     private ImageView image = null;
     private String imagePath = null;  // Add this line at the top of your activity class
-    private File imageFile; 
-    private Image imageObject; 
+    private File imageFile;
+    private Image imageObject;
     private String username;
     private TextView textUsername;
     private TextView textCaseId;
@@ -212,9 +212,17 @@ public class UserInfoActivity extends AppCompatActivity {
 
         // listings scroller
         // finds and displays listing view on page
+        List<Listing> activeListings = new ArrayList<>();
+        for (Listing listing : listings) {
+            if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                activeListings.add(listing);
+            }
+        }
+
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        view = new ListingView(listings, false);
+        //view = new ListingView(listings, false);
+        view = new ListingView(activeListings, false, this);
         recyclerView.setAdapter(view);
 
         // creates button for ability to add listing
@@ -281,14 +289,16 @@ public class UserInfoActivity extends AppCompatActivity {
             if(!title.isEmpty() && !description.isEmpty()) {
                 UUID uuid = UUID.randomUUID();
                 String displayName = "temp"; 
-                String listingUsername = username; 
+                String listingUsername = username;
                 String type = "default"; 
 
 
                 Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
 
                 ListingManager.getInstance().addListing(newListing);
-                view.notifyItemInserted(listings.size() - 1);
+                //view.notifyItemInserted(listings.size() - 1);
+                view.notifyItemInserted(view.getItemCount() - 1);
+                refreshListings();
                 dialog.dismiss();
                 new ListingSaveTask().execute(newListing.getUUID().toString(), newListing.toBase64String());
             }
@@ -299,6 +309,16 @@ public class UserInfoActivity extends AppCompatActivity {
         private void openGallery() {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerLauncher.launch(intent);
+        }
+
+        void refreshListings() {
+            List<Listing> activeListings = new ArrayList<>();
+            for (Listing listing : listings) {
+                if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                    activeListings.add(listing);
+                }
+            }
+            view.updateListings(activeListings);
         }
     
         /**
@@ -403,6 +423,7 @@ public class UserInfoActivity extends AppCompatActivity {
             }
             view.notifyDataSetChanged();
         }
+
     }
 }
 

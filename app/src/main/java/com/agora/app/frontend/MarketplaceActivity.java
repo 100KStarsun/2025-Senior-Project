@@ -163,26 +163,13 @@ public class MarketplaceActivity extends AppCompatActivity {
         }
 
         for (Listing listing : listings) {
-            boolean searchCriteria = search.isEmpty() || listing.getTitle().toLowerCase().contains(search.toLowerCase());
+            boolean searchCriteria = textSearch(listing, search);
             boolean priceCriteria = listing.getPrice() >= minPrice && listing.getPrice() <= maxPrice;
 
             if (searchCriteria && priceCriteria) {
                 filteredListings.add(listing);
             }
         }
-
-        /*
-        if (search.isEmpty()) {
-            filteredListings.addAll(listings);
-        }
-        else {
-            for (Listing listing : listings) {
-                if (listing.getTitle().toLowerCase().contains(search.toLowerCase())) {
-                    filteredListings.add(listing);
-                }
-            }
-        }
-         */
 
         view.notifyDataSetChanged();
         View noListings = findViewById(R.id.no_listings);
@@ -204,5 +191,22 @@ public class MarketplaceActivity extends AppCompatActivity {
             return auto;
         }
         return Float.parseFloat(input);
+    }
+
+    private boolean textSearch(Listing listing, String text) {
+        if (text.isEmpty()) {
+            return true;
+        }
+        String search = text.toLowerCase();
+        boolean inTitle = listing.getTitle().toLowerCase().contains(search);
+        boolean inDescription = listing.getDescription().toLowerCase().contains(search);
+        boolean inTags = false;
+        for (String tag : listing.getTags()) {
+            if (tag.toLowerCase().contains(search)) {
+                inTags = true;
+                break;
+            }
+        }
+        return inTitle || inDescription || inTags;
     }
 }
