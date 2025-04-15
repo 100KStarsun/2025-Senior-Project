@@ -2,13 +2,17 @@ package com.agora.app.backend.base;
 
 import androidx.annotation.NonNull;
 import com.agora.app.backend.Session;
+import com.agora.app.backend.lambda.LambdaHandler;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 public class Chat implements Serializable, Comparable<Chat> {
@@ -47,8 +51,16 @@ public class Chat implements Serializable, Comparable<Chat> {
         return this.id.split("_")[0];
     }
 
+    public String getId () {
+        return this.id;
+    }
+
     private static String getSendChatMessage (String toUsername, String message) {
         return "{\"action\":\"sendmessage\",\"to\":\"" + toUsername + "\",\"message\":\"" + message + "\"}";
+    }
+
+    public Message getLatestMessage () {
+        return this.messageBlocks.get(messageBlocks.size()-1).getLastMessage();
     }
 
     // if this returns true then a new message block was created
@@ -74,8 +86,10 @@ public class Chat implements Serializable, Comparable<Chat> {
     }
 
     private boolean safeSendMessage (String toUsername, String message) {
-        Session.ws.sendText(getSendChatMessage(toUsername, message));
-        return this.addMessage(message, Session.currentUser);
+        boolean didAddMessage = this.addMessage(message, Session.currentUser);
+        Session.ws.sendText(getSendChatMessage(toUsername, this.getLatestMessage().toBase64String()));
+        return didAddMessage;
+
     }
 
     public MessageBlock getLastMessageBlock () {
@@ -89,10 +103,10 @@ public class Chat implements Serializable, Comparable<Chat> {
 
     public static String[] getBlockIDsFromID (String id) {
         String[] strArr = id.split("_");
-        int count = Integer.parseInt(strArr[2]);
+        int count = Integer.parseInt(strArr[2]) + 1;
         String[] blockIDs = new String[count];
         DecimalFormat formatter = new DecimalFormat("0000");
-        for (int i = 0; i <= count; i++) {
+        for (int i = 0; i < count; i++) {
             blockIDs[i] = strArr[0] + "_" + strArr[1] + "_" + formatter.format(i);
         }
         return blockIDs;
@@ -102,19 +116,32 @@ public class Chat implements Serializable, Comparable<Chat> {
         HashMap<String, Chat> chats = new HashMap<>();
         String[] currentNames = new String[2];
         ArrayList<MessageBlock> blocksList = new ArrayList<>();
-        for (String id : blocks.keySet()) {
+        Iterator<String> iter = blocks.keySet().iterator();
+        String prevChatID = "";
+        while (iter.hasNext()) {
+            String id = iter.next();
             String[] idParts = id.split("_");
+            if (currentNames[0] == null && currentNames[1] == null) {
+                currentNames[0] = idParts[0];
+                currentNames[1] = idParts[1];
+            }
             if (!currentNames[0].equals(idParts[0]) && !currentNames[1].equals(idParts[1])) {
-                String chatID = currentNames[0] + "_" + currentNames[1] + "_" + new DecimalFormat("0000").format(blocksList.size() - 1);
+                Chat tempChat = new Chat(prevChatID, blocksList);
                 String otherUsername = currentNames[0].equals(currentUsername) ? currentNames[1] : currentNames[0];
-                Chat tempChat = new Chat(chatID, blocksList);
                 chats.put(otherUsername, tempChat);
                 blocksList = new ArrayList<>();
+                blocksList.add(blocks.get(id));
                 currentNames[0] = idParts[0];
                 currentNames[1] = idParts[1];
             } else {
                 blocksList.add(blocks.get(id));
             }
+            if (!iter.hasNext()) {
+                Chat tempChat = new Chat(id, blocksList);
+                String otherUsername = idParts[0].equals(currentUsername) ? idParts[1] : idParts[0];
+                chats.put(otherUsername, tempChat);
+            }
+            prevChatID = id;
         }
         return chats;
     }
@@ -136,5 +163,21 @@ public class Chat implements Serializable, Comparable<Chat> {
             correctList.add(messages.get(i));
         }
         return correctList;
+    }
+
+
+
+
+    @Override
+    public String toString () {
+        ArrayList<Message> messages = this.getAllMessagesOldestToNewest();
+        String str = "-----Start of chat between " + this.username1 + " and " + this.username2 + "-----\n";
+        str += "Users: " + this.username1 + ", " + this.username2 + "\n";
+        str += "Number of messages: " + messages.size() + "\n";
+        for (Message msg : messages) {
+            str += "From: " + (msg.isFromFirst() ? this.username1 : this.username2) + " | At: " + msg.timestamp() + "\n\t" + msg.text() + "\n\n";
+        }
+        str += "-----End of chat between " + this.username1 + " and " + this.username2 + "-----";
+        return str;
     }
 }

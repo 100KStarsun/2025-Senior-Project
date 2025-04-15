@@ -52,4 +52,14 @@ public class MessageBlock {
 
     public ArrayList<Message> getMessages () { return this.messages; }
     public int getNumMessages () { return this.numMessages; }
+
+    @Override
+    public String toString () {
+        String str = "\n-----\n";
+        for (Message msg : this.messages) {
+            str += "From: " + (msg.isFromFirst() ? "2" : "2") + " | At: " + msg.timestamp() + "\n\t" + msg.text() + "\n\n";
+        }
+        str += "-----\n";
+        return str;
+    }
 }

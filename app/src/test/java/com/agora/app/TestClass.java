@@ -2,6 +2,7 @@ package com.agora.app;
 
 import com.agora.app.backend.LoginHandler;
 import com.agora.app.backend.LoginException;
+import com.agora.app.backend.base.Chat;
 import com.agora.app.backend.base.Image;
 import com.agora.app.backend.base.ImageChunk;
 import com.agora.app.backend.base.Message;
@@ -331,7 +332,7 @@ public class TestClass {
         assert !equalImages.contains("false");
     }
 
-    @Test
+    //@Test
     public void testScanImageChunks () throws IOException, JSONException {
         HashMap<String, ImageChunk> imageChunkHashMap = LambdaHandler.scanImageChunks();
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "imageChunks.json");
@@ -353,11 +354,28 @@ public class TestClass {
         ws.disconnect();
     }
 
-    @Test
+    //@Test
     public void testScanChats () throws IOException, JSONException {
 //        User levi = LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47");
         FileWriter fw = new FileWriter(homeDir + agoraTempDir + "scanChatResponse.txt");
         fw.write(LambdaHandler.scanChats("lrl47").toString());
         fw.close();
+    }
+    @Test
+    public void testChats () throws IOException {
+        Session session = new Session(LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47"));
+//        Chat.sendMessage("nrm98","message 01/02 " + System.currentTimeMillis());
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lrl47-nrm98-chat.txt");
+        fw.write(Session.currentUser.getChatObject("nrm98").toString());
+        fw.close();
+    }
+
+    @Test
+    public void testOfflineMessages () throws IOException {
+        Session session = new Session(LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47"));
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lrl47-msc135-chat.txt");
+        fw.write(Session.currentUser.getChatObject("msc135").toString());
+        fw.close();
+
     }
 }

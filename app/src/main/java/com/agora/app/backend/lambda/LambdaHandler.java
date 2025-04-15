@@ -18,6 +18,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.InvokeRequest;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
@@ -31,7 +32,7 @@ public class LambdaHandler {
     private static final String dynamoDBInteractionFunctionName = "dynamoInteractions";
     public static final String homeDir = System.getProperty("user.home");
     public static final String agoraTempDir = "\\.agora\\";
-    public static final boolean writeOutputs = true;
+    public static final boolean writeOutputs = false;
     private static final Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
     private static LambdaClient awsLambda = LambdaClient.builder()
                                                         .httpClient(UrlConnectionHttpClient.create())
@@ -183,7 +184,8 @@ public class LambdaHandler {
         String[] username = new String[1];
         username[0] = currentUsername;
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.CHATS, username, new String[0]);
-        return getChatsFromStruct(jsonToBase64(invoke(payload, Operations.SCAN)), currentUsername);
+        HashMap<String, String> chatMetas = getChatsFromStruct(jsonToBase64(invoke(payload, Operations.SCAN)), currentUsername);
+        return chatMetas;
     }
 
     public static HashMap<String, Chat> getChats (String[] chatIDs) {
@@ -198,22 +200,24 @@ public class LambdaHandler {
         }
         payload.put(DynamoTables.MESSAGE_BLOCKS, blocks);
         JSONObject request = makeRequestBody(payload, Operations.BATCH_GET);
-        if (writeOutputs) {
-            try {
-                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "msgBlocks_get.json");
-                fw.write(request.toString(4));
-                fw.close();
-            } catch (IOException | JSONException ex) {}
-        }
         JSONObject response = invoke(payload, Operations.BATCH_GET);
+        TreeMap<String, MessageBlock> map = jsonToMessageBlocks(response);
         if (writeOutputs) {
             try {
-                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "msgBlocks_get_response.json");
-                fw.write(response.toString(4));
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "messageBlockChats.txt");
+                fw.write(map.toString());
                 fw.close();
-            } catch (IOException | JSONException ex) {}
+            } catch (IOException ex) {}
         }
-        return Chat.makeChatsFromMessageBlocks(jsonToMessageBlocks(response), Session.currentUser.getUsername());
+        HashMap<String, Chat> chats = Chat.makeChatsFromMessageBlocks(map, Session.currentUser.getUsername());
+        if (writeOutputs) {
+            try {
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "chatsBuilt.txt");
+                fw.write(chats.toString());
+                fw.close();
+            } catch (IOException ex) {}
+        }
+        return chats;
     }
 
     public static HashMap<String, Image> getImages (String[] imageIDs) {
@@ -362,6 +366,9 @@ public class LambdaHandler {
 
     public static HashMap<String, String> getChatsFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct, String currentUsername) {
         HashMap<String, String> data = struct.get(DynamoTables.CHATS);
+        if (data == null) { // this means there are no chats for that user
+            return null;
+        }
         if (data.keySet().isEmpty()) {
             return null;
         }
@@ -369,6 +376,13 @@ public class LambdaHandler {
         for (String key : data.keySet()) {
             String[] chatIDParts = key.split("_");
             chats.put(chatIDParts[0].equals(currentUsername) ? chatIDParts[1] : chatIDParts[0], key);
+        }
+        if (writeOutputs) {
+            try {
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "ChatMetasDecoded.txt");
+                fw.write(chats.toString());
+                fw.close();
+            } catch (IOException ex) {}
         }
         return chats;
     }
@@ -417,26 +431,23 @@ public class LambdaHandler {
                 throw new IllegalArgumentException("Scanning is only allowed for one table at a time, too many tables specified");
             }
             if (data.size() < 1) {
-                throw new IllegalArgumentException("Table name is required for scan operation. Please specify exactly one table to scan");
+                throw new IllegalArgumentException("Table name is  required for scan operation. Please specify exactly one table to scan");
             }
             DynamoTables table = data.keySet().iterator().next();
             try {
-                jsonObj.put("TableName", table.tableName);
-                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "looking " + System.currentTimeMillis() + ".txt");
-                fw.write(data.get(table).keySet().toString());
-                fw.close();
                 if (data.get(table).keySet().iterator().hasNext()) {
                     // if there is a string inside the hashmap for this table, then that is the key we are looking for in the scan operation
                     // specifically, if the key we provided is contained within any primary key of the table we're looking in
                     String containsKey = data.get(table).keySet().iterator().next();
                     String filterExpression = "contains(" + table.partitionKeyName + ",:key)";
                     JSONObject expressionAttributeValues = buildSingleKeyJSON(":key", containsKey);
+                    jsonObj.put("TableName", table.tableName);
                     jsonObj.put("FilterExpression", filterExpression);
                     jsonObj.put("ExpressionAttributeValues", expressionAttributeValues);
-                    jsonObj.put("ConsistentRead", true);
                 }
+                jsonObj.put("ConsistentRead", true);
 
-            } catch (JSONException | IOException ex) {
+            } catch (JSONException ex) {
                 throw new IllegalStateException();
             }
         } else if (data.size() == 1 && data.get(data.keySet().iterator().next()).size() == 1 && operation.isSingleOp) {
@@ -555,6 +566,13 @@ public class LambdaHandler {
             } catch (JSONException ex) {
                 throw new IllegalStateException("Didn't get valid JSON from AWS Lambda");
             }
+            if (writeOutputs) {
+                try {
+                    FileWriter fw = new FileWriter(homeDir + agoraTempDir + "ImmediateResponse" + System.currentTimeMillis() + ".json");
+                    fw.write(localResponse.toString(4));
+                    fw.close();
+                } catch (IOException | JSONException ex) {}
+            }
             try {
                 localResponse = new JSONObject(localResponse.optString("body"));
             } catch (JSONException ex) {
@@ -621,7 +639,6 @@ public class LambdaHandler {
 
         if (writeOutputs) {
             try {
-                Random randy = new Random();
                 FileWriter fw = new FileWriter(homeDir + agoraTempDir + "trueResponse" + System.currentTimeMillis() + ".json");
                 fw.write(response.toString(4));
                 fw.close();
@@ -660,19 +677,34 @@ public class LambdaHandler {
             Iterator<String> iter = obj.keys();
             String tableName = obj.keys().next();
             JSONArray tableResponses = obj.getJSONArray(tableName);
+
             for (int i = 0; i < tableResponses.length(); i++) {
+
                 JSONObject entry = tableResponses.getJSONObject(i);
-                String id = entry.getString("id");
-                int numMessages = entry.getInt("numMessages");
+                String id = entry.getJSONObject("id").getString("S");
+                int numMessages = Integer.parseInt(entry.getJSONObject("numMessages").getString("N"));
                 JSONArray messageList = entry.getJSONObject("messages").getJSONArray("L");
                 String[] messageBase64s = new String[messageList.length()];
                 for (int j = 0; j < messageList.length(); j++) {
-                    messageBase64s[j] = (String)messageList.get(j);
+                    messageBase64s[j] = messageList.getJSONObject(j).getString("S");
                 }
-                blocks.put(id, new MessageBlock(messageBase64s));
+                MessageBlock mb = new MessageBlock();
+                for (String b64 : messageBase64s) {
+                    Message msg = Message.createFromBase64String(b64);
+                    mb.addMessage(msg);
+                }
+
+                blocks.put(id, mb);
             }
             return blocks;
         } catch (JSONException ex) {
+            if (writeOutputs) {
+                try {
+                    FileWriter fw = new FileWriter(homeDir + agoraTempDir + "failedJSONExtraction.json");
+                    fw.write(obj.toString(4));
+                    fw.close();
+                } catch (IOException | JSONException ex2) {}
+            }
             throw new IllegalStateException("JSONException: " + ex.getMessage(), ex.getCause());
         }
     }
