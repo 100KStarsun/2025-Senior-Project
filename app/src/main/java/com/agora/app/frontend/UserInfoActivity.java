@@ -326,8 +326,6 @@ public class UserInfoActivity extends AppCompatActivity {
         }
 
 
-        
-    }
 
     private class UserInfoTask extends AsyncTask<String, Void, User> {
         private String errorMessage = "";
