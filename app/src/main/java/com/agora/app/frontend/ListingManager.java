@@ -35,7 +35,7 @@ public class ListingManager {
         return listings;
     }
 
-    /*
+    
     public List<Listing> noPersonalListings(String username) {
         List<Listing> refinedList = new ArrayList<>();
         for (Listing listing : listings) {
@@ -45,6 +45,4 @@ public class ListingManager {
         }
         return refinedList;
     }
-        */
-
 }

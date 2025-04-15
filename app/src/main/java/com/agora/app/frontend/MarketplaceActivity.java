@@ -28,7 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  */
 public class MarketplaceActivity extends AppCompatActivity {
 
-    private List<Listing> listings = ListingManager.getInstance().getListings();
+    private List<Listing> listings;
     private ListingView view;
     private String username;
     private List<Listing> filteredListings;
@@ -44,6 +44,7 @@ public class MarketplaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_marketplace);
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
+        listings = ListingManager.getInstance().noPersonalListings(username);
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
