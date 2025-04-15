@@ -1,5 +1,6 @@
 package com.agora.app.frontend;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,10 +32,19 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
     private List<Listing> listings;
     private boolean useSaveButton;
+    private boolean isArchived = false;
+
+    private Context context;
 
     public ListingView(List<Listing> listings, boolean useSaveButton) {
         this.listings = listings;
         this.useSaveButton = useSaveButton;
+    }
+
+    public ListingView(List<Listing> listings, boolean useSaveButton, Context context) {
+        this.listings = listings;
+        this.useSaveButton = useSaveButton;
+        this.context = context;
     }
 
     @Override
@@ -76,7 +86,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
         holder.saveButton.setText(isSaved ? "Unsave" : "Save");
 
-        boolean isArchived = ArchivedListingsManager.getInstance().getArchivedListings().contains(listing);
+        isArchived = ArchivedListingsManager.getInstance().getArchivedListings().contains(listing);
         holder.archiveButton.setText(isArchived ? "Unarchive" : "Archive");
 
         if (useSaveButton) {
@@ -101,6 +111,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.deleteButton.setVisibility(View.VISIBLE);
             holder.deleteButton.setOnClickListener(v -> {
                 ListingManager.getInstance().removeListing(listing);
+                listings.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, listings.size());
             });
@@ -109,13 +120,18 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.archiveButton.setOnClickListener(v -> {
                 if (isArchived) {
                     ArchivedListingsManager.getInstance().removeSavedListing(listing);
-                    holder.saveButton.setText("Archive");
+                    ListingManager.getInstance().addListing(listing);
+                    holder.archiveButton.setText("Archive");
                     notifyItemChanged(holder.getAdapterPosition());
                 }
                 else {
                     ArchivedListingsManager.getInstance().addSavedListing(listing);
-                    holder.saveButton.setText("Unarchive");
+                    ListingManager.getInstance().removeListing(listing);
+                    holder.archiveButton.setText("Unarchive");
                     notifyItemChanged(holder.getAdapterPosition());
+                }
+                if (context instanceof UserInfoActivity) {
+                    ((UserInfoActivity) context).refreshListings();
                 }
             });
         }
@@ -148,5 +164,11 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             archiveButton = itemView.findViewById(R.id.archive_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
         }
+    }
+
+    public void updateListings(List<Listing> changes) {
+        this.listings.clear();
+        this.listings.addAll(changes);
+        notifyDataSetChanged();
     }
 }

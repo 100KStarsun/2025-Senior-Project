@@ -168,8 +168,8 @@ public class UserInfoActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        view = new ListingView(listings, false);
-        //view = new ListingView(activeListings, false);
+        //view = new ListingView(listings, false);
+        view = new ListingView(activeListings, false, this);
         recyclerView.setAdapter(view);
 
         // creates button for ability to add listing
@@ -242,8 +242,9 @@ public class UserInfoActivity extends AppCompatActivity {
 
                 Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
                 ListingManager.getInstance().addListing(newListing);
+                //view.notifyItemInserted(listings.size() - 1);
                 view.notifyItemInserted(view.getItemCount() - 1);
-                //view.notifyItemInserted(view.getItemCount() - 1);
+                refreshListings();
                 dialog.dismiss();
             }
         });
@@ -284,6 +285,16 @@ public class UserInfoActivity extends AppCompatActivity {
                 Log.e("Exception", e.getMessage());
             }
             return file.getPath();
+        }
+
+        void refreshListings() {
+            List<Listing> activeListings = new ArrayList<>();
+            for (Listing listing : listings) {
+                if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                    activeListings.add(listing);
+                }
+            }
+            view.updateListings(activeListings);
         }
         
     }

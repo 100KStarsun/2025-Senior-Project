@@ -105,31 +105,15 @@
         android:textSize="16sp"
         android:layout_marginTop="10dp"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="right">
-
         <!-- First Button (Back) aligned to bottom-right -->
         <Button
             android:id="@+id/buttonMarketplace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back"
+            android:layout_gravity="end"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true" />
-
-        <!-- Second Button (Save) positioned to the left of buttonMarketplace -->
-        <Button
-            android:id="@+id/buttonSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@id/buttonMarketplace"
-            android:layout_marginEnd="16dp"/>
-
-    </RelativeLayout>
 
     </LinearLayout>
 
