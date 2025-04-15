@@ -1,5 +1,6 @@
 package com.agora.app.frontend;
 import com.agora.app.backend.base.Listing;
+import com.agora.app.backend.base.Image;
 
 import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -68,6 +69,8 @@ public class UserInfoActivity extends AppCompatActivity {
     private EditText imagePathInput;
     private ImageView image = null;
     private String imagePath = null;  // Add this line at the top of your activity class
+    private File imageFile; 
+    private Image imageObject; 
 
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -75,7 +78,13 @@ public class UserInfoActivity extends AppCompatActivity {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 Uri selectedImageUri = result.getData().getData();
                 if (selectedImageUri != null) {
-                    imagePath = getRealPathFromURI(selectedImageUri, this);
+                    imagePath = getFileFromURI(selectedImageUri, this).getPath();
+                    imageFile = getFileFromURI(selectedImageUri, this);
+                    try {
+                        imageObject = new Image(imageFile);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     
                 }
             }
@@ -249,7 +258,7 @@ public class UserInfoActivity extends AppCompatActivity {
         /**
          * adapted from https://nobanhasan.medium.com/get-picked-image-actual-path-android-11-12-180d1fa12692
          */
-        private String getRealPathFromURI(Uri uri, Context context) {
+        private File getFileFromURI(Uri uri, Context context) {
             Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
@@ -274,8 +283,10 @@ public class UserInfoActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e("Exception", e.getMessage());
             }
-            return file.getPath();
+            return file;
         }
+
+
         
     }
 
