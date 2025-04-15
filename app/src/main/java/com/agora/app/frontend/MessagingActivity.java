@@ -12,11 +12,15 @@ import java.util.Objects;
  * @brief Activity for messaging between users.
  */
 public class MessagingActivity extends AppCompatActivity {
+
+    private String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_messaging);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        username = getIntent().getStringExtra("username");
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
@@ -29,15 +33,21 @@ public class MessagingActivity extends AppCompatActivity {
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
-                startActivity(new Intent(this, MarketplaceActivity.class));
+                Intent intent = new Intent(this, MarketplaceActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_swiping) {
-                startActivity(new Intent(this, SwipingActivity.class));
+                Intent intent = new Intent(this, SwipingActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
-                startActivity(new Intent(this, UserInfoActivity.class));
+                Intent intent = new Intent(this, UserInfoActivity.class);
+                intent.putExtra("username", username);
+                startActivity(intent);
                 return true;
             }
             return false;
