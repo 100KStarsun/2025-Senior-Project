@@ -159,9 +159,17 @@ public class UserInfoActivity extends AppCompatActivity {
 
         // listings scroller
         // finds and displays listing view on page
+        List<Listing> activeListings = new ArrayList<>();
+        for (Listing listing : listings) {
+            if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                activeListings.add(listing);
+            }
+        }
+
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         view = new ListingView(listings, false);
+        //view = new ListingView(activeListings, false);
         recyclerView.setAdapter(view);
 
         // creates button for ability to add listing
@@ -234,7 +242,8 @@ public class UserInfoActivity extends AppCompatActivity {
 
                 Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
                 ListingManager.getInstance().addListing(newListing);
-                view.notifyItemInserted(listings.size() - 1);
+                view.notifyItemInserted(view.getItemCount() - 1);
+                //view.notifyItemInserted(view.getItemCount() - 1);
                 dialog.dismiss();
             }
         });

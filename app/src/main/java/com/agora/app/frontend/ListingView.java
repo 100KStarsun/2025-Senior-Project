@@ -74,24 +74,50 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         v.getContext().startActivity(intent);
     });
         boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
-
         holder.saveButton.setText(isSaved ? "Unsave" : "Save");
+
+        boolean isArchived = ArchivedListingsManager.getInstance().getArchivedListings().contains(listing);
+        holder.archiveButton.setText(isArchived ? "Unarchive" : "Archive");
 
         if (useSaveButton) {
             holder.saveButton.setVisibility(View.VISIBLE);
+            holder.archiveButton.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.GONE);
             holder.saveButton.setOnClickListener(v -> {
                 if (isSaved) {
                     SavedListingsManager.getInstance().removeSavedListing(listing);
                     holder.saveButton.setText("Save");
+                    notifyItemChanged(holder.getAdapterPosition());
                 }
                 else {
                     SavedListingsManager.getInstance().addSavedListing(listing);
                     holder.saveButton.setText("Unsave");
+                    notifyItemChanged(holder.getAdapterPosition());
                 }
             });
         }
         else {
             holder.saveButton.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setOnClickListener(v -> {
+                ListingManager.getInstance().removeListing(listing);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, listings.size());
+            });
+
+            holder.archiveButton.setVisibility(View.VISIBLE);
+            holder.archiveButton.setOnClickListener(v -> {
+                if (isArchived) {
+                    ArchivedListingsManager.getInstance().removeSavedListing(listing);
+                    holder.saveButton.setText("Archive");
+                    notifyItemChanged(holder.getAdapterPosition());
+                }
+                else {
+                    ArchivedListingsManager.getInstance().addSavedListing(listing);
+                    holder.saveButton.setText("Unarchive");
+                    notifyItemChanged(holder.getAdapterPosition());
+                }
+            });
         }
 
     }
@@ -108,6 +134,8 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         TextView price;
 
         Button saveButton;
+        Button archiveButton;
+        Button deleteButton;
         ImageView imageView;
 
         public ViewHolder(View itemView) {
@@ -117,8 +145,8 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             price = itemView.findViewById(R.id.listing_price);
             imageView = itemView.findViewById(R.id.image);
             saveButton = itemView.findViewById(R.id.save_button);
-
-   
+            archiveButton = itemView.findViewById(R.id.archive_button);
+            deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }
 }
