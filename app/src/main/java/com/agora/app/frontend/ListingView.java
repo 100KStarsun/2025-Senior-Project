@@ -16,6 +16,13 @@ import android.content.Intent;
 import java.util.ArrayList;
 import android.widget.Button;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.content.Intent;
+import android.view.LayoutInflater;
+import android.widget.ImageView;
+
+
 /**
  * @class ListingView
  * @brief Adapter for displaying listings that a user has posted.
@@ -46,13 +53,23 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     holder.description.setText(listing.getDescription());
     holder.price.setText("$" + String.format("%.2f", listing.getPrice()));
 
+    String imagePath = listing.getImagePath();
+
+    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+        if (bitmap != null) {
+            holder.imageView.setImageBitmap(bitmap); 
+        } else {
+            // Fallback to a placeholder image if decoding failed
+            holder.imageView.setImageResource(R.drawable.ic_placeholder);
+        }
+
     // Set click listener for each listing card
     holder.itemView.setOnClickListener(v -> {
         Intent intent = new Intent(v.getContext(), ExpandedListingActivity.class);
         intent.putExtra("title", listing.getTitle());
         intent.putExtra("description", listing.getDescription());
         intent.putExtra("price", listing.getPrice());
-        intent.putExtra("image", R.drawable.ic_placeholder); 
+        intent.putExtra("image", imagePath); 
         intent.putStringArrayListExtra("tags", new ArrayList<String>(listing.getTags())); // pass tags as ArrayList
         v.getContext().startActivity(intent);
     });
@@ -89,15 +106,18 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         TextView title;
         TextView description;
         TextView price;
-        //LinearLayout expandedView; // The expanded view to show more details
+
         Button saveButton;
+        ImageView imageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.listing_title);
             description = itemView.findViewById(R.id.listing_description);
             price = itemView.findViewById(R.id.listing_price);
+            imageView = itemView.findViewById(R.id.image);
             saveButton = itemView.findViewById(R.id.save_button);
+
    
         }
     }

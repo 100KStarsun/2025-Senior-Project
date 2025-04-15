@@ -8,10 +8,9 @@
     android:background="@drawable/blue_border_rounded"
     android:layout_marginBottom="10dp">
     <ImageView
-        android:id="@+id/listing_image"
+        android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@drawable/ic_placeholder" 
         android:scaleType="centerCrop"
         android:contentDescription="Listing Image"/>
    
@@ -40,6 +39,8 @@
             android:layout_gravity="end"
             android:textColor="@android:color/holo_green_dark"
             android:layout_marginLeft="10dp"/>
+        
+        
 
     </LinearLayout>
         <TextView
