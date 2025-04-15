@@ -1,5 +1,7 @@
 package com.agora.app.backend.base;
 
+import com.agora.app.backend.AppSession;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,5 +34,10 @@ public record Message (String text, Date timestamp, boolean isFromFirst) impleme
             ex.printStackTrace();
         }
         return null;
+    }
+
+    public boolean isFromUs (String otherUsername) {
+        String chatID = AppSession.currentUser.getChatMetas().get(otherUsername);
+        return !(this.isFromFirst() ^ chatID.split("_")[0].equals(AppSession.currentUser.getUsername()));
     }
 }

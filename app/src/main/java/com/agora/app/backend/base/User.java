@@ -210,4 +210,12 @@ public class User implements Serializable {
     public void setPreferences (ArrayList<Boolean> preferences) { this.userPreferences = preferences;}
 
     public ArrayList<Boolean> getPreferences() { return this.userPreferences; }
+
+    public ArrayList<Message> getAllMessagesOldestToNewest (String otherUsername) {
+        return this.getChatObject(otherUsername).getAllMessagesOldestToNewest();
+    }
+
+    public ArrayList<Message> getAllMessagesNewestToOldest (String otherUsername) {
+        return this.getChatObject(otherUsername).getAllMessagesNewestToOldest();
+    }
 }
