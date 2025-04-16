@@ -115,8 +115,6 @@ public class UserInfoActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
         Objects.requireNonNull(getSupportActionBar()).hide();
         textUsername = findViewById(R.id.textUsername);
-        textCaseId = findViewById(R.id.textCaseId);
-        textTransactions = findViewById(R.id.textTransactions);
         new UserInfoTask().execute(username);
         new ListingRetrievalTask().execute();
 
