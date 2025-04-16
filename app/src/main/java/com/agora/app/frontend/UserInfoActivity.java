@@ -113,11 +113,12 @@ public class UserInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         username = getIntent().getStringExtra("username");
+        currentUser = getIntent().getSerializableExtra("userObj", User.class);
         Objects.requireNonNull(getSupportActionBar()).hide();
         textUsername = findViewById(R.id.textUsername);
         textCaseId = findViewById(R.id.textCaseId);
         textTransactions = findViewById(R.id.textTransactions);
-        new UserInfoTask().execute(username);
+        textUsername.setText(username);
         new ListingRetrievalTask().execute();
 
         // navigation bar routing section
@@ -132,16 +133,19 @@ public class UserInfoActivity extends AppCompatActivity {
             if (itemId == R.id.nav_messaging) {
                 Intent intent = new Intent(this, MessagingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_marketplace) {
                 Intent intent = new Intent(this, MarketplaceActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_swiping) {
                 Intent intent = new Intent(this, SwipingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_user_info) {
@@ -352,8 +356,8 @@ public class UserInfoActivity extends AppCompatActivity {
             return file;
         }
 
-
-
+    //This should now be dysfunctional, want to keep for now to make sure I dont need it
+    /*
     private class UserInfoTask extends AsyncTask<String, Void, User> {
         private String errorMessage = "";
         private String username;
@@ -375,8 +379,9 @@ public class UserInfoActivity extends AppCompatActivity {
                 Toast.makeText(UserInfoActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
             }
         }
-    }
+    } */
 
+    // No changes needed, doesn't involve user object
     private class ListingSaveTask extends AsyncTask<String, Void, Boolean> {
         private String errorMessage = "";
         @Override
@@ -399,6 +404,7 @@ public class UserInfoActivity extends AppCompatActivity {
         }
     }
 
+    // No changes needed, doesn't involve the user object
     private class ListingRetrievalTask extends AsyncTask<Void, Void, HashMap<String, Listing>> {
         @Override
         protected HashMap<String, Listing> doInBackground(Void... params) {

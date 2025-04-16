@@ -36,6 +36,7 @@ public class SavedPostsActivity extends AppCompatActivity {
         buttonUserInfo.setOnClickListener(v -> {
             Intent intent = new Intent(SavedPostsActivity.this, UserInfoActivity.class);
             intent.putExtra("username", currentUser.getUsername());
+            intent.putExtra("userObj", currentUser);
             startActivity(intent);
         });
 

@@ -3,6 +3,9 @@ package com.agora.app.frontend;
 import com.agora.app.R;
 import com.agora.app.backend.LoginException;
 import com.agora.app.backend.LoginHandler;
+import com.agora.app.backend.lambda.LambdaHandler;
+import com.agora.app.backend.AppSession;
+import com.agora.app.backend.base.User;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -63,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
      * login is carried out on a background thread in the doInBackground method
      * onPostExecute is carried out once background thread operation completes
      */
-    private class LoginTask extends AsyncTask<String, Void, Boolean> {
+    private class LoginTask extends AsyncTask<String, Void, User> {
         private String errorMessage = "";
         private String username;
         /**
@@ -74,13 +77,14 @@ public class LoginActivity extends AppCompatActivity {
          * @return        Boolean based on the success of login operation
          */
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected User doInBackground(String... params) {
             username = params[0];
             String password = params[1];
             try {
-                return LoginHandler.login(username, password);
+                LoginHandler.login(username, password);   // No boolean needed because if login fails LoginException will be thrown
+                return LambdaHandler.getUsers(new String[]{username}).get(username);
             } catch (LoginException e) {
-                return false;
+                return null;
             }
         }
 
@@ -91,11 +95,16 @@ public class LoginActivity extends AppCompatActivity {
          * @param result  Result of the login operation on the background thread
          */
         @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (result) {
+        protected void onPostExecute(User user) {
+            if (user != null) {
+                try {
+                    AppSession session = new AppSession(user);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", user);
                 startActivity(intent);
                 Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
             } else {

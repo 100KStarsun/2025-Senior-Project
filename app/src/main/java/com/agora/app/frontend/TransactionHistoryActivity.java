@@ -34,6 +34,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         buttonUserInfo.setOnClickListener(v -> {
             Intent intent = new Intent(TransactionHistoryActivity.this, UserInfoActivity.class);
             intent.putExtra("username", currentUser.getUsername());
+            intent.putExtra("userObj", currentUser);
             startActivity(intent);
         });
 
