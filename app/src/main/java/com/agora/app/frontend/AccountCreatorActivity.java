@@ -18,6 +18,8 @@ import java.security.NoSuchAlgorithmException;
 import org.json.JSONException;
 import android.util.Log;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.io.IOException;
 
 /**
@@ -132,11 +134,14 @@ public class AccountCreatorActivity extends AppCompatActivity {
          */
         protected void onPostExecute(User user) {
             if (user != null) {
-                try {
-                    AppSession session = new AppSession(user);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(() -> {
+                    try {
+                        AppSession session = new AppSession(user);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
                 Intent intent = new Intent(AccountCreatorActivity.this, UserInfoActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("userObj", user);

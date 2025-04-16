@@ -17,7 +17,10 @@ import android.widget.Toast;
 import android.util.Log;
 
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.security.NoSuchAlgorithmException;
+import com.agora.app.backend.lambda.KeyNotFoundException;
 import java.io.IOException;
 import org.json.JSONException;
 
@@ -84,6 +87,13 @@ public class LoginActivity extends AppCompatActivity {
                 LoginHandler.login(username, password);   // No boolean needed because if login fails LoginException will be thrown
                 return LambdaHandler.getUsers(new String[]{username}).get(username);
             } catch (LoginException e) {
+                Log.d("Login", "This mf password not right");
+                return null;
+            } catch (NullPointerException e) {
+                Log.d("Login", "Dat Bih Not there frfr");
+                return null;
+            } catch (KeyNotFoundException ex) {
+                Log.d("Login", "KeyNotFoundException");
                 return null;
             }
         }
@@ -97,11 +107,14 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(User user) {
             if (user != null) {
-                try {
-                    AppSession session = new AppSession(user);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(() -> {
+                    try {
+                        AppSession session = new AppSession(user);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
                 Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("userObj", user);
