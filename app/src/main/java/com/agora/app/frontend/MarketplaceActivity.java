@@ -154,17 +154,38 @@ public class MarketplaceActivity extends AppCompatActivity {
         float minPrice = parsePrice(minPriceInput, 0.0f);
         float maxPrice = parsePrice(maxPriceInput, Float.MAX_VALUE);
         boolean userPrefs = userPrefsCheck.isChecked();
+        Boolean[] filterPrefs = new Boolean[3];
+        if (userPrefs) {
+            filterPrefs = ListingManager.getInstance().getUserPrefs();
+        }
+        boolean furnitureBoolean = filterPrefs[2];
+        boolean householdBoolean = filterPrefs[3];
+        boolean apparelBoolean = filterPrefs[4];
 
         if (minPrice > maxPrice) {
             maxPriceInput.setError("The maximum is less than the minimum!");
             return;
         }
 
+        ArrayList<String> tags = new ArrayList<>();
         for (Listing listing : listings) {
             boolean searchCriteria = search.isEmpty() || listing.getTitle().toLowerCase().contains(search.toLowerCase());
             boolean priceCriteria = listing.getPrice() >= minPrice && listing.getPrice() <= maxPrice;
-
+            tags = listing.getTags();
             if (searchCriteria && priceCriteria) {
+                filteredListings.add(listing);
+            }
+            /*
+             * Gotta enforce that people are using correct tags, would be nice to have these fields align
+             * with checkboxes in posting but this should work regardless
+             */
+            if (furnitureBoolean && tags.contains("Furniture")) {
+                filteredListings.add(listing);
+            }
+            if (householdBoolean && tags.contains("Household")) {
+                filteredListings.add(listing);
+            }
+            if (apparelBoolean && tags.contains("Apparel")) {
                 filteredListings.add(listing);
             }
         }

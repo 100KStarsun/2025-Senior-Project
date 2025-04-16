@@ -11,6 +11,7 @@ public class ListingManager {
     private static ListingManager listingManager;
     private List<Listing> listings = new ArrayList<>();
     private String username;
+    private Boolean[] userPrefs = new Boolean[5];
 
     private ListingManager() {}
 
@@ -44,5 +45,17 @@ public class ListingManager {
             }
         }
         return refinedList;
+    }
+
+    public Boolean[] getUserPrefs(){
+        return userPrefs;
+    }
+
+    public void setUserPrefs(Boolean[] prefs) {
+        userPrefs[0] = prefs[0];   // Exchange Preference
+        userPrefs[1] = prefs[1];   // Cash Preference
+        userPrefs[2] = prefs[2];   // Furniture Preference
+        userPrefs[3] = prefs[3];   // Household Preference
+        userPrefs[4] = prefs[4];   // Apparel Preference
     }
 }

@@ -81,7 +81,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         });
 
         cardStackView = findViewById(R.id.listing_card_stack);
-        listings = new ArrayList<>(ListingManager.getInstance().getListings());
+        listings = new ArrayList<>(ListingManager.getInstance().noPersonalListings(username));
         //savedListings = new ArrayList<>();
         swipedCards = new HashSet<>();
         layoutManager = new CardStackLayoutManager(this, this);
