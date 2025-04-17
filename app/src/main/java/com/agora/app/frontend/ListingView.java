@@ -85,8 +85,8 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         intent.putStringArrayListExtra("tags", new ArrayList<String>(listing.getTags())); // pass tags as ArrayList
         v.getContext().startActivity(intent);
     });
-        boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
-        holder.saveButton.setText(isSaved ? "Unsave" : "Save");
+        //boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
+        //holder.saveButton.setText(isSaved ? "Unsave" : "Save");
 
         isArchived = ArchivedListingsManager.getInstance().getArchivedListings().contains(listing);
         holder.archiveButton.setText(isArchived ? "Unarchive" : "Archive");
@@ -96,6 +96,21 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.archiveButton.setVisibility(View.GONE);
             holder.deleteButton.setVisibility(View.GONE);
             holder.saveButton.setOnClickListener(v -> {
+                boolean currentlySaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
+                if (currentlySaved) {
+                    SavedListingsManager.getInstance().removeSavedListing(listing);
+                }
+                else {
+                    SavedListingsManager.getInstance().addSavedListing(listing);
+                }
+
+                boolean updateSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
+                holder.saveButton.setText(updateSaved ? "Unsave" : "Save");
+                int adapterPosition = holder.getAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    notifyItemChanged(adapterPosition);
+                }
+                /*
                 if (isSaved) {
                     SavedListingsManager.getInstance().removeSavedListing(listing);
                     holder.saveButton.setText("Save");
@@ -106,6 +121,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
                     holder.saveButton.setText("Unsave");
                     notifyItemChanged(holder.getAdapterPosition());
                 }
+                 */
             });
         }
         else {
@@ -146,11 +162,6 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         return listings.size();
     }
 
-    public void updateListings(List<Listing> newListings) {
-        this.listings.clear();
-        this.listings.addAll(newListings);
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;
         TextView description;
@@ -178,4 +189,5 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         this.listings.addAll(changes);
         notifyDataSetChanged();
     }
+
 }
