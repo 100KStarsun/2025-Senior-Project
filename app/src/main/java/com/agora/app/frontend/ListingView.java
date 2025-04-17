@@ -93,6 +93,13 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.saveButton.setVisibility(View.VISIBLE);
             holder.archiveButton.setVisibility(View.GONE);
             holder.deleteButton.setVisibility(View.GONE);
+            holder.messageButton.setVisibility(View.VISIBLE);
+            holder.messageButton.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), ChatActivity.class);
+                //intent.putExtra("listingId", listing.getId()); 
+                //intent.putExtra("ownerId", listing.getOwnerId()); 
+                v.getContext().startActivity(intent);
+            });
             holder.saveButton.setOnClickListener(v -> {
                 if (isSaved) {
                     SavedListingsManager.getInstance().removeSavedListing(listing);
@@ -152,6 +159,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         Button saveButton;
         Button archiveButton;
         Button deleteButton;
+        Button messageButton;
         ImageView imageView;
 
         public ViewHolder(View itemView) {
@@ -162,6 +170,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             imageView = itemView.findViewById(R.id.image);
             saveButton = itemView.findViewById(R.id.save_button);
             archiveButton = itemView.findViewById(R.id.archive_button);
+            messageButton = itemView.findViewById(R.id.message_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }
