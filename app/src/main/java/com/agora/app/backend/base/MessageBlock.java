@@ -2,8 +2,9 @@ package com.agora.app.backend.base;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.io.Serializable;
 
-public class MessageBlock {
+public class MessageBlock implements Serializable {
     public static final int maxMessagesPerBlock = 35;
     private int numMessages;
     private ArrayList<Message> messages;
@@ -43,6 +44,9 @@ public class MessageBlock {
     }
 
     public Message getLastMessage () {
+        if (messages == null || messages.isEmpty()) {
+            return null;
+        }
         return this.messages.get(this.messages.size()-1);
     }
 

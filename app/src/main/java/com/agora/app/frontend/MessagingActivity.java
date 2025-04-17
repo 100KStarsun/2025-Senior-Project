@@ -2,11 +2,28 @@ package com.agora.app.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.agora.app.R;
+import com.agora.app.backend.base.Message;
 import com.agora.app.backend.base.User;
+import com.agora.app.backend.base.Chat;
+import com.agora.app.backend.AppSession;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import java.util.Objects;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.io.Serializable;
+
 
 /**
  * @class MessagingActivity
@@ -15,7 +32,9 @@ import java.util.Objects;
 public class MessagingActivity extends AppCompatActivity {
 
     private String username;
-    private User currentUser;
+    private User currentUser = AppSession.currentUser;
+    private ArrayList<Message> currentUserMessages;
+    private ChatRecycler messageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +42,21 @@ public class MessagingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_messaging);
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
-        currentUser = getIntent().getSerializableExtra("userObj", User.class);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            currentUser.loadMetaChats();
+            currentUser.loadChats();
+        });
+        HashMap<String, Chat> chatMap = currentUser.getChatObjects();
+        List<Chat> chatList = new ArrayList<>(chatMap.values());
+        Collections.sort(chatList, Collections.reverseOrder());
+
+        RecyclerView recyclerView = findViewById(R.id.message_listings);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        messageView = new ChatRecycler(this, chatList, username);
+        recyclerView.setAdapter(messageView);
+
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);

@@ -14,17 +14,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.agora.app.R;
 import com.agora.app.backend.base.User;
 import com.agora.app.backend.base.Message;
+import com.agora.app.backend.base.Chat;
 import com.agora.app.backend.AppSession;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ChatActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    //private ChatView chatView;
     private List<Message> messageList;
     private EditText messageInput;
     private ImageView sendButton;
@@ -33,6 +35,8 @@ public class ChatActivity extends AppCompatActivity {
     private String listingTitle;
     private ChatView chatView;
     private User currentUser = AppSession.currentUser;
+    private String username = currentUser.getUsername();
+    private Chat chat;
 
     @Override
     protected void onCreate(Bundle savedChat) {
@@ -42,17 +46,30 @@ public class ChatActivity extends AppCompatActivity {
         messageInput = findViewById(R.id.message_input);
         listingOwner = getIntent().getStringExtra("ownerUser");
         listingTitle = getIntent().getStringExtra("listingTitle");
+        chat = getIntent().getSerializableExtra("chatObj", Chat.class);
         sendButton = findViewById(R.id.send_button);
         //sendButton = findViewById(R.id.back_button);
 
         messageList = new ArrayList<>();
         chatView = new ChatView(messageList, listingOwner);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            ArrayList<Message> pastMessages = currentUser.getAllMessagesOldestToNewest(listingOwner);
+            runOnUiThread(() -> {
+                messageList.addAll(pastMessages);
+                chatView.notifyDataSetChanged();
+                recyclerView.scrollToPosition(messageList.size() - 1);
+            });
+        });
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(chatView);
         sendButton.setOnClickListener(view -> {
             String messageText = messageInput.getText().toString().trim();
             if (!messageText.isEmpty()) {
+                executor.execute(() -> {
+                    Chat.sendMessage(listingOwner, messageText);
+                });
                 Message message = new Message(messageText, new Date(), true);
                 messageList.add(message);
                 chatView.notifyItemInserted(messageList.size() - 1);
@@ -69,6 +86,10 @@ public class ChatActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_messaging) {
+                Intent intent = new Intent(this, MessagingActivity.class);
+                intent.putExtra("username", currentUser.getUsername());
+                intent.putExtra("userObj", currentUser);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {

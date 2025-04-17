@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
 import com.agora.app.backend.base.User;
+import com.agora.app.backend.base.Chat;
+import com.agora.app.backend.AppSession;
 
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
@@ -101,6 +103,8 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
                 intent.putExtra("listingUuid", listing.getUUID());
                 intent.putExtra("listingTitle", listing.getTitle());
                 intent.putExtra("ownerUser", listing.getSellerUsername());
+                Chat chat = new Chat(AppSession.currentUser.getUsername(), listing.getSellerUsername(), 0);
+                intent.putExtra("chatObj", chat);
                 v.getContext().startActivity(intent);
             });
             holder.saveButton.setOnClickListener(v -> {
