@@ -1,5 +1,6 @@
 package com.agora.app.frontend;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,10 +34,19 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
     private List<Listing> listings;
     private boolean useSaveButton;
+    private boolean isArchived = false;
+
+    private Context context;
 
     public ListingView(List<Listing> listings, boolean useSaveButton) {
         this.listings = listings;
         this.useSaveButton = useSaveButton;
+    }
+
+    public ListingView(List<Listing> listings, boolean useSaveButton, Context context) {
+        this.listings = listings;
+        this.useSaveButton = useSaveButton;
+        this.context = context;
     }
 
     @Override
@@ -76,24 +86,64 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         v.getContext().startActivity(intent);
     });
         boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
-
         holder.saveButton.setText(isSaved ? "Unsave" : "Save");
+
+        isArchived = ArchivedListingsManager.getInstance().getArchivedListings().contains(listing);
+        holder.archiveButton.setText(isArchived ? "Unarchive" : "Archive");
 
         if (useSaveButton) {
             holder.saveButton.setVisibility(View.VISIBLE);
+            holder.archiveButton.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.GONE);
+            holder.messageButton.setVisibility(View.VISIBLE);
+            holder.messageButton.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), ChatActivity.class);
+                intent.putExtra("listingUuid", listing.getUUID());
+                intent.putExtra("listingTitle", listing.getTitle());
+                intent.putExtra("ownerUser", listing.getSellerUsername());
+                v.getContext().startActivity(intent);
+            });
             holder.saveButton.setOnClickListener(v -> {
                 if (isSaved) {
                     SavedListingsManager.getInstance().removeSavedListing(listing);
                     holder.saveButton.setText("Save");
+                    notifyItemChanged(holder.getAdapterPosition());
                 }
                 else {
                     SavedListingsManager.getInstance().addSavedListing(listing);
                     holder.saveButton.setText("Unsave");
+                    notifyItemChanged(holder.getAdapterPosition());
                 }
             });
         }
         else {
             holder.saveButton.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.VISIBLE);
+            holder.deleteButton.setOnClickListener(v -> {
+                ListingManager.getInstance().removeListing(listing);
+                listings.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, listings.size());
+            });
+
+            holder.archiveButton.setVisibility(View.VISIBLE);
+            holder.archiveButton.setOnClickListener(v -> {
+                if (isArchived) {
+                    ArchivedListingsManager.getInstance().removeSavedListing(listing);
+                    ListingManager.getInstance().addListing(listing);
+                    holder.archiveButton.setText("Archive");
+                    notifyItemChanged(holder.getAdapterPosition());
+                }
+                else {
+                    ArchivedListingsManager.getInstance().addSavedListing(listing);
+                    ListingManager.getInstance().removeListing(listing);
+                    holder.archiveButton.setText("Unarchive");
+                    notifyItemChanged(holder.getAdapterPosition());
+                }
+                if (context instanceof UserInfoActivity) {
+                    ((UserInfoActivity) context).refreshListings();
+                }
+            });
         }
 
     }
@@ -115,6 +165,9 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         TextView price;
 
         Button saveButton;
+        Button archiveButton;
+        Button deleteButton;
+        Button messageButton;
         ImageView imageView;
 
         public ViewHolder(View itemView) {
@@ -124,8 +177,15 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             price = itemView.findViewById(R.id.listing_price);
             imageView = itemView.findViewById(R.id.image);
             saveButton = itemView.findViewById(R.id.save_button);
-
-   
+            archiveButton = itemView.findViewById(R.id.archive_button);
+            messageButton = itemView.findViewById(R.id.message_button);
+            deleteButton = itemView.findViewById(R.id.delete_button);
         }
+    }
+
+    public void updateListings(List<Listing> changes) {
+        this.listings.clear();
+        this.listings.addAll(changes);
+        notifyDataSetChanged();
     }
 }

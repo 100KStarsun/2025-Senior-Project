@@ -3,6 +3,7 @@ package com.agora.app.frontend;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.agora.app.backend.base.User;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -31,6 +32,7 @@ public class MarketplaceActivity extends AppCompatActivity {
     private List<Listing> listings;
     private ListingView view;
     private String username;
+    private User currentUser;
     private List<Listing> filteredListings;
     private SearchView searchBar;
     EditText minPriceInput;
@@ -44,10 +46,17 @@ public class MarketplaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_marketplace);
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
+
+        currentUser = getIntent().getSerializableExtra("userObj", User.class);
+
         listings = ListingManager.getInstance().noPersonalListings(username);
+
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
+
+        navBar.setSelectedItemId(R.id.nav_marketplace);
+
         filteredListings = new ArrayList<>(listings);
 
         // maps nav bar item to correct page redirection
@@ -57,6 +66,7 @@ public class MarketplaceActivity extends AppCompatActivity {
             if (itemId == R.id.nav_messaging) {
                 Intent intent = new Intent(this, MessagingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
@@ -66,12 +76,14 @@ public class MarketplaceActivity extends AppCompatActivity {
             else if (itemId == R.id.nav_swiping) {
                 Intent intent = new Intent(this, SwipingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
                 Intent intent = new Intent(this, UserInfoActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
@@ -169,7 +181,7 @@ public class MarketplaceActivity extends AppCompatActivity {
 
         ArrayList<String> tags = new ArrayList<>();
         for (Listing listing : listings) {
-            boolean searchCriteria = search.isEmpty() || listing.getTitle().toLowerCase().contains(search.toLowerCase());
+            boolean searchCriteria = textSearch(listing, search);
             boolean priceCriteria = listing.getPrice() >= minPrice && listing.getPrice() <= maxPrice;
             tags = listing.getTags();
             if (searchCriteria && priceCriteria) {
@@ -189,19 +201,6 @@ public class MarketplaceActivity extends AppCompatActivity {
                 filteredListings.add(listing);
             }
         }
-
-        /*
-        if (search.isEmpty()) {
-            filteredListings.addAll(listings);
-        }
-        else {
-            for (Listing listing : listings) {
-                if (listing.getTitle().toLowerCase().contains(search.toLowerCase())) {
-                    filteredListings.add(listing);
-                }
-            }
-        }
-         */
 
         view.notifyDataSetChanged();
         View noListings = findViewById(R.id.no_listings);
@@ -223,5 +222,22 @@ public class MarketplaceActivity extends AppCompatActivity {
             return auto;
         }
         return Float.parseFloat(input);
+    }
+
+    private boolean textSearch(Listing listing, String text) {
+        if (text.isEmpty()) {
+            return true;
+        }
+        String search = text.toLowerCase();
+        boolean inTitle = listing.getTitle().toLowerCase().contains(search);
+        boolean inDescription = listing.getDescription().toLowerCase().contains(search);
+        boolean inTags = false;
+        for (String tag : listing.getTags()) {
+            if (tag.toLowerCase().contains(search)) {
+                inTags = true;
+                break;
+            }
+        }
+        return inTitle || inDescription || inTags;
     }
 }

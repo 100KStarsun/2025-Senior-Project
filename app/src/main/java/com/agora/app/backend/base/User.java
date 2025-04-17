@@ -1,6 +1,8 @@
 package com.agora.app.backend.base;
 
 
+import com.agora.app.backend.lambda.LambdaHandler;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileWriter;
@@ -17,6 +19,7 @@ import java.util.EnumMap;
 import java.util.Locale;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.HashMap;
 import java.util.Collections;
 import java.security.SecureRandom;
 
@@ -30,19 +33,20 @@ public class User implements Serializable {
     private String legalFirstName;
     private String lastName;
     private String email;
-    private SecureRandom rng = new SecureRandom();
     private byte[] salt;
     private String saltString;
     private final Date timeCreated;
     private int numSwaps;
     private short rating;
     private EnumMap<PaymentMethods, Boolean> paymentMethodsSetup; // boolean is whether the user has this setup
-    private TreeMap<String, ArrayList<UUID>> chats; // key is the username of the other person, the ArrayList is a list of `chatUUID`s that are in the db
     private ArrayList<UUID> draftedListings; // a list of UUIDs of listings the user has drafted
     private ArrayList<UUID> publishedListings; // a list of UUIDs of listings the user has published
     private ArrayList<UUID> likedListings; // a list of UUIDs of all listings the user has liked
-    private ArrayList<UUID> mutedUsers; // a list of UUIDs of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
-    private ArrayList<UUID> blockedUsers; // a list of UUIDs of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)4
+    private ArrayList<String> mutedUsers; // a list of usernames of all users that this user has muted (i.e. no notifications at all for new messages, but they still get sent)
+    private ArrayList<String> blockedUsers; // a list of usernames of all users that this user has blocked (i.e. chat is closed and other user doesn't know that this user has blocked them)
+    private transient HashMap<String, String> chats; // key is the username of the other person, the ArrayList is a list of `chatID`s that are in the db, transient so not in db
+    private transient HashMap<String, Chat> chatObjects; // this is not going to be fully loaded when a User is grabbed, also transient so not stored in db - {otherUsername: ChatObject}
+    private transient SecureRandom rng = new SecureRandom(); // transient so not stored in the db
     private ArrayList<Boolean> userPreferences;
 
     public static final Locale locale = Locale.ENGLISH;
@@ -61,12 +65,13 @@ public class User implements Serializable {
         numSwaps = 0;
         rating = 0;
         this.paymentMethodsSetup = paymentMethodsSetup;
-        this.chats = new TreeMap<>();
+        this.chats = new HashMap<>();
         this.draftedListings = new ArrayList<>();
         this.publishedListings = new ArrayList<>();
         this.likedListings = new ArrayList<>();
         this.mutedUsers = new ArrayList<>();
         this.blockedUsers = new ArrayList<>();
+        this.chatObjects = new HashMap<>();
         this.userPreferences = new ArrayList<>();
         Collections.fill(userPreferences, false);
     }
@@ -158,13 +163,68 @@ public class User implements Serializable {
 
     public String getSaltString () { return saltString; }
 
-    public TreeMap<String, ArrayList<UUID>> getChats () { return chats; }
+    public HashMap<String, String> getChatMetas () { return chats; }
 
     public String getPreferredFirstName () { return this.preferredFirstName; }
+
+    public Chat getChatObject (String username) {
+        if (this.chatObjects == null) {
+            Chat newChat = new Chat(this.username, username, 0);
+            this.chatObjects = new HashMap<>();
+            this.chatObjects.put(username, newChat);
+            if (this.chats == null) {
+                this.chats = new HashMap<>();
+            }
+            this.chats.put(username, newChat.getId());
+            return newChat;
+        }
+        if (this.chatObjects.containsKey(username)) {
+            return this.chatObjects.get(username);
+        }
+        if (this.chats.containsKey(username)) {
+            throw new IllegalStateException("Some chats were not fully loaded upon startup");
+        }
+        Chat newChat = new Chat(this.username, username, 0);
+        this.chatObjects = new HashMap<>();
+        this.chatObjects.put(username, newChat);
+        if (this.chats == null) {
+            this.chats = new HashMap<>();
+        }
+        this.chats.put(username, newChat.getId());
+        return newChat;
+    }
+
+    public void loadMetaChats () {
+        this.chats = LambdaHandler.scanChats(this.username);
+        if (this.chats == null) {
+            this.chats = new HashMap<>();
+        }
+    }
+
+    public void loadChats () {
+        if (this.chats.size() == 0) {
+            this.chatObjects = new HashMap<>();
+        } else {
+            String[] chatIDsToGet = this.chats.values().toArray(new String[this.chats.size()]);
+            this.chatObjects = LambdaHandler.getChats(chatIDsToGet);
+        }
+    }
+
+    public HashMap<String, Chat> getChatObjects () {
+        return this.chatObjects;
+    }
 
     public void setPreferences (ArrayList<Boolean> preferences) { this.userPreferences = preferences;}
 
     public ArrayList<Boolean> getPreferences() { return this.userPreferences; }
+
+
+    public ArrayList<Message> getAllMessagesOldestToNewest (String otherUsername) {
+        return this.getChatObject(otherUsername).getAllMessagesOldestToNewest();
+    }
+
+    public ArrayList<Message> getAllMessagesNewestToOldest (String otherUsername) {
+        return this.getChatObject(otherUsername).getAllMessagesNewestToOldest();
 
     public void setLikedListings(ArrayList<UUID> likedListings) {
         this.likedListings = likedListings;
@@ -172,5 +232,6 @@ public class User implements Serializable {
 
     public ArrayList<UUID> getLikedListings() {
         return likedListings;
+
     }
 }

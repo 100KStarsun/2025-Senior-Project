@@ -4,8 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.agora.app.R;
 import com.agora.app.backend.base.User;
+import com.agora.app.backend.base.Listing;
+
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,6 +19,8 @@ import java.util.Objects;
  * @brief Activity for a user's transaction history
  */
 public class TransactionHistoryActivity extends AppCompatActivity {
+
+    private ListingView view;
 
     private User currentUser;
 
@@ -26,7 +34,14 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         buttonUserInfo.setOnClickListener(v -> {
             Intent intent = new Intent(TransactionHistoryActivity.this, UserInfoActivity.class);
             intent.putExtra("username", currentUser.getUsername());
+            intent.putExtra("userObj", currentUser);
             startActivity(intent);
         });
+
+        List<Listing> archivedListings = ArchivedListingsManager.getInstance().getArchivedListings();
+        RecyclerView recyclerView = findViewById(R.id.archived_listings);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        view = new ListingView(archivedListings, false);
+        recyclerView.setAdapter(view);
     }
 }

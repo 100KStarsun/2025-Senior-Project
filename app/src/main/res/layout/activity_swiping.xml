@@ -54,7 +54,8 @@
         android:text="No more listings available :("
         android:textSize="30sp"
         android:gravity="center"
-        />
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:layout_width="match_parent"

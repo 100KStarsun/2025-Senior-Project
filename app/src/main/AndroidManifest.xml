@@ -39,6 +39,7 @@
         <activity android:name=".frontend.SavedPostsActivity"/>
         <activity android:name=".frontend.TransactionHistoryActivity"/>
         <activity android:name=".frontend.ExpandedListingActivity"/>
+        <activity android:name=".frontend.ChatActivity"/>
 
 
     </application>
