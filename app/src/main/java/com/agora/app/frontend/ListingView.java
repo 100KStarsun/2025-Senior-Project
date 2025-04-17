@@ -96,8 +96,9 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.messageButton.setVisibility(View.VISIBLE);
             holder.messageButton.setOnClickListener(v -> {
                 Intent intent = new Intent(v.getContext(), ChatActivity.class);
-                //intent.putExtra("listingId", listing.getId()); 
-                //intent.putExtra("ownerId", listing.getOwnerId()); 
+                intent.putExtra("listingUuid", listing.getUUID());
+                intent.putExtra("listingTitle", listing.getTitle());
+                intent.putExtra("ownerUser", listing.getSellerUsername());
                 v.getContext().startActivity(intent);
             });
             holder.saveButton.setOnClickListener(v -> {

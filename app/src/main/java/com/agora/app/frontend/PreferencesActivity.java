@@ -95,8 +95,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 currentUser.setPreferences(user.getPreferences());
                 ArrayList<Boolean> prefs = currentUser.getPreferences();
                 if (prefs == null || prefs.isEmpty() || prefs.size() < 5) {
-                    prefs = new ArrayList<>();
-                    Collections.fill(prefs, false);
+                    prefs = new ArrayList<>(Collections.nCopies(5, false));
                     currentUser.setPreferences(prefs);
                 }
                 Boolean[] savedPrefs = prefs.toArray(new Boolean[0]);
