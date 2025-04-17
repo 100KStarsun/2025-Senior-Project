@@ -154,10 +154,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         return listings.size();
     }
 
-    public void updateListings(List<Listing> newListings) {
-        this.listings.clear();
-        this.listings.addAll(newListings);
-    }
+   
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title;

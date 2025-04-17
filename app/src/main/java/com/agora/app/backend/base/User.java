@@ -225,6 +225,7 @@ public class User implements Serializable {
 
     public ArrayList<Message> getAllMessagesNewestToOldest (String otherUsername) {
         return this.getChatObject(otherUsername).getAllMessagesNewestToOldest();
+    }
 
     public void setLikedListings(ArrayList<UUID> likedListings) {
         this.likedListings = likedListings;
