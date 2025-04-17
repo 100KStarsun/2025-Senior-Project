@@ -165,4 +165,12 @@ public class User implements Serializable {
     public void setPreferences (ArrayList<Boolean> preferences) { this.userPreferences = preferences;}
 
     public ArrayList<Boolean> getPreferences() { return this.userPreferences; }
+
+    public void setLikedListings(ArrayList<UUID> likedListings) {
+        this.likedListings = likedListings;
+    }
+
+    public ArrayList<UUID> getLikedListings() {
+        return likedListings;
+    }
 }

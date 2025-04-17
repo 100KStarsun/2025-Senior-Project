@@ -345,6 +345,8 @@ public class UserInfoActivity extends AppCompatActivity {
             if (user != null) {
                 currentUser = user;
                 textUsername.setText(user.getUsername());
+                //new ListingRetrievalTask().execute();
+
             } else {
                 Toast.makeText(UserInfoActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
             }
@@ -397,6 +399,10 @@ public class UserInfoActivity extends AppCompatActivity {
                         selfListings.add(listing);
                     }
                 }
+
+                //List<Listing> allListings = new ArrayList<>(dblistings.values());
+                //SavedListingsManager.getInstance().initializeSavedListings(currentUser);
+                //SavedListingsManager.getInstance().populateSavedListings(allListings);
             }
             view.notifyDataSetChanged();
         }
