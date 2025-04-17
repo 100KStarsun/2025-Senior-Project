@@ -29,7 +29,7 @@ public class ChatView extends RecyclerView.Adapter<ChatView.ChatViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return messages.get(position).isFromUs(listingOwner) ? 1 : 0;
+        return messages.get(position).isFromFirst() ? 1 : 0;
     }
 
     @Override

@@ -319,7 +319,7 @@ public class UserInfoActivity extends AppCompatActivity {
 
         void refreshListings() {
             List<Listing> activeListings = new ArrayList<>();
-            for (Listing listing : listings) {
+            for (Listing listing : selfListings) {
                 if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
                     activeListings.add(listing);
                 }

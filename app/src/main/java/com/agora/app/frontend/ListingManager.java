@@ -3,9 +3,12 @@ package com.agora.app.frontend;
 import android.util.Log;
 
 import com.agora.app.backend.base.Listing;
+import com.agora.app.backend.lambda.LambdaHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ListingManager {
     private static ListingManager listingManager;
@@ -27,10 +30,14 @@ public class ListingManager {
         Log.d("ListingManager", "Added: " + listing.getTitle() + ", total: " + listings.size());
     }
 
-        public void removeListing(Listing listing) {
-            listings.remove(listing);
-            Log.d("ListingManager", "Removed: " + listing.getTitle() + ", total: " + listings.size());
-        }
+    public void removeListing(Listing listing) {
+        listings.remove(listing);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            LambdaHandler.deleteListings(new String[] {listing.toBase64String()});
+        });
+        Log.d("ListingManager", "Removed: " + listing.getTitle() + ", total: " + listings.size());
+    }
 
     public List<Listing> getListings() {
         return listings;
