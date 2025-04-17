@@ -76,6 +76,7 @@ public class UserInfoActivity extends AppCompatActivity {
 
     // variables for the list of listing and the view in which to see listings on page
     private List<Listing> listings = ListingManager.getInstance().getListings();
+    private List<Listing> selfListings = new ArrayList<>();
     private ListingView view;
 
     private EditText imagePathInput;
@@ -225,8 +226,9 @@ public class UserInfoActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //view = new ListingView(listings, false);
-        view = new ListingView(activeListings, false, this);
+
+        view = new ListingView(selfListings, false);
+
         recyclerView.setAdapter(view);
 
         // creates button for ability to add listing
@@ -375,6 +377,8 @@ public class UserInfoActivity extends AppCompatActivity {
             if (user != null) {
                 currentUser = user;
                 textUsername.setText(user.getUsername());
+                //new ListingRetrievalTask().execute();
+
             } else {
                 Toast.makeText(UserInfoActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
             }
@@ -425,7 +429,14 @@ public class UserInfoActivity extends AppCompatActivity {
                 for (Map.Entry<String, Listing> entry : retrievedListings.entrySet()) {
                     Listing listing = entry.getValue();
                     ListingManager.getInstance().addListing(listing);
+                    if (listing.getSellerUsername().equals(username)) {
+                        selfListings.add(listing);
+                    }
                 }
+
+                //List<Listing> allListings = new ArrayList<>(dblistings.values());
+                //SavedListingsManager.getInstance().initializeSavedListings(currentUser);
+                //SavedListingsManager.getInstance().populateSavedListings(allListings);
             }
             view.notifyDataSetChanged();
         }

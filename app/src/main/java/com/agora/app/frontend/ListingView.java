@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
+import com.agora.app.backend.base.User;
+
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import java.util.List;
@@ -150,6 +152,11 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     @Override
     public int getItemCount() {
         return listings.size();
+    }
+
+    public void updateListings(List<Listing> newListings) {
+        this.listings.clear();
+        this.listings.addAll(newListings);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

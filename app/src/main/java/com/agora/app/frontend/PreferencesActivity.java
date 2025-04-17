@@ -52,6 +52,7 @@ public class PreferencesActivity extends AppCompatActivity {
             preferencesList.add(binding.householdCheckBox.isChecked());
             preferencesList.add(binding.apparelCheckBox.isChecked());
             currentUser.setPreferences(preferencesList);
+            ListingManager.getInstance().setUserPrefs(preferencesList.toArray(new Boolean[0]));
             new SavePreferencesTask().execute(currentUser.getUsername(), currentUser.toBase64String());
         });
     }
