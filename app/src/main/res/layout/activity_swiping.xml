@@ -46,20 +46,24 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/no_cards"
+        android:id="@+id/no_listings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@android:color/holo_blue_dark"
-        android:text="No more listings available :("
+        android:background="#003071"
+        android:textColor="@android:color/white"
+        android:text="No listings found. Please check back later."
         android:textSize="30sp"
+        android:padding="16dp"
         android:gravity="center"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp"
+
+        />
 
     <com.yuyakaido.android.cardstackview.CardStackView
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="350dp"
         android:id="@+id/listing_card_stack"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"/>
