@@ -156,10 +156,10 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     }
     public void refreshCards() {
         if (listings.isEmpty()) {
-            findViewById(R.id.no_cards).setVisibility(View.VISIBLE);
+            findViewById(R.id.no_listings).setVisibility(View.VISIBLE);
         }
         else {
-            findViewById(R.id.no_cards).setVisibility(View.GONE);
+            findViewById(R.id.no_listings).setVisibility(View.GONE);
             swipingView.notifyDataSetChanged();
         }
     }
