@@ -57,6 +57,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
         currentUser = getIntent().getSerializableExtra("userObj", User.class);
+        listings = ListingManager.getInstance().noPersonalListings(username);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             currentUser = getIntent().getSerializableExtra("userobject", User.class);
@@ -115,7 +116,6 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         });
 
         cardStackView = findViewById(R.id.listing_card_stack);
-        listings = new ArrayList<>(ListingManager.getInstance().noPersonalListings(username));
         //savedListings = new ArrayList<>();
         swipedCards = new HashSet<>();
         layoutManager = new CardStackLayoutManager(this, this);
@@ -212,7 +212,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     private void updateListings() {
         List<Listing> newListings = new ArrayList<>();
         for (Listing listing : ListingManager.getInstance().getListings()) {
-            if (!swipedCards.contains(listing.getTitle())) {
+            if (!swipedCards.contains(listing.getTitle()) && !listing.getSellerUsername().equals(username)) {
                 newListings.add(listing);
             }
         }
