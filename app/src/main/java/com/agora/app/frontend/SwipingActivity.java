@@ -1,8 +1,12 @@
 package com.agora.app.frontend;
 
 import com.agora.app.R;
+import com.agora.app.backend.base.User;
+import com.agora.app.backend.lambda.LambdaHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -12,7 +16,9 @@ import android.widget.Button;
 import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 
 import com.agora.app.backend.base.Listing;
@@ -41,6 +47,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     private List<Listing> savedListings;
     private Set<String> swipedCards;
     private String username;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +55,26 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         setContentView(R.layout.activity_swiping);
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            currentUser = getIntent().getSerializableExtra("userobject", User.class);
+        }
+        else {
+            currentUser = (User) getIntent().getSerializableExtra("userobject");
+        }
+
+        if (currentUser == null) {
+            if (username != null) {
+                new UserInfoTask().execute(username);
+            }
+            else {
+                return;
+            }
+        }
+        else {
+            SavedListingsManager.getInstance().initializeSavedListings(currentUser);
+            new ListingRetrievalTask().execute();
+        }
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
@@ -83,7 +110,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         });
 
         cardStackView = findViewById(R.id.listing_card_stack);
-        listings = new ArrayList<>(ListingManager.getInstance().getListings());
+        listings = new ArrayList<>(ListingManager.getInstance().noPersonalListings(username));
         //savedListings = new ArrayList<>();
         swipedCards = new HashSet<>();
         layoutManager = new CardStackLayoutManager(this, this);
@@ -190,5 +217,52 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
             swipingView.notifyDataSetChanged();  // Update adapter
         }
     }
+
+    private class UserInfoTask extends AsyncTask<String, Void, User> {
+        private String errorMessage = "";
+        private String username;
+
+        @Override
+        protected User doInBackground(String... params) {
+            username = params[0];
+            try {
+                return LambdaHandler.getUsers(new String[]{username}).get(username);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+
+        protected void onPostExecute(User user) {
+            if (user != null) {
+                currentUser = user;
+                SavedListingsManager.getInstance().initializeSavedListings(currentUser);
+                new ListingRetrievalTask().execute();
+
+            } else {
+                Toast.makeText(SwipingActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class ListingRetrievalTask extends AsyncTask<Void, Void, HashMap<String, Listing>> {
+        @Override
+        protected HashMap<String, Listing> doInBackground(Void... params) {
+            try {
+                return LambdaHandler.scanListings();
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        protected void onPostExecute(HashMap<String, Listing> dblistings) {
+            if (dblistings == null) {
+                Toast.makeText(SwipingActivity.this, "Error obtaining all listings", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            List<Listing> allListings = new ArrayList<>();
+            SavedListingsManager.getInstance().populateSavedListings(allListings);
+
+        }
+    }
+
 
 }

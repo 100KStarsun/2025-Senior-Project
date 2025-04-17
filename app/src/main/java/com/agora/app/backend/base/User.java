@@ -211,6 +211,14 @@ public class User implements Serializable {
 
     public ArrayList<Boolean> getPreferences() { return this.userPreferences; }
 
+    public void setLikedListings(ArrayList<UUID> likedListings) {
+        this.likedListings = likedListings;
+    }
+
+    public ArrayList<UUID> getLikedListings() {
+        return likedListings;
+    }
+
     public ArrayList<Message> getAllMessagesOldestToNewest (String otherUsername) {
         return this.getChatObject(otherUsername).getAllMessagesOldestToNewest();
     }
