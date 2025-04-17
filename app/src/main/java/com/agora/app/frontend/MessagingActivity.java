@@ -2,6 +2,8 @@ package com.agora.app.frontend;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,6 +44,7 @@ public class MessagingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_messaging);
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
+        TextView noChatsTextView = findViewById(R.id.no_chats);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
@@ -51,6 +54,11 @@ public class MessagingActivity extends AppCompatActivity {
         HashMap<String, Chat> chatMap = currentUser.getChatObjects();
         List<Chat> chatList = new ArrayList<>(chatMap.values());
         Collections.sort(chatList, Collections.reverseOrder());
+        if (chatList.isEmpty()) {
+            noChatsTextView.setVisibility(View.VISIBLE);
+        } else {
+            noChatsTextView.setVisibility(View.GONE);
+        }
 
         RecyclerView recyclerView = findViewById(R.id.message_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
