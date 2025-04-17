@@ -211,18 +211,26 @@ public class UserInfoActivity extends AppCompatActivity {
 
         // listings scroller
         // finds and displays listing view on page
+        /*
         List<Listing> activeListings = new ArrayList<>();
         for (Listing listing : listings) {
             if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
                 activeListings.add(listing);
             }
         }
+         */
+        selfListings.clear();
+        for (Listing listing : listings) {
+            if (listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                selfListings.add(listing);
+            }
+        }
 
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //view = new ListingView(listings, false);
-        view = new ListingView(activeListings, false, this);
-        view = new ListingView(selfListings, false);
+        //view = new ListingView(activeListings, false, this);
+        view = new ListingView(selfListings, false, this);
         recyclerView.setAdapter(view);
 
         // creates button for ability to add listing
@@ -296,9 +304,24 @@ public class UserInfoActivity extends AppCompatActivity {
                 Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
 
                 ListingManager.getInstance().addListing(newListing);
+                List<Listing> updatedListings = new ArrayList<>();
+
+                for (Listing listing : ListingManager.getInstance().getListings()) {
+                    if (listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                        updatedListings.add(listing);
+                    }
+                }
+
+                selfListings = updatedListings;
+                view.updateListings(updatedListings);
+                //listings.add(newListing);
+                //selfListings.add(newListing);
+                //view.updateListings(selfListings);
                 //view.notifyItemInserted(listings.size() - 1);
-                view.notifyItemInserted(view.getItemCount() - 1);
-                refreshListings();
+                //view.notifyItemInserted(view.getItemCount() - 1);
+                //view.notifyItemInserted(selfListings.size() - 1);
+                //refreshListings();
+                //view.notifyDataSetChanged();
                 dialog.dismiss();
                 new ListingSaveTask().execute(newListing.getUUID().toString(), newListing.toBase64String());
             }
@@ -312,13 +335,13 @@ public class UserInfoActivity extends AppCompatActivity {
         }
 
         void refreshListings() {
-            List<Listing> activeListings = new ArrayList<>();
-            for (Listing listing : listings) {
-                if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
-                    activeListings.add(listing);
+            selfListings.clear();
+            for (Listing listing : ListingManager.getInstance().getListings()) {
+                if (listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                    selfListings.add(listing);
                 }
             }
-            view.updateListings(activeListings);
+            view.updateListings(selfListings);
         }
 
         /**
@@ -415,6 +438,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 return;
             }
             ListingManager.getInstance().getListings().clear();
+            selfListings.clear();
             HashMap<String, Listing> retrievedListings = dblistings;
             if (retrievedListings != null) {
                 for (Map.Entry<String, Listing> entry : retrievedListings.entrySet()) {

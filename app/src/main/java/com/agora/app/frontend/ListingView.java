@@ -185,8 +185,9 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     }
 
     public void updateListings(List<Listing> changes) {
-        this.listings.clear();
-        this.listings.addAll(changes);
+        //this.listings.clear();
+        //this.listings.addAll(changes);
+        this.listings = new ArrayList<>(changes);
         notifyDataSetChanged();
     }
 
