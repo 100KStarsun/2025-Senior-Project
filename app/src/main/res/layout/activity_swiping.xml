@@ -9,7 +9,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="#003071"/>
+        android:background="#003071" />
 
     <!-- Header -->
     <LinearLayout
@@ -20,10 +20,10 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/agora_header"
             android:layout_gravity="center"
+            android:background="#003071"
             android:contentDescription="Agora Header"
-            android:background="#003071"/>
+            android:src="@drawable/agora_header" />
     </LinearLayout>
 
     <!-- Page Title -->
@@ -36,13 +36,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/blue_border"
+            android:gravity="center"
             android:padding="10dp"
             android:text="Swiping"
-            android:textSize="40sp"
             android:textColor="#003071"
-            android:gravity="center"
-            android:background="@drawable/blue_border"
-            />
+            android:textSize="40sp" />
     </LinearLayout>
 
     <TextView
@@ -50,23 +49,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="#003071"
-        android:textColor="@android:color/white"
-        android:text="No listings found. Please check back later."
-        android:textSize="30sp"
-        android:padding="16dp"
-        android:gravity="center"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:background="#003071"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="No listings found. Please check back later."
+        android:textColor="@android:color/white"
+        android:textSize="30sp"
 
         />
 
     <com.yuyakaido.android.cardstackview.CardStackView
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
         android:id="@+id/listing_card_stack"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="16dp" />
 
     <!--page buffer-->
     <LinearLayout
@@ -74,8 +73,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="vertical">
-    </LinearLayout>
+        android:orientation="vertical"></LinearLayout>
 
     <!--nav bar-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
