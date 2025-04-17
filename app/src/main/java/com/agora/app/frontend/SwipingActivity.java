@@ -79,6 +79,8 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
 
+        navBar.setSelectedItemId(R.id.nav_swiping);
+
         // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -181,10 +183,10 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     }
     public void refreshCards() {
         if (listings.isEmpty()) {
-            findViewById(R.id.no_cards).setVisibility(View.VISIBLE);
+            findViewById(R.id.no_listings).setVisibility(View.VISIBLE);
         }
         else {
-            findViewById(R.id.no_cards).setVisibility(View.GONE);
+            findViewById(R.id.no_listings).setVisibility(View.GONE);
             swipingView.notifyDataSetChanged();
         }
     }

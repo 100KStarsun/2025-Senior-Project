@@ -48,6 +48,9 @@ public class MarketplaceActivity extends AppCompatActivity {
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
+
+        navBar.setSelectedItemId(R.id.nav_marketplace);
+
         filteredListings = new ArrayList<>(listings);
 
         // maps nav bar item to correct page redirection
@@ -169,7 +172,7 @@ public class MarketplaceActivity extends AppCompatActivity {
 
         ArrayList<String> tags = new ArrayList<>();
         for (Listing listing : listings) {
-            boolean searchCriteria = search.isEmpty() || listing.getTitle().toLowerCase().contains(search.toLowerCase());
+            boolean searchCriteria = textSearch(listing, search);
             boolean priceCriteria = listing.getPrice() >= minPrice && listing.getPrice() <= maxPrice;
             tags = listing.getTags();
             if (searchCriteria && priceCriteria) {
@@ -189,19 +192,6 @@ public class MarketplaceActivity extends AppCompatActivity {
                 filteredListings.add(listing);
             }
         }
-
-        /*
-        if (search.isEmpty()) {
-            filteredListings.addAll(listings);
-        }
-        else {
-            for (Listing listing : listings) {
-                if (listing.getTitle().toLowerCase().contains(search.toLowerCase())) {
-                    filteredListings.add(listing);
-                }
-            }
-        }
-         */
 
         view.notifyDataSetChanged();
         View noListings = findViewById(R.id.no_listings);
@@ -223,5 +213,22 @@ public class MarketplaceActivity extends AppCompatActivity {
             return auto;
         }
         return Float.parseFloat(input);
+    }
+
+    private boolean textSearch(Listing listing, String text) {
+        if (text.isEmpty()) {
+            return true;
+        }
+        String search = text.toLowerCase();
+        boolean inTitle = listing.getTitle().toLowerCase().contains(search);
+        boolean inDescription = listing.getDescription().toLowerCase().contains(search);
+        boolean inTags = false;
+        for (String tag : listing.getTags()) {
+            if (tag.toLowerCase().contains(search)) {
+                inTags = true;
+                break;
+            }
+        }
+        return inTitle || inDescription || inTags;
     }
 }

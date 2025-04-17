@@ -6,6 +6,7 @@ import com.agora.app.R;
 import com.agora.app.backend.lambda.LambdaHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.activity.OnBackPressedCallback;
@@ -81,8 +82,8 @@ public class UserInfoActivity extends AppCompatActivity {
     private EditText imagePathInput;
     private ImageView image = null;
     private String imagePath = null;  // Add this line at the top of your activity class
-    private File imageFile; 
-    private Image imageObject; 
+    private File imageFile;
+    private Image imageObject;
     private String username;
     private TextView textUsername;
     private TextView textCaseId;
@@ -115,13 +116,13 @@ public class UserInfoActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
         Objects.requireNonNull(getSupportActionBar()).hide();
         textUsername = findViewById(R.id.textUsername);
-        textCaseId = findViewById(R.id.textCaseId);
-        textTransactions = findViewById(R.id.textTransactions);
         new UserInfoTask().execute(username);
         new ListingRetrievalTask().execute();
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
+
+        navBar.setSelectedItemId(R.id.nav_user_info);
 
         // maps nav bar item to correct page redirection
         navBar.setOnItemSelectedListener(item -> {
@@ -166,6 +167,10 @@ public class UserInfoActivity extends AppCompatActivity {
         // Synchronize the toggle's state with the linked DrawerLayout
         toggle.syncState();
 
+        toggle.getDrawerArrowDrawable().setColor(Color.parseColor("#003071"));
+        toolbar.setBackgroundColor(Color.parseColor("#FFFFFF")); // white
+
+
         // Set a listener for when an item in the NavigationView is selected
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 
@@ -206,8 +211,17 @@ public class UserInfoActivity extends AppCompatActivity {
 
         // listings scroller
         // finds and displays listing view on page
+        List<Listing> activeListings = new ArrayList<>();
+        for (Listing listing : listings) {
+            if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                activeListings.add(listing);
+            }
+        }
+
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        //view = new ListingView(listings, false);
+        view = new ListingView(activeListings, false, this);
         view = new ListingView(selfListings, false);
         recyclerView.setAdapter(view);
 
@@ -275,14 +289,16 @@ public class UserInfoActivity extends AppCompatActivity {
             if(!title.isEmpty() && !description.isEmpty()) {
                 UUID uuid = UUID.randomUUID();
                 String displayName = "temp"; 
-                String listingUsername = username; 
+                String listingUsername = username;
                 String type = "default"; 
 
 
                 Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
 
                 ListingManager.getInstance().addListing(newListing);
-                view.notifyItemInserted(listings.size() - 1);
+                //view.notifyItemInserted(listings.size() - 1);
+                view.notifyItemInserted(view.getItemCount() - 1);
+                refreshListings();
                 dialog.dismiss();
                 new ListingSaveTask().execute(newListing.getUUID().toString(), newListing.toBase64String());
             }
@@ -294,7 +310,17 @@ public class UserInfoActivity extends AppCompatActivity {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerLauncher.launch(intent);
         }
-    
+
+        void refreshListings() {
+            List<Listing> activeListings = new ArrayList<>();
+            for (Listing listing : listings) {
+                if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                    activeListings.add(listing);
+                }
+            }
+            view.updateListings(activeListings);
+        }
+
         /**
          * adapted from https://nobanhasan.medium.com/get-picked-image-actual-path-android-11-12-180d1fa12692
          */
@@ -346,7 +372,6 @@ public class UserInfoActivity extends AppCompatActivity {
                 currentUser = user;
                 textUsername.setText(user.getUsername());
                 //new ListingRetrievalTask().execute();
-
             } else {
                 Toast.makeText(UserInfoActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
             }
@@ -406,6 +431,7 @@ public class UserInfoActivity extends AppCompatActivity {
             }
             view.notifyDataSetChanged();
         }
+
     }
 }
 

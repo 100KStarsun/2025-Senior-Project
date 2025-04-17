@@ -3,10 +3,12 @@ package com.agora.app.backend.lambda;
 public enum DynamoTables {
     USERS("agora_users","username"),
     PASSWORDS("agora_passwords","hash"),
-    CHATS("agora_chats","uuid"),
+    CHATS("agora_chats","id"),
     LISTINGS("agora_listings","id"),
     IMAGES("agora_images", "id"),
-    IMAGE_CHUNKS("agora_image_chunks", "id");
+    IMAGE_CHUNKS("agora_image_chunks", "id"),
+    MESSAGE_BLOCKS("agora_message_blocks", "id"),
+    OFFLINE_MESSAGES("agora_offline_messages", "username");
 
     public final String tableName;
     public final String partitionKeyName;
@@ -17,22 +19,16 @@ public enum DynamoTables {
     }
 
     public static DynamoTables getEnumFromTableName (String tableName) {
-        switch (tableName) {
-            case "agora_users":
-                return USERS;
-            case "agora_passwords":
-                return PASSWORDS;
-            case "agora_chats":
-                return CHATS;
-            case "agora_listings":
-                return LISTINGS;
-            case "agora_images":
-                return IMAGES;
-            case "agora_image_chunks":
-                return IMAGE_CHUNKS;
-            default:
-                return null;
-
-        }
+        return switch (tableName) {
+            case "agora_users" -> USERS;
+            case "agora_passwords" -> PASSWORDS;
+            case "agora_chats" -> CHATS;
+            case "agora_listings" -> LISTINGS;
+            case "agora_images" -> IMAGES;
+            case "agora_image_chunks" -> IMAGE_CHUNKS;
+            case "agora_message_blocks" -> MESSAGE_BLOCKS;
+            case "agora_offline_messages" -> OFFLINE_MESSAGES;
+            default -> null;
+        };
     }
 }
