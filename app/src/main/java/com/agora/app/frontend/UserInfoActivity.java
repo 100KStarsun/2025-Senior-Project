@@ -221,7 +221,7 @@ public class UserInfoActivity extends AppCompatActivity {
          */
         selfListings.clear();
         for (Listing listing : listings) {
-            if (listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+            if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
                 selfListings.add(listing);
             }
         }
@@ -307,7 +307,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 List<Listing> updatedListings = new ArrayList<>();
 
                 for (Listing listing : ListingManager.getInstance().getListings()) {
-                    if (listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                    if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
                         updatedListings.add(listing);
                     }
                 }
@@ -337,7 +337,7 @@ public class UserInfoActivity extends AppCompatActivity {
         void refreshListings() {
             selfListings.clear();
             for (Listing listing : ListingManager.getInstance().getListings()) {
-                if (listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
                     selfListings.add(listing);
                 }
             }
