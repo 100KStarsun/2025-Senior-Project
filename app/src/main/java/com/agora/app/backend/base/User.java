@@ -233,6 +233,5 @@ public class User implements Serializable {
 
     public ArrayList<UUID> getLikedListings() {
         return likedListings;
-
     }
 }
