@@ -166,7 +166,7 @@ public class MarketplaceActivity extends AppCompatActivity {
         float minPrice = parsePrice(minPriceInput, 0.0f);
         float maxPrice = parsePrice(maxPriceInput, Float.MAX_VALUE);
         boolean userPrefs = userPrefsCheck.isChecked();
-        Boolean[] filterPrefs = new Boolean[3];
+        Boolean[] filterPrefs = {false, false, false, false, false};
         if (userPrefs) {
             filterPrefs = ListingManager.getInstance().getUserPrefs();
         }

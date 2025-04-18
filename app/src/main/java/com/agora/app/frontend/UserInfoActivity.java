@@ -86,8 +86,6 @@ public class UserInfoActivity extends AppCompatActivity {
     private Image imageObject;
     private String username;
     private TextView textUsername;
-    private TextView textCaseId;
-    private TextView textTransactions;
 
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -119,8 +117,6 @@ public class UserInfoActivity extends AppCompatActivity {
         Log.d("UserInfoActivity", "User Object: " + currentUser.toString());
         Objects.requireNonNull(getSupportActionBar()).hide();
         textUsername = findViewById(R.id.textUsername);
-        textCaseId = findViewById(R.id.textCaseId);
-        textTransactions = findViewById(R.id.textTransactions);
         textUsername.setText(username);
         new ListingRetrievalTask().execute();
 
