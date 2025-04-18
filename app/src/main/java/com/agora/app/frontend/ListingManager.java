@@ -47,7 +47,7 @@ public class ListingManager {
     public List<Listing> noPersonalListings(String username) {
         List<Listing> refinedList = new ArrayList<>();
         for (Listing listing : listings) {
-            if (!listing.getSellerUsername().equals(username)) {
+            if (listing.getSellerUsername() != null && !listing.getSellerUsername().equals(username)) {
                 refinedList.add(listing);
             }
         }

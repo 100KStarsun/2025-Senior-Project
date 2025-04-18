@@ -57,8 +57,6 @@ public class ChatRecycler extends RecyclerView.Adapter<ChatRecycler.ChatRecycler
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("username", currentUsername);
             intent.putExtra("otherUsername", otherUsername);
-            intent.putExtra("userObj", AppSession.currentUser);
-            intent.putExtra("chatObj", chat);
             context.startActivity(intent);
         });
     }

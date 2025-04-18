@@ -11,10 +11,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
-import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
@@ -60,10 +60,10 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         listings = ListingManager.getInstance().noPersonalListings(username);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            currentUser = getIntent().getSerializableExtra("userobject", User.class);
+            currentUser = getIntent().getSerializableExtra("userObj", User.class);
         }
         else {
-            currentUser = (User) getIntent().getSerializableExtra("userobject");
+            currentUser = (User) getIntent().getSerializableExtra("userObj");
         }
 
         if (currentUser == null) {
@@ -212,7 +212,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     private void updateListings() {
         List<Listing> newListings = new ArrayList<>();
         for (Listing listing : ListingManager.getInstance().getListings()) {
-            if (!swipedCards.contains(listing.getTitle()) && !listing.getSellerUsername().equals(username)) {
+            if (listing.getSellerUsername() != null && !swipedCards.contains(listing.getTitle()) && !listing.getSellerUsername().equals(username)) {
                 newListings.add(listing);
             }
         }
@@ -242,7 +242,6 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
                 currentUser = user;
                 SavedListingsManager.getInstance().initializeSavedListings(currentUser);
                 new ListingRetrievalTask().execute();
-
             } else {
                 Toast.makeText(SwipingActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
             }

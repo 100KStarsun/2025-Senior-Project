@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,25 +47,24 @@ public class MessagingActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
         TextView noChatsTextView = findViewById(R.id.no_chats);
 
+        RecyclerView recyclerView = findViewById(R.id.message_listings);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             currentUser.loadMetaChats();
             currentUser.loadChats();
+            List<Chat> chatList = new ArrayList<>(currentUser.getChatObjects().values());
+            Collections.sort(chatList, Collections.reverseOrder());
+            runOnUiThread(() -> {
+                if (chatList.isEmpty()) {
+                    noChatsTextView.setVisibility(View.VISIBLE);
+                } else {
+                    noChatsTextView.setVisibility(View.GONE);
+                }
+                messageView = new ChatRecycler(this, chatList, username);
+                recyclerView.setAdapter(messageView);
+            });
         });
-        HashMap<String, Chat> chatMap = currentUser.getChatObjects();
-        List<Chat> chatList = new ArrayList<>(chatMap.values());
-        Collections.sort(chatList, Collections.reverseOrder());
-        if (chatList.isEmpty()) {
-            noChatsTextView.setVisibility(View.VISIBLE);
-        } else {
-            noChatsTextView.setVisibility(View.GONE);
-        }
-
-        RecyclerView recyclerView = findViewById(R.id.message_listings);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        messageView = new ChatRecycler(this, chatList, username);
-        recyclerView.setAdapter(messageView);
-
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);

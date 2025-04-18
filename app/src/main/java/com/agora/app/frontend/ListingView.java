@@ -102,9 +102,10 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
                 Intent intent = new Intent(v.getContext(), ChatActivity.class);
                 intent.putExtra("listingUuid", listing.getUUID());
                 intent.putExtra("listingTitle", listing.getTitle());
-                intent.putExtra("ownerUser", listing.getSellerUsername());
+                intent.putExtra("otherUsername", listing.getSellerUsername());
                 Chat chat = new Chat(AppSession.currentUser.getUsername(), listing.getSellerUsername(), 0);
                 intent.putExtra("chatObj", chat);
+                intent.putExtra("currentUsername", AppSession.currentUser.getUsername());
                 v.getContext().startActivity(intent);
             });
             holder.saveButton.setOnClickListener(v -> {

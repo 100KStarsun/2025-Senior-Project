@@ -133,7 +133,8 @@ public class AccountCreatorActivity extends AppCompatActivity {
          * @param result  The result of the background thread's operation
          */
         protected void onPostExecute(User user) {
-            if (user != null) {
+            username = user.getUsername();
+            if (user != null && username != null) {
                 ExecutorService executor = Executors.newSingleThreadExecutor();
                 executor.execute(() -> {
                     try {
@@ -145,6 +146,7 @@ public class AccountCreatorActivity extends AppCompatActivity {
                 Intent intent = new Intent(AccountCreatorActivity.this, UserInfoActivity.class);
                 intent.putExtra("username", username);
                 intent.putExtra("userObj", user);
+                Toast.makeText(AccountCreatorActivity.this, username, Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             } else {
                 Log.d("Account creation", "Account creation failed: " + errorMessage);

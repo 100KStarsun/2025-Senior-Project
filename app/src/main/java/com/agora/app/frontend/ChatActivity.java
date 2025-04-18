@@ -6,6 +6,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.content.Intent;
+import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,13 +33,13 @@ public class ChatActivity extends AppCompatActivity {
     private List<Message> messageList;
     private EditText messageInput;
     private ImageView sendButton;
-    private Button backButton;
-    private String listingOwner;
+    private String otherUsername;
     private String listingTitle;
     private ChatView chatView;
     private User currentUser = AppSession.currentUser;
-    private String username = currentUser.getUsername();
+    private String currentUsername;
     private Chat chat;
+    private TextView recipient;
 
     @Override
     protected void onCreate(Bundle savedChat) {
@@ -44,31 +47,43 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chat);
         recyclerView = findViewById(R.id.chat_log);
         messageInput = findViewById(R.id.message_input);
-        listingOwner = getIntent().getStringExtra("ownerUser");
+        otherUsername = getIntent().getStringExtra("otherUsername");
         listingTitle = getIntent().getStringExtra("listingTitle");
         chat = getIntent().getSerializableExtra("chatObj", Chat.class);
+        currentUsername = AppSession.currentUser.getUsername();
         sendButton = findViewById(R.id.send_button);
-        //sendButton = findViewById(R.id.back_button);
+        recipient = findViewById(R.id.chat_recipient);
+        if (currentUsername == null || otherUsername == null) {
+            Log.e("ChatActivity", "Missing usernames in Intent for Chats. Current = "+ currentUsername + " Other = " + otherUsername);
+            Toast.makeText(ChatActivity.this, "Error opening chat...", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        recipient.setText(otherUsername);
 
         messageList = new ArrayList<>();
-        chatView = new ChatView(messageList, listingOwner);
+        chatView = new ChatView(messageList, currentUsername);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(chatView);
+
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
-            ArrayList<Message> pastMessages = currentUser.getAllMessagesOldestToNewest(listingOwner);
+            List<Message> pastMessages = AppSession.currentUser.getAllMessagesOldestToNewest(otherUsername);
             runOnUiThread(() -> {
+                messageList.clear();
                 messageList.addAll(pastMessages);
                 chatView.notifyDataSetChanged();
-                recyclerView.scrollToPosition(messageList.size() - 1);
+                if (!messageList.isEmpty()) {
+                    recyclerView.scrollToPosition(messageList.size() - 1);
+                }
             });
         });
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(chatView);
         sendButton.setOnClickListener(view -> {
             String messageText = messageInput.getText().toString().trim();
             if (!messageText.isEmpty()) {
                 executor.execute(() -> {
-                    Chat.sendMessage(listingOwner, messageText);
+                    Chat.sendMessage(otherUsername, messageText);
                 });
                 Message message = new Message(messageText, new Date(), true);
                 messageList.add(message);

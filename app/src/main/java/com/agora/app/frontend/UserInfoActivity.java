@@ -115,6 +115,8 @@ public class UserInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_user_info);
         username = getIntent().getStringExtra("username");
         currentUser = getIntent().getSerializableExtra("userObj", User.class);
+        Log.d("UserInfoActivity", "Username received: " + username);
+        Log.d("UserInfoActivity", "User Object: " + currentUser.toString());
         Objects.requireNonNull(getSupportActionBar()).hide();
         textUsername = findViewById(R.id.textUsername);
         textCaseId = findViewById(R.id.textCaseId);
@@ -358,33 +360,6 @@ public class UserInfoActivity extends AppCompatActivity {
             return file;
         }
 
-    //This should now be dysfunctional, want to keep for now to make sure I dont need it
-    /*
-    private class UserInfoTask extends AsyncTask<String, Void, User> {
-        private String errorMessage = "";
-        private String username;
-        @Override
-        protected User doInBackground(String... params) {
-            username = params[0];
-            try {
-                return LambdaHandler.getUsers(new String[]{username}).get(username);
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        protected void onPostExecute(User user) {
-            if (user != null) {
-                currentUser = user;
-                textUsername.setText(user.getUsername());
-                //new ListingRetrievalTask().execute();
-
-            } else {
-                Toast.makeText(UserInfoActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
-            }
-        }
-    } */
-
     // No changes needed, doesn't involve user object
     private class ListingSaveTask extends AsyncTask<String, Void, Boolean> {
         private String errorMessage = "";
@@ -415,6 +390,8 @@ public class UserInfoActivity extends AppCompatActivity {
             try {
                 return LambdaHandler.scanListings();
             } catch (Exception e) {
+                Log.e("UserInfoActivity", "Exception thrown: " + e.getClass().getName());
+                e.printStackTrace();
                 return null;
             }
         }
@@ -429,7 +406,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 for (Map.Entry<String, Listing> entry : retrievedListings.entrySet()) {
                     Listing listing = entry.getValue();
                     ListingManager.getInstance().addListing(listing);
-                    if (listing.getSellerUsername().equals(username)) {
+                    if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username)) {
                         selfListings.add(listing);
                     }
                 }
