@@ -420,7 +420,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 for (Map.Entry<String, Listing> entry : retrievedListings.entrySet()) {
                     Listing listing = entry.getValue();
                     ListingManager.getInstance().addListing(listing);
-                    if (listing.getSellerUsername().equals(username)) {
+                    if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username)) {
                         selfListings.add(listing);
                     }
                 }
