@@ -161,9 +161,12 @@ public class MarketplaceActivity extends AppCompatActivity {
         if (userPrefs) {
             filterPrefs = ListingManager.getInstance().getUserPrefs();
         }
-        boolean furnitureBoolean = filterPrefs[2];
-        boolean householdBoolean = filterPrefs[3];
-        boolean apparelBoolean = filterPrefs[4];
+        //boolean furnitureBoolean = filterPrefs[2];
+        boolean furnitureBoolean = (filterPrefs.length > 2 && filterPrefs[2] != null) ? filterPrefs[2] : false;
+        //boolean householdBoolean = filterPrefs[3];
+        boolean householdBoolean = (filterPrefs.length > 3 && filterPrefs[3] != null) ? filterPrefs[3] : false;
+        //boolean apparelBoolean = filterPrefs[4];
+        boolean apparelBoolean = (filterPrefs.length > 4 && filterPrefs[4] != null) ? filterPrefs[4] : false;
 
         if (minPrice > maxPrice) {
             maxPriceInput.setError("The maximum is less than the minimum!");
