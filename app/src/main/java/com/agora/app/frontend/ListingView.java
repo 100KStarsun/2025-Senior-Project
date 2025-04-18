@@ -64,6 +64,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     holder.title.setText(listing.getTitle());
     holder.description.setText(listing.getDescription());
     holder.price.setText("$" + String.format("%.2f", listing.getPrice()));
+    Listing currentListing = listings.get(position);
 
     String imagePath = listing.getImagePath();
 
@@ -88,8 +89,15 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         //boolean isSaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
         //holder.saveButton.setText(isSaved ? "Unsave" : "Save");
 
-        isArchived = ArchivedListingsManager.getInstance().getArchivedListings().contains(listing);
-        holder.archiveButton.setText(isArchived ? "Unarchive" : "Archive");
+        //isArchived = ArchivedListingsManager.getInstance().getArchivedListings().contains(listing);
+        //holder.archiveButton.setText(isArchived ? "Unarchive" : "Archive");
+        Button archiveButton = holder.itemView.findViewById(R.id.archive_button);
+        if (ArchivedListingsManager.getInstance().isArchived(currentListing)) {
+            archiveButton.setText("Unarchive");
+        }
+        else {
+            archiveButton.setText("Archive");
+        }
 
         if (useSaveButton) {
             holder.saveButton.setVisibility(View.VISIBLE);
@@ -136,21 +144,27 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
 
             holder.archiveButton.setVisibility(View.VISIBLE);
             holder.archiveButton.setOnClickListener(v -> {
-                if (isArchived) {
-                    ArchivedListingsManager.getInstance().removeSavedListing(listing);
-                    ListingManager.getInstance().addListing(listing);
+                if (ArchivedListingsManager.getInstance().isArchived(currentListing)) {
+                    ArchivedListingsManager.getInstance().removeArchivedListing(currentListing);
+                    //ArchivedListingsManager.getInstance().removeArchivedListing(listing);
+                    //ListingManager.getInstance().addListing(listing);
                     holder.archiveButton.setText("Archive");
-                    notifyItemChanged(holder.getAdapterPosition());
+                    //notifyItemChanged(holder.getAdapterPosition());
                 }
                 else {
-                    ArchivedListingsManager.getInstance().addSavedListing(listing);
-                    ListingManager.getInstance().removeListing(listing);
+                    ArchivedListingsManager.getInstance().addArchivedListing(currentListing);
+                    //ArchivedListingsManager.getInstance().addArchivedListing(listing);
+                    //ListingManager.getInstance().removeListing(listing);
                     holder.archiveButton.setText("Unarchive");
-                    notifyItemChanged(holder.getAdapterPosition());
+                    //notifyItemChanged(holder.getAdapterPosition());
                 }
+                notifyDataSetChanged();
+                /*
                 if (context instanceof UserInfoActivity) {
                     ((UserInfoActivity) context).refreshListings();
                 }
+
+                 */
             });
         }
 

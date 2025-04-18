@@ -116,6 +116,7 @@ public class UserInfoActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("username");
         Objects.requireNonNull(getSupportActionBar()).hide();
         textUsername = findViewById(R.id.textUsername);
+        ArchivedListingsManager.getInstance().initializeArchivedListings();
         new UserInfoTask().execute(username);
         new ListingRetrievalTask().execute();
 
@@ -215,7 +216,7 @@ public class UserInfoActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //view = new ListingView(listings, false);
-        view = new ListingView(activeListings, false, this);
+        // view = new ListingView(activeListings, false, this);
         view = new ListingView(selfListings, false);
         recyclerView.setAdapter(view);
 
@@ -409,15 +410,19 @@ public class UserInfoActivity extends AppCompatActivity {
                 return;
             }
             ListingManager.getInstance().getListings().clear();
+            //List<Listing> allListings = new ArrayList<>();
             HashMap<String, Listing> retrievedListings = dblistings;
             if (retrievedListings != null) {
                 for (Map.Entry<String, Listing> entry : retrievedListings.entrySet()) {
                     Listing listing = entry.getValue();
                     ListingManager.getInstance().addListing(listing);
-                    if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username)) {
+                    //allListings.add(listing);
+                    if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
                         selfListings.add(listing);
                     }
                 }
+
+                ArchivedListingsManager.getInstance().populateArchivedListings(selfListings);
 
                 //List<Listing> allListings = new ArrayList<>(dblistings.values());
                 //SavedListingsManager.getInstance().initializeSavedListings(currentUser);
