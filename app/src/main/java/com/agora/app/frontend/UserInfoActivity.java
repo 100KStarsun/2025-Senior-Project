@@ -196,12 +196,6 @@ public class UserInfoActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
 
-                if (item.getItemId() == R.id.nav_settings) {
-                    Intent intent = new Intent(UserInfoActivity.this, SettingsActivity.class);
-                    intent.putExtra("userobject", currentUser);
-                    startActivity(intent);
-                }
-
                 // Close the drawer after selection
                 drawerLayout.closeDrawers();
                 // Indicate that the item selection has been handled
