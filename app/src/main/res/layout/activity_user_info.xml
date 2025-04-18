@@ -103,21 +103,6 @@
                         android:textColor="?attr/colorOnBackground"
                         android:textSize="20dp" />
 
-                    <TextView
-                        android:id="@+id/textCaseId"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Case ID"
-                        android:textColor="?attr/colorOnBackground"
-                        android:textSize="15dp" />
-
-                    <TextView
-                        android:id="@+id/textTransactions"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Transactions to Date: #"
-                        android:textColor="?attr/colorOnBackground"
-                        android:textSize="15dp" />
                 </LinearLayout>
             </LinearLayout>
 

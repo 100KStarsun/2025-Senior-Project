@@ -127,10 +127,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@android:color/holo_blue_dark"
-        android:text="No listings are currently available :("
+        android:background="#003071"
+        android:textColor="@android:color/white"
+        android:text="No listings found. Please check back later or change your search criteria."
         android:textSize="30sp"
+        android:padding="16dp"
         android:gravity="center"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+
         />
 
     <!--listing scroller-->

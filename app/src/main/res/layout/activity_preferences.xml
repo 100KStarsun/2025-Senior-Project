@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -56,7 +57,10 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:gravity="center"
-            android:textColor="?attr/colorOnBackground"/>
+            android:textColor="?attr/colorOnBackground"
+            app:trackTint="#003071"
+            app:thumbTint="@android:color/white"
+            />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:text="Allow Cash Transactions "
@@ -64,7 +68,10 @@
             android:layout_width="wrap_content"
             android:layout_height="30dp"
             android:gravity="center"
-            android:textColor="?attr/colorOnBackground"/>
+            android:textColor="?attr/colorOnBackground"
+            app:trackTint="#003071"
+            app:thumbTint="@android:color/white"
+            />
 
     </LinearLayout>
 
@@ -92,21 +99,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:text="Furniture"
-                android:textColor="?attr/colorOnBackground"/>
+                android:textColor="?attr/colorOnBackground"
+                android:buttonTint="#003071"/>
 
             <CheckBox
                 android:id="@+id/householdCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:text="Household"
-                android:textColor="?attr/colorOnBackground"/>
+                android:textColor="?attr/colorOnBackground"
+                android:buttonTint="#003071"/>
 
             <CheckBox
                 android:id="@+id/apparelCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:text="Apparel"
-                android:textColor="?attr/colorOnBackground"/>
+                android:textColor="?attr/colorOnBackground"
+                android:buttonTint="#003071"/>
 
         </LinearLayout>
     </LinearLayout>
