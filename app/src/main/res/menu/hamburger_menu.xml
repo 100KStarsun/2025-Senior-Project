@@ -15,8 +15,4 @@
         android:id="@+id/nav_saved_posts"
         android:title="Saved Posts" />
 
-    <item
-        android:id="@+id/nav_settings"
-        android:title="Settings" />
-
 </menu>
