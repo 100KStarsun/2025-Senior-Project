@@ -7,7 +7,7 @@ import jakarta.mail.MessagingException;
 import android.util.Log;
 
 /**
- * Test implementation of an email sender, needs to be run asynchronously to the UI thread.
+ * Test implementation of an email sender, needs to be run asynchronously to the UI thread. Update
  */
 public class EmailSender {
 

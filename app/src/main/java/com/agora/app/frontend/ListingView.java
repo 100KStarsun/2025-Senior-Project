@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
 import com.agora.app.backend.base.User;
+import com.agora.app.backend.base.Chat;
+import com.agora.app.backend.AppSession;
 
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
@@ -95,6 +97,17 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.saveButton.setVisibility(View.VISIBLE);
             holder.archiveButton.setVisibility(View.GONE);
             holder.deleteButton.setVisibility(View.GONE);
+            holder.messageButton.setVisibility(View.VISIBLE);
+            holder.messageButton.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), ChatActivity.class);
+                intent.putExtra("listingUuid", listing.getUUID());
+                intent.putExtra("listingTitle", listing.getTitle());
+                intent.putExtra("otherUsername", listing.getSellerUsername());
+                Chat chat = new Chat(AppSession.currentUser.getUsername(), listing.getSellerUsername(), 0);
+                intent.putExtra("chatObj", chat);
+                intent.putExtra("currentUsername", AppSession.currentUser.getUsername());
+                v.getContext().startActivity(intent);
+            });
             holder.saveButton.setOnClickListener(v -> {
                 boolean currentlySaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
                 if (currentlySaved) {
@@ -170,6 +183,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         Button saveButton;
         Button archiveButton;
         Button deleteButton;
+        Button messageButton;
         ImageView imageView;
 
         public ViewHolder(View itemView) {
@@ -180,6 +194,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             imageView = itemView.findViewById(R.id.image);
             saveButton = itemView.findViewById(R.id.save_button);
             archiveButton = itemView.findViewById(R.id.archive_button);
+            messageButton = itemView.findViewById(R.id.message_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }

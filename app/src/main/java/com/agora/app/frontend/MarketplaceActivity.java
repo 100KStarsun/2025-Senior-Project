@@ -3,6 +3,7 @@ package com.agora.app.frontend;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.agora.app.backend.base.User;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,6 +33,7 @@ public class MarketplaceActivity extends AppCompatActivity {
     private List<Listing> listings;
     private ListingView view;
     private String username;
+    private User currentUser;
     private List<Listing> filteredListings;
     private SearchView searchBar;
     EditText minPriceInput;
@@ -45,7 +47,11 @@ public class MarketplaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_marketplace);
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
+
+        currentUser = getIntent().getSerializableExtra("userObj", User.class);
+
         listings = ListingManager.getInstance().noPersonalListings(username);
+
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
@@ -61,6 +67,7 @@ public class MarketplaceActivity extends AppCompatActivity {
             if (itemId == R.id.nav_messaging) {
                 Intent intent = new Intent(this, MessagingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
@@ -70,12 +77,14 @@ public class MarketplaceActivity extends AppCompatActivity {
             else if (itemId == R.id.nav_swiping) {
                 Intent intent = new Intent(this, SwipingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
                 Intent intent = new Intent(this, UserInfoActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
@@ -158,7 +167,7 @@ public class MarketplaceActivity extends AppCompatActivity {
         float minPrice = parsePrice(minPriceInput, 0.0f);
         float maxPrice = parsePrice(maxPriceInput, Float.MAX_VALUE);
         boolean userPrefs = userPrefsCheck.isChecked();
-        Boolean[] filterPrefs = new Boolean[5];
+        Boolean[] filterPrefs = {false, false, false, false, false};
         if (userPrefs) {
             filterPrefs = ListingManager.getInstance().getUserPrefs();
         }

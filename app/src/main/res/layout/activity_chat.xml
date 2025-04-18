@@ -68,17 +68,10 @@
 
             <!--MAKE USER NAME FOR CHAT USER-->
             <TextView
+                android:id="@+id/chat_recipient"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="User Name"
-                android:textColor="?attr/colorOnBackground"
-                android:textSize="15dp" />
-
-            <!--MAKE USER ID FOR CHAT USER-->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Case ID"
                 android:textColor="?attr/colorOnBackground"
                 android:textSize="15dp" />
         </LinearLayout>

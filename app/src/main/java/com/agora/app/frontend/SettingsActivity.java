@@ -28,6 +28,7 @@ public class SettingsActivity extends AppCompatActivity {
         buttonUserInfo.setOnClickListener(v -> {
             Intent intent = new Intent(SettingsActivity.this, UserInfoActivity.class);
             intent.putExtra("username", currentUser.getUsername());
+            intent.putExtra("userObj", currentUser);
             startActivity(intent);
         });
 

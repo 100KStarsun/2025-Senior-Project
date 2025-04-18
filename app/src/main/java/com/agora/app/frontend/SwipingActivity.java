@@ -4,16 +4,17 @@ import com.agora.app.R;
 import com.agora.app.backend.base.User;
 import com.agora.app.backend.lambda.LambdaHandler;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.agora.app.backend.base.User;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Button;
-import com.agora.app.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
@@ -55,12 +56,14 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         setContentView(R.layout.activity_swiping);
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
+        currentUser = getIntent().getSerializableExtra("userObj", User.class);
+        listings = ListingManager.getInstance().noPersonalListings(username);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            currentUser = getIntent().getSerializableExtra("userobject", User.class);
+            currentUser = getIntent().getSerializableExtra("userObj", User.class);
         }
         else {
-            currentUser = (User) getIntent().getSerializableExtra("userobject");
+            currentUser = (User) getIntent().getSerializableExtra("userObj");
         }
 
         if (currentUser == null) {
@@ -88,12 +91,14 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
             if (itemId == R.id.nav_messaging) {
                 Intent intent = new Intent(this, MessagingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
                 Intent intent = new Intent(this, MarketplaceActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
@@ -103,6 +108,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
             else if (itemId == R.id.nav_user_info) {
                 Intent intent = new Intent(this, UserInfoActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
@@ -110,7 +116,6 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
         });
 
         cardStackView = findViewById(R.id.listing_card_stack);
-        listings = new ArrayList<>(ListingManager.getInstance().noPersonalListings(username));
         //savedListings = new ArrayList<>();
         swipedCards = new HashSet<>();
         layoutManager = new CardStackLayoutManager(this, this);
@@ -207,7 +212,7 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
     private void updateListings() {
         List<Listing> newListings = new ArrayList<>();
         for (Listing listing : ListingManager.getInstance().getListings()) {
-            if (!swipedCards.contains(listing.getTitle())) {
+            if (listing.getSellerUsername() != null && !swipedCards.contains(listing.getTitle()) && !listing.getSellerUsername().equals(username)) {
                 newListings.add(listing);
             }
         }
@@ -237,7 +242,6 @@ public class SwipingActivity extends AppCompatActivity implements CardStackListe
                 currentUser = user;
                 SavedListingsManager.getInstance().initializeSavedListings(currentUser);
                 new ListingRetrievalTask().execute();
-
             } else {
                 Toast.makeText(SwipingActivity.this, "Failed to load user info", Toast.LENGTH_SHORT).show();
             }

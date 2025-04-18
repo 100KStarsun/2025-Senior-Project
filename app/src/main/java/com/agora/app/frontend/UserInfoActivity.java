@@ -86,8 +86,6 @@ public class UserInfoActivity extends AppCompatActivity {
     private Image imageObject;
     private String username;
     private TextView textUsername;
-    private TextView textCaseId;
-    private TextView textTransactions;
 
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -114,9 +112,12 @@ public class UserInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         username = getIntent().getStringExtra("username");
+        currentUser = getIntent().getSerializableExtra("userObj", User.class);
+        Log.d("UserInfoActivity", "Username received: " + username);
+        Log.d("UserInfoActivity", "User Object: " + currentUser.toString());
         Objects.requireNonNull(getSupportActionBar()).hide();
         textUsername = findViewById(R.id.textUsername);
-        new UserInfoTask().execute(username);
+        textUsername.setText(username);
         new ListingRetrievalTask().execute();
 
         // navigation bar routing section
@@ -131,16 +132,19 @@ public class UserInfoActivity extends AppCompatActivity {
             if (itemId == R.id.nav_messaging) {
                 Intent intent = new Intent(this, MessagingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_marketplace) {
                 Intent intent = new Intent(this, MarketplaceActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_swiping) {
                 Intent intent = new Intent(this, SwipingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_user_info) {
@@ -369,8 +373,6 @@ public class UserInfoActivity extends AppCompatActivity {
             return file;
         }
 
-
-
     private class UserInfoTask extends AsyncTask<String, Void, User> {
         private String errorMessage = "";
         private String username;
@@ -417,12 +419,15 @@ public class UserInfoActivity extends AppCompatActivity {
         }
     }
 
+    // No changes needed, doesn't involve the user object
     private class ListingRetrievalTask extends AsyncTask<Void, Void, HashMap<String, Listing>> {
         @Override
         protected HashMap<String, Listing> doInBackground(Void... params) {
             try {
                 return LambdaHandler.scanListings();
             } catch (Exception e) {
+                Log.e("UserInfoActivity", "Exception thrown: " + e.getClass().getName());
+                e.printStackTrace();
                 return null;
             }
         }
