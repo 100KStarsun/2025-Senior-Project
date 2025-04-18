@@ -68,6 +68,7 @@ public class ChatActivity extends AppCompatActivity {
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
+            AppSession.currentUser.loadMetaChats();
             List<Message> pastMessages = AppSession.currentUser.getAllMessagesOldestToNewest(otherUsername);
             runOnUiThread(() -> {
                 messageList.clear();
