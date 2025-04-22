@@ -56,6 +56,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import com.agora.app.backend.base.Image;
 
 
 
@@ -79,13 +80,21 @@ public class UserInfoActivity extends AppCompatActivity {
     private List<Listing> selfListings = new ArrayList<>();
     private ListingView view;
 
-    private EditText imagePathInput;
-    private ImageView image = null;
-    private String imagePath = null;  // Add this line at the top of your activity class
-    private File imageFile;
-    private Image imageObject;
+
+
+
+ 
+
     private String username;
     private TextView textUsername;
+
+    //private EditText imagePathInput;
+    //private Image image;
+    private File imageFile;
+    private Image image;
+    private ImageView imageView = null;
+    private String imagePath = null;  
+
 
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -96,14 +105,20 @@ public class UserInfoActivity extends AppCompatActivity {
                     imagePath = getFileFromURI(selectedImageUri, this).getPath();
                     imageFile = getFileFromURI(selectedImageUri, this);
                     try {
-                        imageObject = new Image(imageFile);
+
+                        image = new Image(imageFile);
+                        
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
+
                     
                 }
             }
+        }
         });
+    
+
+    
 
 
 
@@ -299,7 +314,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 String type = "default"; 
 
 
-                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
+                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, image);
 
                 ListingManager.getInstance().addListing(newListing);
                 List<Listing> updatedListings = new ArrayList<>();
@@ -327,6 +342,7 @@ public class UserInfoActivity extends AppCompatActivity {
 
         dialog.show();
     } 
+
         private void openGallery() {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerLauncher.launch(intent);
