@@ -3,8 +3,10 @@ package com.agora.app.frontend;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.agora.app.backend.base.User;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,6 +33,7 @@ public class MarketplaceActivity extends AppCompatActivity {
     private List<Listing> listings;
     private ListingView view;
     private String username;
+    private User currentUser;
     private List<Listing> filteredListings;
     private SearchView searchBar;
     EditText minPriceInput;
@@ -44,7 +47,11 @@ public class MarketplaceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_marketplace);
         Objects.requireNonNull(getSupportActionBar()).hide();
         username = getIntent().getStringExtra("username");
+
+        currentUser = getIntent().getSerializableExtra("userObj", User.class);
+
         listings = ListingManager.getInstance().noPersonalListings(username);
+
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
@@ -60,6 +67,7 @@ public class MarketplaceActivity extends AppCompatActivity {
             if (itemId == R.id.nav_messaging) {
                 Intent intent = new Intent(this, MessagingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
@@ -69,12 +77,14 @@ public class MarketplaceActivity extends AppCompatActivity {
             else if (itemId == R.id.nav_swiping) {
                 Intent intent = new Intent(this, SwipingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
                 Intent intent = new Intent(this, UserInfoActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             }
@@ -157,13 +167,18 @@ public class MarketplaceActivity extends AppCompatActivity {
         float minPrice = parsePrice(minPriceInput, 0.0f);
         float maxPrice = parsePrice(maxPriceInput, Float.MAX_VALUE);
         boolean userPrefs = userPrefsCheck.isChecked();
-        Boolean[] filterPrefs = new Boolean[3];
+        Boolean[] filterPrefs = {false, false, false, false, false};
         if (userPrefs) {
             filterPrefs = ListingManager.getInstance().getUserPrefs();
         }
-        boolean furnitureBoolean = filterPrefs[2];
-        boolean householdBoolean = filterPrefs[3];
-        boolean apparelBoolean = filterPrefs[4];
+
+        //boolean furnitureBoolean = filterPrefs[2];
+        boolean furnitureBoolean = (filterPrefs.length > 2 && filterPrefs[2] != null) ? filterPrefs[2] : false;
+        //boolean householdBoolean = filterPrefs[3];
+        boolean householdBoolean = (filterPrefs.length > 3 && filterPrefs[3] != null) ? filterPrefs[3] : false;
+        //boolean apparelBoolean = filterPrefs[4];
+        boolean apparelBoolean = (filterPrefs.length > 4 && filterPrefs[4] != null) ? filterPrefs[4] : false;
+
 
         if (minPrice > maxPrice) {
             maxPriceInput.setError("The maximum is less than the minimum!");
@@ -174,14 +189,27 @@ public class MarketplaceActivity extends AppCompatActivity {
         for (Listing listing : listings) {
             boolean searchCriteria = textSearch(listing, search);
             boolean priceCriteria = listing.getPrice() >= minPrice && listing.getPrice() <= maxPrice;
+            boolean prefCriteria = true;
             tags = listing.getTags();
-            if (searchCriteria && priceCriteria) {
+            Log.d("FILTER_DEBUG", "---- Listing: " + listing.getTitle() + " ----");
+            Log.d("FILTER_DEBUG", "Tags: " + tags.toString());
+            Log.d("FILTER_DEBUG", "FurniturePref: " + furnitureBoolean);
+            Log.d("FILTER_DEBUG", "HouseholdPref: " + householdBoolean);
+            Log.d("FILTER_DEBUG", "ApparelPref: " + apparelBoolean);
+            Log.d("FILTER_DEBUG", "UserPrefs enabled: " + userPrefs);
+
+            if (userPrefs) {
+                prefCriteria = (furnitureBoolean && tags.contains("Furniture")) || (householdBoolean && tags.contains("Household")) || (apparelBoolean && tags.contains("Apparel"));
+            }
+            if (searchCriteria && priceCriteria && prefCriteria) {
                 filteredListings.add(listing);
             }
             /*
              * Gotta enforce that people are using correct tags, would be nice to have these fields align
              * with checkboxes in posting but this should work regardless
              */
+
+            /*
             if (furnitureBoolean && tags.contains("Furniture")) {
                 filteredListings.add(listing);
             }
@@ -191,6 +219,8 @@ public class MarketplaceActivity extends AppCompatActivity {
             if (apparelBoolean && tags.contains("Apparel")) {
                 filteredListings.add(listing);
             }
+
+             */
         }
 
         view.notifyDataSetChanged();

@@ -1,4 +1,5 @@
 package com.agora.app.backend.base;
+import com.agora.app.backend.base.Image;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,10 +34,12 @@ public class Listing implements Serializable {
     private boolean isArchived;
     private ArrayList<UUID> previousBuyers;
     private ArrayList<String> tags;
-    private String imagePath;
+    private Image image;
 
     //Every field provided
-    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, boolean archived, ArrayList<UUID> previousBuyers, ArrayList<String> tags, String imagePath) {
+
+    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, String displayName, String username, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, boolean archived, ArrayList<UUID> previousBuyers, ArrayList<String> tags, Image image) {
+
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = listingTime;
@@ -53,10 +56,10 @@ public class Listing implements Serializable {
         this.isArchived = archived;
         this.previousBuyers = previousBuyers;
         this.tags = tags;
-        this.imagePath = imagePath;
+        this.image = image;
     }
     //Defaults where applicable
-    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, ArrayList<String> tags, String imagePath) {
+    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, ArrayList<String> tags, Image image) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = Date.from(Instant.now());
@@ -73,10 +76,10 @@ public class Listing implements Serializable {
         this.isArchived = false;
         this.previousBuyers = new ArrayList<>();
         this.tags = tags;
-        this.imagePath = imagePath;
+        this.image = image;
     }
     //Defaults for most things, but allows quantity and infiniteavailabilty
-    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, int quantity, boolean infiniteAvailable, ArrayList<String> tags, String imagePath) {
+    public Listing(UUID uuid, String title, float price, String desc, String displayName, String username, String type, int quantity, boolean infiniteAvailable, ArrayList<String> tags, Image image) {
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = Date.from(Instant.now());
@@ -93,10 +96,12 @@ public class Listing implements Serializable {
         this.isArchived = false;
         this.previousBuyers = new ArrayList<>();
         this.tags = tags;
-        this.imagePath = imagePath;
+        this.image = image;
     }
     //Seller information comes from a User object
-    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, User user, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, boolean archived, ArrayList<UUID> previousBuyers, ArrayList<String> tags, String imagePath) {
+
+    public Listing(UUID uuid, String title, Date listingTime, float price, String desc, User user, String type, int quantity, boolean hasInfinite, boolean published, boolean acceptingCash, boolean tradable, boolean archived, ArrayList<UUID> previousBuyers, ArrayList<String> tags, Image image) {
+
         this.listingUUID = uuid;
         this.title = title;
         this.listingTime = listingTime;
@@ -113,7 +118,7 @@ public class Listing implements Serializable {
         this.isArchived = archived;
         this.previousBuyers = previousBuyers;
         this.tags = tags;
-        this.imagePath = imagePath;
+        this.image = image;
     }
     /**
      * Used by the {@code ListingWrapper} class to turn the base64-encoded string back into a {@code Listing}, using an {@code ObjectInputStream}, {@code ByteArrayInputStream}, and the {@code Base64.Decoder} class.
@@ -178,5 +183,5 @@ public class Listing implements Serializable {
     public void toggleIsArchived() { this.isArchived = !this.isArchived; }
     public void addPreviousBuyer (UUID previousBuyer) { this.previousBuyers.add(previousBuyer); }
     public void setTags (ArrayList<String> tags) { this.tags = tags; }
-    public String getImagePath(){return imagePath;}
+    public Image getImage(){return image;}
 }

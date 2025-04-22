@@ -76,6 +76,13 @@
         android:layout_height="wrap_content"
         android:text="Save"
         android:id="@+id/save_button"/>
+    <Button
+        android:id="@+id/message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message"
+        android:visibility="gone" 
+        android:layout_marginStart="8dp"/>
         
 
 

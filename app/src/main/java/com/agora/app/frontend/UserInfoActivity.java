@@ -56,6 +56,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import com.agora.app.backend.base.Image;
 
 
 
@@ -79,15 +80,21 @@ public class UserInfoActivity extends AppCompatActivity {
     private List<Listing> selfListings = new ArrayList<>();
     private ListingView view;
 
-    private EditText imagePathInput;
-    private ImageView image = null;
-    private String imagePath = null;  // Add this line at the top of your activity class
-    private File imageFile;
-    private Image imageObject;
+
+
+
+ 
+
     private String username;
     private TextView textUsername;
-    private TextView textCaseId;
-    private TextView textTransactions;
+
+    //private EditText imagePathInput;
+    //private Image image;
+    private File imageFile;
+    private Image image;
+    private ImageView imageView = null;
+    private String imagePath = null;  
+
 
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -98,14 +105,20 @@ public class UserInfoActivity extends AppCompatActivity {
                     imagePath = getFileFromURI(selectedImageUri, this).getPath();
                     imageFile = getFileFromURI(selectedImageUri, this);
                     try {
-                        imageObject = new Image(imageFile);
+
+                        image = new Image(imageFile);
+                        
                     } catch (IOException e) {
                         e.printStackTrace();
-                    }
+
                     
                 }
             }
+        }
         });
+    
+
+    
 
 
 
@@ -114,9 +127,12 @@ public class UserInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_info);
         username = getIntent().getStringExtra("username");
+        currentUser = getIntent().getSerializableExtra("userObj", User.class);
+        Log.d("UserInfoActivity", "Username received: " + username);
+        Log.d("UserInfoActivity", "User Object: " + currentUser.toString());
         Objects.requireNonNull(getSupportActionBar()).hide();
         textUsername = findViewById(R.id.textUsername);
-        new UserInfoTask().execute(username);
+        textUsername.setText(username);
         new ListingRetrievalTask().execute();
 
         // navigation bar routing section
@@ -131,16 +147,19 @@ public class UserInfoActivity extends AppCompatActivity {
             if (itemId == R.id.nav_messaging) {
                 Intent intent = new Intent(this, MessagingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_marketplace) {
                 Intent intent = new Intent(this, MarketplaceActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_swiping) {
                 Intent intent = new Intent(this, SwipingActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
                 startActivity(intent);
                 return true;
             } else if (itemId == R.id.nav_user_info) {
@@ -205,18 +224,26 @@ public class UserInfoActivity extends AppCompatActivity {
 
         // listings scroller
         // finds and displays listing view on page
+        /*
         List<Listing> activeListings = new ArrayList<>();
         for (Listing listing : listings) {
             if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
                 activeListings.add(listing);
             }
         }
+         */
+        selfListings.clear();
+        for (Listing listing : listings) {
+            if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                selfListings.add(listing);
+            }
+        }
 
         RecyclerView recyclerView = findViewById(R.id.item_listings);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         //view = new ListingView(listings, false);
-        view = new ListingView(activeListings, false, this);
-        view = new ListingView(selfListings, false);
+        //view = new ListingView(activeListings, false, this);
+        view = new ListingView(selfListings, false, this);
         recyclerView.setAdapter(view);
 
         // creates button for ability to add listing
@@ -287,12 +314,27 @@ public class UserInfoActivity extends AppCompatActivity {
                 String type = "default"; 
 
 
-                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
+                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, image);
 
                 ListingManager.getInstance().addListing(newListing);
+                List<Listing> updatedListings = new ArrayList<>();
+
+                for (Listing listing : ListingManager.getInstance().getListings()) {
+                    if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                        updatedListings.add(listing);
+                    }
+                }
+
+                selfListings = updatedListings;
+                view.updateListings(updatedListings);
+                //listings.add(newListing);
+                //selfListings.add(newListing);
+                //view.updateListings(selfListings);
                 //view.notifyItemInserted(listings.size() - 1);
-                view.notifyItemInserted(view.getItemCount() - 1);
-                refreshListings();
+                //view.notifyItemInserted(view.getItemCount() - 1);
+                //view.notifyItemInserted(selfListings.size() - 1);
+                //refreshListings();
+                //view.notifyDataSetChanged();
                 dialog.dismiss();
                 new ListingSaveTask().execute(newListing.getUUID().toString(), newListing.toBase64String());
             }
@@ -300,19 +342,20 @@ public class UserInfoActivity extends AppCompatActivity {
 
         dialog.show();
     } 
+
         private void openGallery() {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerLauncher.launch(intent);
         }
 
         void refreshListings() {
-            List<Listing> activeListings = new ArrayList<>();
-            for (Listing listing : listings) {
-                if (!ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
-                    activeListings.add(listing);
+            selfListings.clear();
+            for (Listing listing : ListingManager.getInstance().getListings()) {
+                if (listing.getSellerUsername() != null && listing.getSellerUsername().equals(username) && !ArchivedListingsManager.getInstance().getArchivedListings().contains(listing)) {
+                    selfListings.add(listing);
                 }
             }
-            view.updateListings(activeListings);
+            view.updateListings(selfListings);
         }
 
         /**
@@ -345,8 +388,6 @@ public class UserInfoActivity extends AppCompatActivity {
             }
             return file;
         }
-
-
 
     private class UserInfoTask extends AsyncTask<String, Void, User> {
         private String errorMessage = "";
@@ -394,12 +435,15 @@ public class UserInfoActivity extends AppCompatActivity {
         }
     }
 
+    // No changes needed, doesn't involve the user object
     private class ListingRetrievalTask extends AsyncTask<Void, Void, HashMap<String, Listing>> {
         @Override
         protected HashMap<String, Listing> doInBackground(Void... params) {
             try {
                 return LambdaHandler.scanListings();
             } catch (Exception e) {
+                Log.e("UserInfoActivity", "Exception thrown: " + e.getClass().getName());
+                e.printStackTrace();
                 return null;
             }
         }
@@ -409,6 +453,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 return;
             }
             ListingManager.getInstance().getListings().clear();
+            selfListings.clear();
             HashMap<String, Listing> retrievedListings = dblistings;
             if (retrievedListings != null) {
                 for (Map.Entry<String, Listing> entry : retrievedListings.entrySet()) {

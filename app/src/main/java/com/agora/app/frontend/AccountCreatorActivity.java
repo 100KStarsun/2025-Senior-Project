@@ -1,6 +1,9 @@
 package com.agora.app.frontend;
 
 import com.agora.app.backend.RegistrationHandler;
+import com.agora.app.backend.lambda.LambdaHandler;
+import com.agora.app.backend.base.User;
+import com.agora.app.backend.AppSession;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.AsyncTask;
@@ -15,6 +18,9 @@ import java.security.NoSuchAlgorithmException;
 import org.json.JSONException;
 import android.util.Log;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.io.IOException;
 
 /**
  * @class AccountCreatorActivity
@@ -93,7 +99,7 @@ public class AccountCreatorActivity extends AppCompatActivity {
      * creation is carried out by the RegistrationHandler.register method
      * onPostExecute carries out once the background task completes/fails
      */
-    private class AccountCreationTask extends AsyncTask<String, Void, Boolean> {
+    private class AccountCreationTask extends AsyncTask<String, Void, User> {
         private String errorMessage = "";
         private String username;
 
@@ -105,13 +111,18 @@ public class AccountCreatorActivity extends AppCompatActivity {
          * @return        true if account creation is successful, false if not
          */
         @Override
-        protected Boolean doInBackground(String... params) {
+        protected User doInBackground(String... params) {
             String username = params[0];
             String password = params[1];
             try {
-                return RegistrationHandler.register(username, password);
+                boolean registration = RegistrationHandler.register(username, password);
+                if (registration) {
+                    return LambdaHandler.getUsers(new String[]{username}).get(username); 
+                } else {
+                    return null;
+                }
             } catch (NullPointerException e) {
-                return false;
+                return null;
             }
         }
 
@@ -121,11 +132,21 @@ public class AccountCreatorActivity extends AppCompatActivity {
          * 
          * @param result  The result of the background thread's operation
          */
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            if (result) {
+        protected void onPostExecute(User user) {
+            username = user.getUsername();
+            if (user != null && username != null) {
+                ExecutorService executor = Executors.newSingleThreadExecutor();
+                executor.execute(() -> {
+                    try {
+                        AppSession session = new AppSession(user);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
                 Intent intent = new Intent(AccountCreatorActivity.this, UserInfoActivity.class);
                 intent.putExtra("username", username);
+                intent.putExtra("userObj", user);
+                Toast.makeText(AccountCreatorActivity.this, username, Toast.LENGTH_SHORT).show();
                 startActivity(intent);
             } else {
                 Log.d("Account creation", "Account creation failed: " + errorMessage);

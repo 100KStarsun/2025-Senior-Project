@@ -196,11 +196,18 @@ public class User implements Serializable {
 
     public void loadMetaChats () {
         this.chats = LambdaHandler.scanChats(this.username);
+        if (this.chats == null) {
+            this.chats = new HashMap<>();
+        }
     }
 
     public void loadChats () {
-        String[] chatIDsToGet = this.chats.values().toArray(new String[this.chats.size()]);
-        this.chatObjects = LambdaHandler.getChats(chatIDsToGet);
+        if (this.chats.size() == 0) {
+            this.chatObjects = new HashMap<>();
+        } else {
+            String[] chatIDsToGet = this.chats.values().toArray(new String[this.chats.size()]);
+            this.chatObjects = LambdaHandler.getChats(chatIDsToGet);
+        }
     }
 
     public HashMap<String, Chat> getChatObjects () {
@@ -211,13 +218,6 @@ public class User implements Serializable {
 
     public ArrayList<Boolean> getPreferences() { return this.userPreferences; }
 
-    public void setLikedListings(ArrayList<UUID> likedListings) {
-        this.likedListings = likedListings;
-    }
-
-    public ArrayList<UUID> getLikedListings() {
-        return likedListings;
-    }
 
     public ArrayList<Message> getAllMessagesOldestToNewest (String otherUsername) {
         return this.getChatObject(otherUsername).getAllMessagesOldestToNewest();
@@ -225,5 +225,13 @@ public class User implements Serializable {
 
     public ArrayList<Message> getAllMessagesNewestToOldest (String otherUsername) {
         return this.getChatObject(otherUsername).getAllMessagesNewestToOldest();
+    }
+
+    public void setLikedListings(ArrayList<UUID> likedListings) {
+        this.likedListings = likedListings;
+    }
+
+    public ArrayList<UUID> getLikedListings() {
+        return likedListings;
     }
 }

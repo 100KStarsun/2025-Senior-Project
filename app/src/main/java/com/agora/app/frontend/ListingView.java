@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
 import com.agora.app.backend.base.User;
+import com.agora.app.backend.base.Chat;
+import com.agora.app.backend.AppSession;
 
 import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
@@ -24,6 +26,7 @@ import android.graphics.BitmapFactory;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
+import com.agora.app.backend.base.Image;
 
 
 /**
@@ -65,9 +68,12 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     holder.description.setText(listing.getDescription());
     holder.price.setText("$" + String.format("%.2f", listing.getPrice()));
 
-    String imagePath = listing.getImagePath();
+    Image image = listing.getImage();
 
-    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+    //Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+    byte[] imageData = image.getData();
+    Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+
         if (bitmap != null) {
             holder.imageView.setImageBitmap(bitmap); 
         } else {
@@ -75,13 +81,16 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.imageView.setImageResource(R.drawable.ic_placeholder);
         }
 
+    //holder.imageView.setImageResource(R.drawable.ic_placeholder);
+    
+
     // Set click listener for each listing card
     holder.itemView.setOnClickListener(v -> {
         Intent intent = new Intent(v.getContext(), ExpandedListingActivity.class);
         intent.putExtra("title", listing.getTitle());
         intent.putExtra("description", listing.getDescription());
         intent.putExtra("price", listing.getPrice());
-        intent.putExtra("image", imagePath); 
+        intent.putExtra("image", listing.getImage()); 
         intent.putStringArrayListExtra("tags", new ArrayList<String>(listing.getTags())); // pass tags as ArrayList
         v.getContext().startActivity(intent);
     });
@@ -95,6 +104,17 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.saveButton.setVisibility(View.VISIBLE);
             holder.archiveButton.setVisibility(View.GONE);
             holder.deleteButton.setVisibility(View.GONE);
+            holder.messageButton.setVisibility(View.VISIBLE);
+            holder.messageButton.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), ChatActivity.class);
+                intent.putExtra("listingUuid", listing.getUUID());
+                intent.putExtra("listingTitle", listing.getTitle());
+                intent.putExtra("otherUsername", listing.getSellerUsername());
+                Chat chat = new Chat(AppSession.currentUser.getUsername(), listing.getSellerUsername(), 0);
+                intent.putExtra("chatObj", chat);
+                intent.putExtra("currentUsername", AppSession.currentUser.getUsername());
+                v.getContext().startActivity(intent);
+            });
             holder.saveButton.setOnClickListener(v -> {
                 boolean currentlySaved = SavedListingsManager.getInstance().getSavedListings().contains(listing);
                 if (currentlySaved) {
@@ -153,8 +173,10 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
                 }
             });
         }
-
     }
+
+
+    
     
 
     @Override
@@ -170,6 +192,7 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         Button saveButton;
         Button archiveButton;
         Button deleteButton;
+        Button messageButton;
         ImageView imageView;
 
         public ViewHolder(View itemView) {
@@ -180,13 +203,15 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             imageView = itemView.findViewById(R.id.image);
             saveButton = itemView.findViewById(R.id.save_button);
             archiveButton = itemView.findViewById(R.id.archive_button);
+            messageButton = itemView.findViewById(R.id.message_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }
 
     public void updateListings(List<Listing> changes) {
-        this.listings.clear();
-        this.listings.addAll(changes);
+        //this.listings.clear();
+        //this.listings.addAll(changes);
+        this.listings = new ArrayList<>(changes);
         notifyDataSetChanged();
     }
 
