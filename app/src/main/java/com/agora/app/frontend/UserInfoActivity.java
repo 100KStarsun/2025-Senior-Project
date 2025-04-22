@@ -80,11 +80,6 @@ public class UserInfoActivity extends AppCompatActivity {
     private List<Listing> selfListings = new ArrayList<>();
     private ListingView view;
 
-
-
-
- 
-
     private String username;
     private TextView textUsername;
 
@@ -102,8 +97,9 @@ public class UserInfoActivity extends AppCompatActivity {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 Uri selectedImageUri = result.getData().getData();
                 if (selectedImageUri != null) {
-                    imagePath = getFileFromURI(selectedImageUri, this).getPath();
                     imageFile = getFileFromURI(selectedImageUri, this);
+                    imagePath = imageFile.getPath();
+
                     try {
 
                         image = new Image(imageFile);

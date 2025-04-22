@@ -71,8 +71,10 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     Image image = listing.getImage();
 
     //Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-    byte[] imageData = image.getData();
-    Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+
+    if (image != null){
+        byte[] imageData = image.getData();
+        Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
 
         if (bitmap != null) {
             holder.imageView.setImageBitmap(bitmap); 
@@ -81,6 +83,8 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.imageView.setImageResource(R.drawable.ic_placeholder);
         }
 
+    }
+        
     //holder.imageView.setImageResource(R.drawable.ic_placeholder);
     
 
