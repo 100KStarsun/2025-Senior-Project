@@ -49,6 +49,7 @@ import java.io.InputStream;
 import java.io.IOException;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import com.agora.app.backend.base.Image;
 
 
 
@@ -65,9 +66,12 @@ public class UserInfoActivity extends AppCompatActivity {
     // variables for the list of listing and the view in which to see listings on page
     private List<Listing> listings = ListingManager.getInstance().getListings();
     private ListingView view;
-    private EditText imagePathInput;
-    private ImageView image = null;
-    private String imagePath = null;  // Add this line at the top of your activity class
+    //private EditText imagePathInput;
+    //private Image image;
+    private File imageFile;
+    private Image image;
+    private ImageView imageView = null;
+    private String imagePath = null;  
 
 
     private final ActivityResultLauncher<Intent> imagePickerLauncher =
@@ -75,11 +79,21 @@ public class UserInfoActivity extends AppCompatActivity {
             if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                 Uri selectedImageUri = result.getData().getData();
                 if (selectedImageUri != null) {
-                    imagePath = getRealPathFromURI(selectedImageUri, this);
+                    imagePath = getFileFromURI(selectedImageUri, this).getPath();
+                    imageFile = getFileFromURI(selectedImageUri, this);
+                    try {
+                        image = new Image(imageFile);
+                        
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     
                 }
             }
+        }
         });
+    
+
+    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,7 +246,7 @@ public class UserInfoActivity extends AppCompatActivity {
                 String username = "user"; 
                 String type = "default"; 
 
-                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, imagePath);
+                Listing newListing = new Listing(uuid, title, price, description, displayName, username, type, tags, image);
                 ListingManager.getInstance().addListing(newListing);
                 view.notifyItemInserted(listings.size() - 1);
                 dialog.dismiss();
@@ -241,6 +255,7 @@ public class UserInfoActivity extends AppCompatActivity {
 
         dialog.show();
     } 
+
         private void openGallery() {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             imagePickerLauncher.launch(intent);
@@ -249,7 +264,7 @@ public class UserInfoActivity extends AppCompatActivity {
         /**
          * adapted from https://nobanhasan.medium.com/get-picked-image-actual-path-android-11-12-180d1fa12692
          */
-        private String getRealPathFromURI(Uri uri, Context context) {
+        private File getFileFromURI(Uri uri, Context context) {
             Cursor returnCursor = context.getContentResolver().query(uri, null, null, null, null);
             int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
@@ -274,7 +289,7 @@ public class UserInfoActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e("Exception", e.getMessage());
             }
-            return file.getPath();
+            return file;
         }
         
     }

@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
+import com.agora.app.backend.base.Image;
 
 
 /**
@@ -53,9 +54,12 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
     holder.description.setText(listing.getDescription());
     holder.price.setText("$" + String.format("%.2f", listing.getPrice()));
 
-    String imagePath = listing.getImagePath();
+    Image image = listing.getImage();
 
-    Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+    //Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+    byte[] imageData = image.getData();
+    Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+
         if (bitmap != null) {
             holder.imageView.setImageBitmap(bitmap); 
         } else {
@@ -63,13 +67,16 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
             holder.imageView.setImageResource(R.drawable.ic_placeholder);
         }
 
+    //holder.imageView.setImageResource(R.drawable.ic_placeholder);
+    
+
     // Set click listener for each listing card
     holder.itemView.setOnClickListener(v -> {
         Intent intent = new Intent(v.getContext(), ExpandedListingActivity.class);
         intent.putExtra("title", listing.getTitle());
         intent.putExtra("description", listing.getDescription());
         intent.putExtra("price", listing.getPrice());
-        intent.putExtra("image", imagePath); 
+        intent.putExtra("image", listing.getImage()); 
         intent.putStringArrayListExtra("tags", new ArrayList<String>(listing.getTags())); // pass tags as ArrayList
         v.getContext().startActivity(intent);
     });
@@ -93,8 +100,10 @@ public class ListingView extends RecyclerView.Adapter<ListingView.ViewHolder> {
         else {
             holder.saveButton.setVisibility(View.GONE);
         }
-
     }
+
+
+    
     
 
     @Override

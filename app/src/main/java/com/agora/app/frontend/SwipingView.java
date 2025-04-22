@@ -60,15 +60,15 @@ public class SwipingView extends RecyclerView.Adapter<SwipingView.ListingViewHol
         public void bind(Listing listing) {
             cardTitle.setText(listing.getTitle());
             
-            String imagePath = listing.getImagePath();
-            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+            //String imagePath = listing.getImagePath();
+            //Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
 
-                if (bitmap != null) {
-                    imageView.setImageBitmap(bitmap); 
-                } else {
+                //if (bitmap != null) {
+                    //imageView.setImageBitmap(bitmap); 
+                //} else {
                     // Fallback to a placeholder image if decoding failed
                     imageView.setImageResource(R.drawable.ic_placeholder);
-                }
+                //}
         }
     }
 
