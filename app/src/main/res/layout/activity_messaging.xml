@@ -56,8 +56,11 @@
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/user_chats"
-        android:layout_weight="1"/>
+        android:id="@+id/message_listings"
+        android:scrollbars="vertical"
+        android:layout_weight="1"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <!--nav bar-->
     <com.google.android.material.bottomnavigation.BottomNavigationView

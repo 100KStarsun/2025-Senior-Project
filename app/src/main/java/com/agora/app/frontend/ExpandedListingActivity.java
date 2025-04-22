@@ -2,6 +2,7 @@ package com.agora.app.frontend;
 import com.agora.app.backend.base.Listing;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 
 
 public class ExpandedListingActivity extends AppCompatActivity {
@@ -22,6 +24,8 @@ public class ExpandedListingActivity extends AppCompatActivity {
     private TextView tag1TextView;
     private TextView tag2TextView;
     private TextView tag3TextView;
+    private TextView comma1;
+    private TextView comma2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +43,18 @@ public class ExpandedListingActivity extends AppCompatActivity {
         tag1TextView = findViewById(R.id.expanded_listing_tag1);
         tag2TextView = findViewById(R.id.expanded_listing_tag2);
         tag3TextView = findViewById(R.id.expanded_listing_tag3);
+        comma1 = findViewById(R.id.comma1); 
+        comma2 = findViewById(R.id.comma2);
+        Button backButton = findViewById(R.id.buttonMarketplace);
 
         // Get the data passed from the previous activity
         String title = getIntent().getStringExtra("title");
         String description = getIntent().getStringExtra("description");
         float price = getIntent().getFloatExtra("price", 0.0f); 
+
         //Image image = getIntent().getStringExtra("image");
         ArrayList<String> tags = getIntent().getStringArrayListExtra("tags"); 
+
 
         // Set the values to the respective views
         titleTextView.setText(title);
@@ -65,6 +74,12 @@ public class ExpandedListingActivity extends AppCompatActivity {
             tag1TextView.setText(tags.size() > 0 ? tags.get(0) : "");
             tag2TextView.setText(tags.size() > 1 ? tags.get(1) : "");
             tag3TextView.setText(tags.size() > 2 ? tags.get(2) : "");
+            comma1.setVisibility(tags.size() == 2 ? View.VISIBLE : View.GONE);
+            comma2.setVisibility(tags.size() == 3 ? View.VISIBLE : View.GONE);
         }
+
+        backButton.setOnClickListener(v -> {
+            finish();
+        });
     }
 }

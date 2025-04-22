@@ -1,7 +1,11 @@
 package com.agora.app.backend.lambda;
 
+import com.agora.app.backend.AppSession;
+import com.agora.app.backend.base.Chat;
 import com.agora.app.backend.base.Image;
 import com.agora.app.backend.base.ImageChunk;
+import com.agora.app.backend.base.Message;
+import com.agora.app.backend.base.MessageBlock;
 import com.agora.app.backend.base.Password;
 import com.agora.app.backend.base.Listing;
 import com.agora.app.backend.base.User;
@@ -13,13 +17,15 @@ import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
 import software.amazon.awssdk.services.lambda.model.InvokeRequest;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Random;
+import java.util.TreeMap;
 
 public class LambdaHandler {
 
@@ -28,7 +34,9 @@ public class LambdaHandler {
     public static final String agoraTempDir = "\\.agora\\";
     public static final boolean writeOutputs = false;
     private static final Region awsRegion = Region.US_EAST_2; // We will only be using stuff in the us_east_2 region as this region is based in Ohio
+    private static final AwsCredentials tempCreds = CognitoAuth.getTemporaryCredentials();
     private static LambdaClient awsLambda = LambdaClient.builder()
+                                                        .credentialsProvider(StaticCredentialsProvider.create(tempCreds))
                                                         .httpClient(UrlConnectionHttpClient.create())
                                                         .region(awsRegion)
                                                         .build();
@@ -40,6 +48,12 @@ public class LambdaHandler {
      *     "Operation": "GET",
      *     "Key": {"username": {"S": "lrl47"}}
      * }
+     *
+     * Example JSON for SCAN
+     * {
+     *     "TableName": "agora_users",
+     *     "Operation": "SCAN",
+     *     "ExclusiveStartKey": {"username": {"S": "lrl47"}}
      *
      * Example JSON for BATCH_GET
      * {
@@ -163,6 +177,49 @@ public class LambdaHandler {
         if (listings.length == 0) throw new IllegalArgumentException("listings cannot be empty");
         HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.LISTINGS, listings, new String[0]);
         invoke(payload, Operations.BATCH_DELETE);
+    }
+
+    public static HashMap<String, String> scanChats (String currentUsername) {
+        if (currentUsername == null || currentUsername.isEmpty()) {
+            throw new IllegalArgumentException("currentUsername must have a non-null, non-empty value.");
+        }
+        String[] username = new String[1];
+        username[0] = currentUsername;
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.CHATS, username, new String[0]);
+        HashMap<String, String> chatMetas = getChatsFromStruct(jsonToBase64(invoke(payload, Operations.SCAN)), currentUsername);
+        return chatMetas;
+    }
+
+    public static HashMap<String, Chat> getChats (String[] chatIDs) {
+        if (chatIDs.length == 0) throw new IllegalArgumentException("chatIDs cannot be empty");
+        HashMap<DynamoTables, HashMap<String, String>> payload = makePayload(DynamoTables.CHATS, chatIDs, new String[0]);
+        HashMap<String, String> blocks = new HashMap<>();
+        for (String chatID : chatIDs) {
+            String [] blockIDs = Chat.getBlockIDsFromID(chatID);
+            for (String blockID : blockIDs) {
+                blocks.put(blockID, "");
+            }
+        }
+        payload.put(DynamoTables.MESSAGE_BLOCKS, blocks);
+        JSONObject request = makeRequestBody(payload, Operations.BATCH_GET);
+        JSONObject response = invoke(payload, Operations.BATCH_GET);
+        TreeMap<String, MessageBlock> map = jsonToMessageBlocks(response);
+        if (writeOutputs) {
+            try {
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "messageBlockChats.txt");
+                fw.write(map.toString());
+                fw.close();
+            } catch (IOException ex) {}
+        }
+        HashMap<String, Chat> chats = Chat.makeChatsFromMessageBlocks(map, AppSession.currentUser.getUsername());
+        if (writeOutputs) {
+            try {
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "chatsBuilt.txt");
+                fw.write(chats.toString());
+                fw.close();
+            } catch (IOException ex) {}
+        }
+        return chats;
     }
 
     public static HashMap<String, Image> getImages (String[] imageIDs) {
@@ -309,6 +366,29 @@ public class LambdaHandler {
         return listings;
     }
 
+    public static HashMap<String, String> getChatsFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct, String currentUsername) {
+        HashMap<String, String> data = struct.get(DynamoTables.CHATS);
+        if (data == null) { // this means there are no chats for that user
+            return null;
+        }
+        if (data.keySet().isEmpty()) {
+            return null;
+        }
+        HashMap<String, String> chats = new HashMap<>();
+        for (String key : data.keySet()) {
+            String[] chatIDParts = key.split("_");
+            chats.put(chatIDParts[0].equals(currentUsername) ? chatIDParts[1] : chatIDParts[0], key);
+        }
+        if (writeOutputs) {
+            try {
+                FileWriter fw = new FileWriter(homeDir + agoraTempDir + "ChatMetasDecoded.txt");
+                fw.write(chats.toString());
+                fw.close();
+            } catch (IOException ex) {}
+        }
+        return chats;
+    }
+
     public static HashMap<String, ImageChunk> getImageChunksFromStruct (HashMap<DynamoTables, HashMap<String, String>> struct) {
         HashMap<String, String> data = struct.get(DynamoTables.IMAGE_CHUNKS);
         if (data.keySet().isEmpty()) {
@@ -348,8 +428,31 @@ public class LambdaHandler {
     public static JSONObject makeRequestBody (HashMap<DynamoTables, HashMap<String, String>> data, Operations operation) {
         if (data == null || operation == null) throw new IllegalArgumentException("Cannot have null arguments");
         JSONObject jsonObj = new JSONObject();
-        // if there is only one table AND one key value pair for that table -> GET, PUT, DELETE
-        if (data.size() == 1 && data.get(data.keySet().iterator().next()).size() == 1 && operation.isSingleOp) {
+        if (operation == Operations.SCAN) {
+            if (data.size() > 1) {
+                throw new IllegalArgumentException("Scanning is only allowed for one table at a time, too many tables specified");
+            }
+            if (data.size() < 1) {
+                throw new IllegalArgumentException("Table name is  required for scan operation. Please specify exactly one table to scan");
+            }
+            DynamoTables table = data.keySet().iterator().next();
+            try {
+                if (data.get(table).keySet().iterator().hasNext()) {
+                    // if there is a string inside the hashmap for this table, then that is the key we are looking for in the scan operation
+                    // specifically, if the key we provided is contained within any primary key of the table we're looking in
+                    String containsKey = data.get(table).keySet().iterator().next();
+                    String filterExpression = "contains(" + table.partitionKeyName + ",:key)";
+                    JSONObject expressionAttributeValues = buildSingleKeyJSON(":key", containsKey);
+                    jsonObj.put("FilterExpression", filterExpression);
+                    jsonObj.put("ExpressionAttributeValues", expressionAttributeValues);
+                }
+                jsonObj.put("TableName", table.tableName);
+                jsonObj.put("ConsistentRead", true);
+
+            } catch (JSONException ex) {
+                throw new IllegalStateException();
+            }
+        } else if (data.size() == 1 && data.get(data.keySet().iterator().next()).size() == 1 && operation.isSingleOp) {
             DynamoTables table = data.keySet().iterator().next();
             String key = data.get(table).keySet().iterator().next();
             String value = data.get(table).get(key);
@@ -365,19 +468,6 @@ public class LambdaHandler {
                 } else {
                     jsonObj.put("Key", buildSingleKeyJSON(table.partitionKeyName, key));
                 }
-            } catch (JSONException ex) {
-                throw new IllegalStateException();
-            }
-        } else if (operation == Operations.SCAN) {
-            if (data.size() > 1) {
-                throw new IllegalArgumentException("Scanning is only allowed for one table at a time, too many tables specified");
-            }
-            if (data.size() < 1) {
-                throw new IllegalArgumentException("Table name is required for scan operation. Please specify exactly one table to scan");
-            }
-            DynamoTables table = data.keySet().iterator().next();
-            try {
-                jsonObj.put("TableName", table.tableName);
             } catch (JSONException ex) {
                 throw new IllegalStateException();
             }
@@ -478,6 +568,13 @@ public class LambdaHandler {
             } catch (JSONException ex) {
                 throw new IllegalStateException("Didn't get valid JSON from AWS Lambda");
             }
+            if (writeOutputs) {
+                try {
+                    FileWriter fw = new FileWriter(homeDir + agoraTempDir + "ImmediateResponse" + System.currentTimeMillis() + ".json");
+                    fw.write(localResponse.toString(4));
+                    fw.close();
+                } catch (IOException | JSONException ex) {}
+            }
             try {
                 localResponse = new JSONObject(localResponse.optString("body"));
             } catch (JSONException ex) {
@@ -493,11 +590,12 @@ public class LambdaHandler {
             JSONObject newRequest = new JSONObject();
             try {
                 String requestKeyword = operation == Operations.SCAN ? "ExclusiveStartKey" : "RequestItems";
-                newRequest.put(requestKeyword, localResponse.optJSONObject(unprocessed));
-                newRequest.put("Operation", operation);
                 if (operation == Operations.SCAN) {
-                    newRequest.put("TableName", data.keySet().iterator().next().tableName);
+                    newRequest = makeRequestBody(data, operation); // need to completely remake it here so that it has the filter data in it still, but only for scan
+                } else {
+                    newRequest.put("Operation", operation);
                 }
+                newRequest.put(requestKeyword, localResponse.optJSONObject(unprocessed));
             } catch (JSONException ex) {
                 throw new IllegalStateException(unprocessed + " was supposed to have items in it, and yet, it doesn't.");
             }
@@ -543,7 +641,6 @@ public class LambdaHandler {
 
         if (writeOutputs) {
             try {
-                Random randy = new Random();
                 FileWriter fw = new FileWriter(homeDir + agoraTempDir + "trueResponse" + System.currentTimeMillis() + ".json");
                 fw.write(response.toString(4));
                 fw.close();
@@ -564,7 +661,8 @@ public class LambdaHandler {
                 for (int i = 0; i < tableResponses.length(); i++) {
                     JSONObject entry = tableResponses.getJSONObject(i);
                     String pKey = entry.getJSONObject(DynamoTables.getEnumFromTableName(tableName).partitionKeyName).getString("S");
-                    String b64 = entry.getJSONObject("base64").getString("S");
+
+                    String b64 = entry.isNull("base64") ? null : entry.getJSONObject("base64").getString("S");
                     base64Data.put(pKey, b64);
                 }
                 data.put(DynamoTables.getEnumFromTableName(tableName), base64Data);
@@ -572,6 +670,44 @@ public class LambdaHandler {
             return data;
         } catch (JSONException ex) {
             return null;
+        }
+    }
+
+    public static TreeMap<String, MessageBlock> jsonToMessageBlocks (JSONObject obj) {
+        try {
+            TreeMap<String, MessageBlock> blocks = new TreeMap<>();
+            Iterator<String> iter = obj.keys();
+            String tableName = obj.keys().next();
+            JSONArray tableResponses = obj.getJSONArray(tableName);
+
+            for (int i = 0; i < tableResponses.length(); i++) {
+
+                JSONObject entry = tableResponses.getJSONObject(i);
+                String id = entry.getJSONObject("id").getString("S");
+                int numMessages = Integer.parseInt(entry.getJSONObject("numMessages").getString("N"));
+                JSONArray messageList = entry.getJSONObject("messages").getJSONArray("L");
+                String[] messageBase64s = new String[messageList.length()];
+                for (int j = 0; j < messageList.length(); j++) {
+                    messageBase64s[j] = messageList.getJSONObject(j).getString("S");
+                }
+                MessageBlock mb = new MessageBlock();
+                for (String b64 : messageBase64s) {
+                    Message msg = Message.createFromBase64String(b64);
+                    mb.addMessage(msg);
+                }
+
+                blocks.put(id, mb);
+            }
+            return blocks;
+        } catch (JSONException ex) {
+            if (writeOutputs) {
+                try {
+                    FileWriter fw = new FileWriter(homeDir + agoraTempDir + "failedJSONExtraction.json");
+                    fw.write(obj.toString(4));
+                    fw.close();
+                } catch (IOException | JSONException ex2) {}
+            }
+            throw new IllegalStateException("JSONException: " + ex.getMessage(), ex.getCause());
         }
     }
 

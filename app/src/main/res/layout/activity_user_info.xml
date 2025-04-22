@@ -26,7 +26,7 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:background="#003071" />
+                android:background="#003071"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -38,7 +38,8 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:background="#003071">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -95,25 +96,13 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/textUsername"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="User Name"
                         android:textColor="?attr/colorOnBackground"
-                        android:textSize="15dp" />
+                        android:textSize="20dp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Case ID"
-                        android:textColor="?attr/colorOnBackground"
-                        android:textSize="15dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Transactions to Date: #"
-                        android:textColor="?attr/colorOnBackground"
-                        android:textSize="15dp" />
                 </LinearLayout>
             </LinearLayout>
 

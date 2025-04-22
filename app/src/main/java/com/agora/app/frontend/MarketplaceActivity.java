@@ -3,8 +3,10 @@ package com.agora.app.frontend;
 import com.agora.app.R;
 import com.agora.app.backend.base.Listing;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.agora.app.backend.base.User;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 
 /**
@@ -27,8 +30,10 @@ import java.util.Objects;
  */
 public class MarketplaceActivity extends AppCompatActivity {
 
-    private List<Listing> listings = ListingManager.getInstance().getListings();
+    private List<Listing> listings;
     private ListingView view;
+    private String username;
+    private User currentUser;
     private List<Listing> filteredListings;
     private SearchView searchBar;
     EditText minPriceInput;
@@ -41,9 +46,18 @@ public class MarketplaceActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_marketplace);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        username = getIntent().getStringExtra("username");
+
+        currentUser = getIntent().getSerializableExtra("userObj", User.class);
+
+        listings = ListingManager.getInstance().noPersonalListings(username);
+
 
         // navigation bar routing section
         BottomNavigationView navBar = findViewById(R.id.nav_bar);
+
+        navBar.setSelectedItemId(R.id.nav_marketplace);
+
         filteredListings = new ArrayList<>(listings);
 
         // maps nav bar item to correct page redirection
@@ -51,18 +65,27 @@ public class MarketplaceActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_messaging) {
-                startActivity(new Intent(this, MessagingActivity.class));
+                Intent intent = new Intent(this, MessagingActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_marketplace) {
                 return true;
             }
             else if (itemId == R.id.nav_swiping) {
-                startActivity(new Intent(this, SwipingActivity.class));
+                Intent intent = new Intent(this, SwipingActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
+                startActivity(intent);
                 return true;
             }
             else if (itemId == R.id.nav_user_info) {
-                startActivity(new Intent(this, UserInfoActivity.class));
+                Intent intent = new Intent(this, UserInfoActivity.class);
+                intent.putExtra("username", username);
+                intent.putExtra("userObj", currentUser);
+                startActivity(intent);
                 return true;
             }
             return false;
@@ -144,33 +167,61 @@ public class MarketplaceActivity extends AppCompatActivity {
         float minPrice = parsePrice(minPriceInput, 0.0f);
         float maxPrice = parsePrice(maxPriceInput, Float.MAX_VALUE);
         boolean userPrefs = userPrefsCheck.isChecked();
+        Boolean[] filterPrefs = {false, false, false, false, false};
+        if (userPrefs) {
+            filterPrefs = ListingManager.getInstance().getUserPrefs();
+        }
+
+        //boolean furnitureBoolean = filterPrefs[2];
+        boolean furnitureBoolean = (filterPrefs.length > 2 && filterPrefs[2] != null) ? filterPrefs[2] : false;
+        //boolean householdBoolean = filterPrefs[3];
+        boolean householdBoolean = (filterPrefs.length > 3 && filterPrefs[3] != null) ? filterPrefs[3] : false;
+        //boolean apparelBoolean = filterPrefs[4];
+        boolean apparelBoolean = (filterPrefs.length > 4 && filterPrefs[4] != null) ? filterPrefs[4] : false;
+
 
         if (minPrice > maxPrice) {
             maxPriceInput.setError("The maximum is less than the minimum!");
             return;
         }
 
+        ArrayList<String> tags = new ArrayList<>();
         for (Listing listing : listings) {
-            boolean searchCriteria = search.isEmpty() || listing.getTitle().toLowerCase().contains(search.toLowerCase());
+            boolean searchCriteria = textSearch(listing, search);
             boolean priceCriteria = listing.getPrice() >= minPrice && listing.getPrice() <= maxPrice;
+            boolean prefCriteria = true;
+            tags = listing.getTags();
+            Log.d("FILTER_DEBUG", "---- Listing: " + listing.getTitle() + " ----");
+            Log.d("FILTER_DEBUG", "Tags: " + tags.toString());
+            Log.d("FILTER_DEBUG", "FurniturePref: " + furnitureBoolean);
+            Log.d("FILTER_DEBUG", "HouseholdPref: " + householdBoolean);
+            Log.d("FILTER_DEBUG", "ApparelPref: " + apparelBoolean);
+            Log.d("FILTER_DEBUG", "UserPrefs enabled: " + userPrefs);
 
-            if (searchCriteria && priceCriteria) {
+            if (userPrefs) {
+                prefCriteria = (furnitureBoolean && tags.contains("Furniture")) || (householdBoolean && tags.contains("Household")) || (apparelBoolean && tags.contains("Apparel"));
+            }
+            if (searchCriteria && priceCriteria && prefCriteria) {
                 filteredListings.add(listing);
             }
-        }
+            /*
+             * Gotta enforce that people are using correct tags, would be nice to have these fields align
+             * with checkboxes in posting but this should work regardless
+             */
 
-        /*
-        if (search.isEmpty()) {
-            filteredListings.addAll(listings);
-        }
-        else {
-            for (Listing listing : listings) {
-                if (listing.getTitle().toLowerCase().contains(search.toLowerCase())) {
-                    filteredListings.add(listing);
-                }
+            /*
+            if (furnitureBoolean && tags.contains("Furniture")) {
+                filteredListings.add(listing);
             }
+            if (householdBoolean && tags.contains("Household")) {
+                filteredListings.add(listing);
+            }
+            if (apparelBoolean && tags.contains("Apparel")) {
+                filteredListings.add(listing);
+            }
+
+             */
         }
-         */
 
         view.notifyDataSetChanged();
         View noListings = findViewById(R.id.no_listings);
@@ -192,5 +243,22 @@ public class MarketplaceActivity extends AppCompatActivity {
             return auto;
         }
         return Float.parseFloat(input);
+    }
+
+    private boolean textSearch(Listing listing, String text) {
+        if (text.isEmpty()) {
+            return true;
+        }
+        String search = text.toLowerCase();
+        boolean inTitle = listing.getTitle().toLowerCase().contains(search);
+        boolean inDescription = listing.getDescription().toLowerCase().contains(search);
+        boolean inTags = false;
+        for (String tag : listing.getTags()) {
+            if (tag.toLowerCase().contains(search)) {
+                inTags = true;
+                break;
+            }
+        }
+        return inTitle || inDescription || inTags;
     }
 }
