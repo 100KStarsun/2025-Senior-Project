@@ -4,7 +4,8 @@
     <style name="Theme.Agora" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <!-- Primary colors -->
         <item name="colorPrimary">#003071</item>
-        <item name="colorAccent">#03DAC5</item>
+        <item name="colorAccent">#A6D2E6</item>
+        <item name="colorOnBackground">#000000</item>
 
         <!-- Background color -->
         <item name="android:windowBackground">#A6D2E6</item>

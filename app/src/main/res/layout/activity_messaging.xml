@@ -46,16 +46,21 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/messaging_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:background="@android:color/holo_blue_dark"
-        android:text="Implementation coming soon!"
-        android:textSize="30sp"
+        android:id="@+id/no_chats"
+        android:text="You don't have any active chats!"
         android:gravity="center"
+        android:visibility="visible"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:id="@+id/message_listings"
+        android:scrollbars="vertical"
         android:layout_weight="1"
-        />
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <!--nav bar-->
     <com.google.android.material.bottomnavigation.BottomNavigationView

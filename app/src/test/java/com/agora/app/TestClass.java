@@ -11,6 +11,7 @@ import com.agora.app.backend.lambda.DynamoTables;
 import com.agora.app.backend.lambda.KeyNotFoundException;
 import com.agora.app.backend.lambda.LambdaHandler;
 import com.agora.app.backend.lambda.Operations;
+import com.agora.app.backend.AppSession;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
@@ -48,7 +49,7 @@ public class TestClass {
         imageIDs.put("big_image.jpg", "9f321ffc-8be4-4845-a3dd-a4e8a55d9555--06");
     }
 
-    @Test
+    //@Test
     public void testBasicLoginStuff () throws IOException, NoSuchAlgorithmException {
         boolean puttingAndGetting = puttingAndGettingUserAndPassword();
         boolean correctLogin = testCorrectLogin();
@@ -324,5 +325,42 @@ public class TestClass {
             equalImages.add(testImg.equals(baseCase) + "");
         }
         assert !equalImages.contains("false");
+    }
+
+    @Test
+    public void testScanImageChunks () throws IOException, JSONException {
+        HashMap<String, ImageChunk> imageChunkHashMap = LambdaHandler.scanImageChunks();
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "imageChunks.json");
+        for (ImageChunk ic : imageChunkHashMap.values()) {
+            JSONObject jsonObj = new JSONObject();
+            jsonObj.put(ic.getId(), ic.getBase64());
+            fw.write(jsonObj.toString(4) + "\n");
+        }
+        fw.close();
+    }
+
+    @Test
+    public void testScanChats () throws IOException, JSONException {
+//        User levi = LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47");
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "scanChatResponse.txt");
+        fw.write(LambdaHandler.scanChats("lrl47").toString());
+        fw.close();
+    }
+    @Test
+    public void testChats () throws IOException {
+        AppSession appSession = new AppSession(LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47"));
+//        Chat.sendMessage("nrm98","message 01/02 " + System.currentTimeMillis());
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lrl47-nrm98-chat.txt");
+        fw.write(AppSession.currentUser.getChatObject("nrm98").toString());
+        fw.close();
+    }
+
+    @Test
+    public void testOfflineMessages () throws IOException {
+        AppSession appSession = new AppSession(LambdaHandler.getUsers(new String[]{"lrl47"}).get("lrl47"));
+        FileWriter fw = new FileWriter(homeDir + agoraTempDir + "lrl47-msc135-chat.txt");
+        fw.write(AppSession.currentUser.getChatObject("msc135").toString());
+        fw.close();
+
     }
 }

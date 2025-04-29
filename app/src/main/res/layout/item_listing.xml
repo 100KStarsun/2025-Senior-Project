@@ -7,11 +7,28 @@
     android:padding="16dp"
     android:background="@drawable/blue_border_rounded"
     android:layout_marginBottom="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Archive"
+            android:id="@+id/archive_button"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete"
+            android:id="@+id/delete_button"/>
+    </LinearLayout>
+
     <ImageView
-        android:id="@+id/listing_image"
+        android:id="@+id/image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:src="@drawable/ic_placeholder" 
         android:scaleType="centerCrop"
         android:contentDescription="Listing Image"/>
    
@@ -40,6 +57,8 @@
             android:layout_gravity="end"
             android:textColor="@android:color/holo_green_dark"
             android:layout_marginLeft="10dp"/>
+        
+        
 
     </LinearLayout>
         <TextView
@@ -51,6 +70,19 @@
             android:ellipsize="end"
             android:layout_marginTop="5dp"
             android:text="Listing Description"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:id="@+id/save_button"/>
+    <Button
+        android:id="@+id/message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message"
+        android:visibility="gone" 
+        android:layout_marginStart="8dp"/>
         
 
 

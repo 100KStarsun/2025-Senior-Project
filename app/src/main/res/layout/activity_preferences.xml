@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -55,44 +56,22 @@
             android:id="@+id/exchangeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:textColor="?attr/colorOnBackground"
+            app:trackTint="#003071"
+            app:thumbTint="@android:color/white"
+            />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:text="Allow Cash Transactions "
             android:id="@+id/cashSwitch"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:gravity="center"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Price Maximum"
-        android:gravity="center"
-        android:textSize="10sp" />
-
-    <SeekBar
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Price Minimum"
-        android:gravity="center"
-        android:textSize="10sp" />
-
-    <SeekBar
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"/>
+            android:gravity="center"
+            android:textColor="?attr/colorOnBackground"
+            app:trackTint="#003071"
+            app:thumbTint="@android:color/white"
+            />
 
     </LinearLayout>
 
@@ -101,7 +80,8 @@
         android:layout_height="wrap_content"
         android:text="Item Categories"
         android:gravity="center"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:textColor="?attr/colorOnBackground"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -118,22 +98,41 @@
                 android:id="@+id/furnitureCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Furniture"/>
+                android:text="Furniture"
+                android:textColor="?attr/colorOnBackground"
+                android:buttonTint="#003071"/>
 
             <CheckBox
                 android:id="@+id/householdCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Household"/>
+                android:text="Household"
+                android:textColor="?attr/colorOnBackground"
+                android:buttonTint="#003071"/>
 
             <CheckBox
                 android:id="@+id/apparelCheckBox"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
-                android:text="Apparel"/>
+                android:text="Apparel"
+                android:textColor="?attr/colorOnBackground"
+                android:buttonTint="#003071"/>
 
         </LinearLayout>
     </LinearLayout>
+
+    <LinearLayout
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:gravity="center"
+         android:padding="16dp">
+ 
+         <Button
+             android:id="@+id/savePreferencesButton"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:text="Save Preferences" />
+     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

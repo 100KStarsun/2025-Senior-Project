@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingTop="100dp"
     android:paddingLeft="50dp"
     android:paddingRight="50dp"
-    android:paddingBottom="100dp"
-    android:background="#A6D2E6">
+    android:paddingBottom="100dp">
 
     <!-- Wrapper LinearLayout for Box -->
     <LinearLayout
@@ -37,8 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:scaleType="centerCrop"
-        android:contentDescription="Listing Image"
-        android:src="@drawable/ic_placeholder"/>
+        android:contentDescription="Listing Image"/>
 
     <!-- Listing Price -->
     <TextView
@@ -65,6 +64,7 @@
             android:textSize="18sp"/>
 
         <TextView
+            android:id="@+id/comma1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=", "
@@ -80,6 +80,7 @@
             android:textSize="18sp"/>
 
         <TextView
+            android:id="@+id/comma2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=", "
@@ -104,31 +105,15 @@
         android:textSize="16sp"
         android:layout_marginTop="10dp"/>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="right">
-
         <!-- First Button (Back) aligned to bottom-right -->
         <Button
             android:id="@+id/buttonMarketplace"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Back"
+            android:layout_gravity="end"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true" />
-
-        <!-- Second Button (Save) positioned to the left of buttonMarketplace -->
-        <Button
-            android:id="@+id/buttonSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:layout_alignParentBottom="true"
-            android:layout_toStartOf="@id/buttonMarketplace"
-            android:layout_marginEnd="16dp"/>
-
-    </RelativeLayout>
 
     </LinearLayout>
 

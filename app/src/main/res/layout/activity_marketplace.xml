@@ -61,15 +61,81 @@
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"/>
 
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Collapse"
+        android:id="@+id/filter_expansion"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/box_border"
+        android:orientation="vertical"
+        android:id="@+id/filters"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+        
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Price Range:"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/min_price"
+                android:layout_weight="1"
+                android:inputType="numberDecimal"
+                android:hint="0.00"/>
+
+            <EditText
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/max_price"
+                android:layout_weight="1"
+                android:inputType="numberDecimal"
+                android:hint="0.00"/>
+        </LinearLayout>
+
+        <CheckBox
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/user_prefs"
+            android:text="Apply User Preferences"/>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_prefs"
+        android:text="Apply"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
+
+
     <TextView
         android:id="@+id/no_listings"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@android:color/holo_blue_dark"
-        android:text="No listings are currently available :("
+        android:background="#003071"
+        android:textColor="@android:color/white"
+        android:text="No listings found. Please check back later or change your search criteria."
         android:textSize="30sp"
+        android:padding="16dp"
         android:gravity="center"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+
         />
 
     <!--listing scroller-->

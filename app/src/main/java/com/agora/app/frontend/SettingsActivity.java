@@ -7,6 +7,7 @@ import android.widget.CheckBox;
 import androidx.appcompat.app.AppCompatActivity;
 import com.agora.app.R;
 import com.agora.app.databinding.ActivitySettingsBinding;
+import com.agora.app.backend.base.User;
 import java.util.Objects;
 
 /**
@@ -15,13 +16,21 @@ import java.util.Objects;
  */
 public class SettingsActivity extends AppCompatActivity {
 
+    private User currentUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         Objects.requireNonNull(getSupportActionBar()).hide();
+        currentUser = getIntent().getSerializableExtra("userobject", User.class);
         Button buttonUserInfo = findViewById(R.id.buttonUserInfo);
-        buttonUserInfo.setOnClickListener(v -> startActivity(new Intent(SettingsActivity.this, UserInfoActivity.class)));
+        buttonUserInfo.setOnClickListener(v -> {
+            Intent intent = new Intent(SettingsActivity.this, UserInfoActivity.class);
+            intent.putExtra("username", currentUser.getUsername());
+            intent.putExtra("userObj", currentUser);
+            startActivity(intent);
+        });
 
         CheckBox paypalCheckBox = (CheckBox) findViewById(R.id.paypalCheckBox);
         CheckBox zelleCheckBox = (CheckBox) findViewById(R.id.zelleCheckBox);
